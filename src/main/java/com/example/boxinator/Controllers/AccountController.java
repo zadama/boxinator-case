@@ -64,7 +64,15 @@ public class AccountController {
         return new ResponseEntity<>(cr, cr.status);
     }
 
-    // GET/account/:account_id, PUT/account/:account_id, POST/account/, DELETE/account/:account_id(ONLY IN EXTREME SITUATIONS)
+    @PutMapping("/{account_id}")
+    public ResponseEntity<CommonResponse> changeAccountDetails(@PathVariable long account_id, @RequestBody Account account) {
+        CommonResponse cr = new CommonResponse();
+
+
+        return new ResponseEntity<>(cr, cr.status);
+    }
+
+    // GET/account/:account_id(CHECK), PUT/account/:account_id, POST/account/, DELETE/account/:account_id(ONLY IN EXTREME SITUATIONS)
     // POST/login
 
 }
