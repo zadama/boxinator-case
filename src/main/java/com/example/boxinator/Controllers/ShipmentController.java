@@ -38,7 +38,7 @@ public class ShipmentController {
 
     // * GET/:shipment_id (get details about specific shipment),
     @GetMapping("/{shipment_id}")
-    public ResponseEntity<CommonResponse> getShipment(@PathVariable long shipment_id) {
+    public ResponseEntity<CommonResponse> getShipment(@PathVariable Long shipment_id) {
         CommonResponse cr = new CommonResponse();
 
         Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
