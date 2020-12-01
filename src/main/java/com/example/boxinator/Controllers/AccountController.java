@@ -44,8 +44,6 @@ public class AccountController {
         cr.msg = "All accounts found";
         cr.status = HttpStatus.OK;
 
-        System.out.println(cr.data);
-
         return new ResponseEntity<>(cr, cr.status);
     }
 
@@ -59,7 +57,6 @@ public class AccountController {
         cr.data = account;
         cr.msg = "Account found";
         cr.status = HttpStatus.OK;
-        System.out.println(account);
 
         return new ResponseEntity<>(cr, cr.status);
     }
