@@ -106,7 +106,28 @@ public class AccountController {
         return new ResponseEntity<>(cr, cr.status);
     }
 
-    // GET/account/:account_id(CHECK), PUT/account/:account_id(ONGOING), POST/account/(CHECK), DELETE/account/:account_id(ONLY IN EXTREME SITUATIONS)()
+    @DeleteMapping("/{account_id}")
+    public ResponseEntity<CommonResponse> deleteAccount(@PathVariable long account_id) {
+        CommonResponse cr = new CommonResponse();
+
+        Optional<Account> accountRepo = accountRepository.findById(account_id);
+        Account account = accountRepo.orElse(null);
+
+        if (account != null) {
+            accountRepository.deleteById(account_id);
+            cr.data = null;
+            cr.msg = "Account deleted.";
+            cr.status = HttpStatus.OK;
+        } else {
+            cr.data = account;
+            cr.msg = "Account could not be deleted.";
+            cr.status = HttpStatus.BAD_REQUEST;
+        }
+
+        return new ResponseEntity<>(cr, cr.status);
+    }
+
+    // GET/account/:account_id(CHECK), PUT/account/:account_id(CHECK), POST/account/(CHECK), DELETE/account/:account_id(ONLY IN EXTREME SITUATIONS)()
     // POST/login()
 
 }
