@@ -1,16 +1,40 @@
 import React from "react";
-import useTest from "./useTest";
 
 import PublicLayout from "../../layouts/PublicLayout";
+import { getAllAccounts } from "../../api/fetchUser";
+import { useEffect } from "react";
+import { useState } from "react";
 
 const LoginPage = () => {
-  const res = useTest();
+  const [state, setState] = useState(null);
 
-  console.log(res);
-  console.log("LOGIN PAGE");
+  const displayAllAccounts = async () => {
+    try {
+      let { data } = await getAllAccounts();
+
+      setState(data.msg);
+    } catch (error) {
+      if (error.response.status === 404) {
+        console.log(error.response.data.status);
+
+        setState(error.response.data.status);
+      }
+    }
+  };
+
+  useEffect(() => {
+    displayAllAccounts();
+  }, []);
+
   return (
     <PublicLayout>
       <div>LoginPage</div>
+
+      {state ? (
+        <div> Message from API: {state}</div>
+      ) : (
+        <div>Loading request...</div>
+      )}
     </PublicLayout>
   );
 };
