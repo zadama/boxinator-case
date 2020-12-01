@@ -25,16 +25,12 @@ public class CountryController {
     public ResponseEntity<CommonResponse> addCountry(@RequestBody Country countryToAdd){
         CommonResponse commonResponse = new CommonResponse();
 
-        if(countryRepository.equals(countryToAdd.getName())){
-            try {
-                countryRepository.save(countryToAdd);
-                commonResponse.data = countryToAdd;
-                commonResponse.msg = "The country " + countryToAdd.getName() + " has been added.";
-                commonResponse.status = HttpStatus.CREATED;
-            } catch (Exception e) {
-                commonResponse.status = HttpStatus.BAD_REQUEST;
-            }
-        } else {
+        try {
+            countryRepository.save(countryToAdd);
+            commonResponse.data = countryToAdd;
+            commonResponse.msg = "The country " + countryToAdd.getName() + " has been added.";
+            commonResponse.status = HttpStatus.CREATED;
+        } catch (Exception e) {
             commonResponse.msg = "The country " + countryToAdd.getName() + " already exists in the database.";
             commonResponse.status = HttpStatus.CONFLICT;
         }
@@ -60,7 +56,7 @@ public class CountryController {
         return new ResponseEntity<>(commonResponse, commonResponse.status);
     }
 
-    @PostMapping(value = "/{country_id}")
+    @PatchMapping(value = "/{country_id}")
     public ResponseEntity<CommonResponse> updateCountryById (
             @RequestBody Country countryToUpdate,
             @PathVariable ("country_id") Long id) {
