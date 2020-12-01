@@ -52,7 +52,26 @@ public class ShipmentController {
         return new ResponseEntity<>(cr, cr.status);
     }
 
+// * POST/:shipment_id (used to update a shipment, user can only cancel, admin can change status
+    @PatchMapping("/{shipment_id}")
+    public ResponseEntity<CommonResponse> updateShipment(@PathVariable Long shipment_id){
+        CommonResponse cr = new CommonResponse();
 
+        Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
+        Shipment shipment = shipmentRepo.orElse(null);
+
+        try {
+            shipmentRepository.save(shipment);
+            cr.data = shipment;
+            cr.msg = "Shipment created";
+            cr.status = HttpStatus.CREATED;
+
+        }
+        catch(Exception e){
+            cr.status = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<>(cr.status);
+    }
     /*
     * GET/ (get all relevant to user, admin sees all, non-cancelled, non-complete, can be filtered using status or date)
     * GET/complete
@@ -61,7 +80,6 @@ public class ShipmentController {
     * GET/:customer_id (get all shipments by a customer)
     * GET/complete/:customer_id (get all complete shipments by a customer)
     * GET/:customer_id/:shipment_id (get a specific shipment by a customer)
-    * POST/:shipment_id (used to update a shipment, user can only cancel, admin can change status
     * DELETE/:shipment_id Only accessible by admin, only in extreme situations, can delete complete/cancelled shipments
     *
     * */
