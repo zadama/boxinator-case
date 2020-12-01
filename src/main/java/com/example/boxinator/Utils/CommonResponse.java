@@ -6,4 +6,5 @@ public class CommonResponse {
     public Object data;
     public String msg;
     public HttpStatus status;
+
 }
