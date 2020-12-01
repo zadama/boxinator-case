@@ -1,14 +1,47 @@
 package com.example.boxinator.Controllers;
 
 
+import com.example.boxinator.Models.Shipment;
+import com.example.boxinator.Repositories.ShipmentRepository;
+import com.example.boxinator.Utils.CommonResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+@RequestMapping(value = "/api/v1/shipment")
 public class ShipmentController {
+
+    @Autowired
+    private ShipmentRepository shipmentRepository;
+
+    // * POST/ (create new shipment)
+    @PostMapping("/create")
+    public ResponseEntity<CommonResponse> createShipment(@RequestBody Shipment shipment) {
+        CommonResponse cr = new CommonResponse();
+
+        try {
+            shipmentRepository.save(shipment);
+            cr.data = shipment;
+            cr.msg = "Shipment created";
+            cr.status = HttpStatus.CREATED;
+        } catch (Exception e) {
+            cr.data = null;
+            cr.msg = "Shipment could not be created";
+            cr.status = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<>(cr, cr.status);
+    }
+
 
     /*
     * GET/ (get all relevant to user, admin sees all, non-cancelled, non-complete, can be filtered using status or date)
     * GET/complete
     * GET/cancelled
-    * POST/ (create new shipment)
     * GET/:shipment_id (get details about specific shipment),
     * GET/complete/:shipment_id (get details about specific completed shipment),
     * GET/:customer_id (get all shipments by a customer)
