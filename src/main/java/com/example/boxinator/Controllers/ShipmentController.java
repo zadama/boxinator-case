@@ -7,10 +7,9 @@ import com.example.boxinator.Utils.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/v1/shipment")
@@ -37,12 +36,25 @@ public class ShipmentController {
         return new ResponseEntity<>(cr, cr.status);
     }
 
+    // * GET/:shipment_id (get details about specific shipment),
+    @GetMapping("/{shipment_id}")
+    public ResponseEntity<CommonResponse> getShipment(@PathVariable long shipment_id) {
+        CommonResponse cr = new CommonResponse();
 
+        Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
+        Shipment shipment = shipmentRepo.get();
+
+        cr.data = shipment;
+        cr.msg = "Shipment found";
+        cr.status = HttpStatus.OK;
+        System.out.println(shipment);
+
+        return new ResponseEntity<>(cr, cr.status);
+    }
     /*
     * GET/ (get all relevant to user, admin sees all, non-cancelled, non-complete, can be filtered using status or date)
     * GET/complete
     * GET/cancelled
-    * GET/:shipment_id (get details about specific shipment),
     * GET/complete/:shipment_id (get details about specific completed shipment),
     * GET/:customer_id (get all shipments by a customer)
     * GET/complete/:customer_id (get all complete shipments by a customer)
