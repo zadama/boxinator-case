@@ -23,16 +23,16 @@ public class Shipment {
     private long weight;
 
     @Column(nullable = false)
-    private long boxColour;
+    private String boxColour;
 
     @Column(nullable = false)
-    private long destinationCountry; // Relation to country to get fee multiplier
+    private String destinationCountry; // Relation to country to get fee multiplier
 
     @Column(nullable = false)
-    private long receiver; // store name/id of receiver
+    private String receiver; // store name/id of receiver
 
     @Column(nullable = false)
-    private long sourceCountry;
+    private String sourceCountry;
 
     @Column(nullable = false)
     private long accountId; // relation to who created shipment
