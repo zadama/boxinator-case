@@ -54,7 +54,7 @@ public class AccountController {
         CommonResponse cr = new CommonResponse();
 
         Optional<Account> accountRepo = accountRepository.findById(account_id);
-        Account account = accountRepo.get();
+        Account account = accountRepo.orElse(null);
 
         cr.data = account;
         cr.msg = "Account found";
@@ -64,15 +64,52 @@ public class AccountController {
         return new ResponseEntity<>(cr, cr.status);
     }
 
-    @PutMapping("/{account_id}")
-    public ResponseEntity<CommonResponse> changeAccountDetails(@PathVariable long account_id, @RequestBody Account account) {
+    @PatchMapping("/{account_id}")
+    public ResponseEntity<CommonResponse> changeAccountDetails(@PathVariable long account_id, @RequestBody Account changedAccount) {
         CommonResponse cr = new CommonResponse();
 
+        if(accountRepository.existsById(account_id)) {
+            Optional<Account> accountRepo = accountRepository.findById(account_id);
+            Account account = accountRepo.orElse(null);
+            if (account != null) {
+                if (changedAccount.getFirstName() != null) { account.setFirstName(changedAccount.getFirstName()); }
+
+                if (changedAccount.getLastName() != null) { account.setLastName(changedAccount.getLastName()); }
+
+                if (changedAccount.getEmail() != null) { account.setEmail(changedAccount.getEmail()); }
+
+                if (changedAccount.getPassword() != null) { account.setPassword(changedAccount.getPassword()); }
+
+                if (changedAccount.getDateOfBirth() != null) { account.setDateOfBirth(changedAccount.getDateOfBirth()); }
+
+                if (changedAccount.getCountry() != null) { account.setCountry(changedAccount.getCountry()); }
+
+                if (changedAccount.getZipCode() != 0) { account.setZipCode(changedAccount.getZipCode()); }
+
+                if (changedAccount.getContactNumber() != 0) { account.setContactNumber(changedAccount.getContactNumber()); }
+
+                if (changedAccount.getRole() != null) { account.setRole(changedAccount.getRole()); }
+
+                try {
+                    Account newAccount = accountRepository.save(account);
+                    cr.data = newAccount;
+                    cr.msg = newAccount != null ? "Account changed!" : "This service is currently unavailable.";
+                    cr.status = newAccount != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+                } catch (Exception e) {
+                    cr.status = HttpStatus.BAD_REQUEST;
+                }
+            }
+
+        } else {
+            cr.data = null;
+            cr.msg = "Account not found.";
+            cr.status = HttpStatus.NOT_FOUND;
+        }
 
         return new ResponseEntity<>(cr, cr.status);
     }
 
-    // GET/account/:account_id(CHECK), PUT/account/:account_id, POST/account/, DELETE/account/:account_id(ONLY IN EXTREME SITUATIONS)
-    // POST/login
+    // GET/account/:account_id(CHECK), PUT/account/:account_id(ONGOING), POST/account/(CHECK), DELETE/account/:account_id(ONLY IN EXTREME SITUATIONS)()
+    // POST/login()
 
 }
