@@ -121,6 +121,22 @@ public class ShipmentController {
 
         return new ResponseEntity<>(cr, cr.status);
     }
+    //* GET/complete
+
+    @GetMapping("/{cancelled}")
+    public ResponseEntity<CommonResponse> getAllCancelledShipments(@PathVariable String shipment_status){
+        CommonResponse cr = new CommonResponse();
+
+        return new ResponseEntity<>(cr, cr.status);
+    }
+
+    //* GET/cancelled
+    @GetMapping("/{complete}")
+    public ResponseEntity<CommonResponse> getAllCompletedShipments(@PathVariable String shipment_status){
+        CommonResponse cr = new CommonResponse();
+
+        return new ResponseEntity<>(cr, cr.status);
+    }
     /*
     TODO
     * GET/complete
@@ -128,6 +144,6 @@ public class ShipmentController {
     * GET/complete/:shipment_id (get details about specific completed shipment),
     * GET/complete/:customer_id (get all complete shipments by a customer)
     * GET/:customer_id/:shipment_id (get a specific shipment by a customer)
-    * */
+    */
 
 }
