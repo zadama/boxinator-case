@@ -70,7 +70,7 @@ public class CountryController {
                 country.setName(countryToUpdate.getName());
             }
 
-            if (countryToUpdate.getFeeMultiplier() != null) {
+            if (countryToUpdate.getFeeMultiplier() != 0) {
                 country.setFeeMultiplier(countryToUpdate.getFeeMultiplier());
             }
 
