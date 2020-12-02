@@ -91,8 +91,20 @@ public class ShipmentController {
         }
         return new ResponseEntity<>(cr.status);
     }
+    //     * GET/ (get all relevant to user, admin sees all, non-cancelled, non-complete, can be filtered using status or date)
+    @GetMapping("/all")
+    public ResponseEntity<CommonResponse> getAllShipments() {
+        CommonResponse cr = new CommonResponse();
+
+        cr.data = shipmentRepository.findAll();
+        cr.msg = "All shipments found";
+        cr.status = HttpStatus.OK;
+
+        System.out.println(cr.data);
+
+        return new ResponseEntity<>(cr, cr.status);
+    }
     /*
-    * GET/ (get all relevant to user, admin sees all, non-cancelled, non-complete, can be filtered using status or date)
     * GET/complete
     * GET/cancelled
     * GET/complete/:shipment_id (get details about specific completed shipment),
