@@ -24,5 +24,4 @@ public class Country {
 
     @Column
     private Double feeMultiplier;
-
 }

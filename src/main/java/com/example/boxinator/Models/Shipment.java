@@ -35,10 +35,18 @@ public class Shipment {
     private String sourceCountry;
 
     @Column(nullable = false)
-    private Long accountId; // relation to who created shipment
-
-    @Column(nullable = false)
     private String shipmentStatus;
+
+    @ManyToOne
+    private Account account;
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 
     public Long getId() {
         return id;
@@ -86,14 +94,6 @@ public class Shipment {
 
     public void setSourceCountry(String sourceCountry) {
         this.sourceCountry = sourceCountry;
-    }
-
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
     }
 
     public String getShipmentStatus() {

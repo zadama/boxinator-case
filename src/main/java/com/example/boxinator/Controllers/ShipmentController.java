@@ -1,7 +1,9 @@
 package com.example.boxinator.Controllers;
 
 
+import com.example.boxinator.Models.Account;
 import com.example.boxinator.Models.Shipment;
+import com.example.boxinator.Repositories.AccountRepository;
 import com.example.boxinator.Repositories.ShipmentRepository;
 import com.example.boxinator.Utils.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class ShipmentController {
 
     @Autowired
     private ShipmentRepository shipmentRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     // * POST/ (create new shipment)
     @PostMapping("/create")
@@ -42,12 +47,11 @@ public class ShipmentController {
         CommonResponse cr = new CommonResponse();
 
         Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
-        Shipment shipment = shipmentRepo.get();
+        Shipment shipment = shipmentRepo.orElse(null);
 
         cr.data = shipment;
         cr.msg = "Shipment found";
         cr.status = HttpStatus.OK;
-        System.out.println(shipment);
 
         return new ResponseEntity<>(cr, cr.status);
     }
@@ -70,7 +74,7 @@ public class ShipmentController {
         catch(Exception e){
             cr.status = HttpStatus.BAD_REQUEST;
         }
-        return new ResponseEntity<>(cr.status);
+        return new ResponseEntity<>(cr,cr.status);
     }
     // *  DELETE/:shipment_id Only accessible by admin, only in extreme situations, can delete complete/cancelled shipments
     @DeleteMapping("/{shipment_id}")
@@ -78,7 +82,7 @@ public class ShipmentController {
         CommonResponse cr = new CommonResponse();
 
         Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
-        Shipment shipment = shipmentRepo.get();
+        Shipment shipment = shipmentRepo.orElse(null);
 
         try {
             cr.data = shipment;
@@ -89,7 +93,7 @@ public class ShipmentController {
         catch(Exception e){
 
         }
-        return new ResponseEntity<>(cr.status);
+        return new ResponseEntity<>(cr,cr.status);
     }
     //     * GET/ (get all relevant to user, admin sees all, non-cancelled, non-complete, can be filtered using status or date)
     @GetMapping("/all")
@@ -100,19 +104,30 @@ public class ShipmentController {
         cr.msg = "All shipments found";
         cr.status = HttpStatus.OK;
 
-        System.out.println(cr.data);
+        return new ResponseEntity<>(cr, cr.status);
+    }
+
+    //    * GET/:customer_id (get all shipments by a customer)
+    @GetMapping("/all/{customer_id}")
+    public ResponseEntity<CommonResponse> getAllShipmentsByAccount(@PathVariable Long customer_id){
+        CommonResponse cr = new CommonResponse();
+
+        Optional<Account> accountRepo = accountRepository.findById(customer_id);
+        Account account = accountRepo.orElse(null);
+
+        cr.data = account.getShipments();
+        cr.msg = "All shipments found for customer";
+        cr.status = HttpStatus.OK;
 
         return new ResponseEntity<>(cr, cr.status);
     }
     /*
+    TODO
     * GET/complete
     * GET/cancelled
     * GET/complete/:shipment_id (get details about specific completed shipment),
-    * GET/:customer_id (get all shipments by a customer)
     * GET/complete/:customer_id (get all complete shipments by a customer)
     * GET/:customer_id/:shipment_id (get a specific shipment by a customer)
-
-    *
     * */
 
 }
