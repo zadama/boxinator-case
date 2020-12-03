@@ -1,8 +1,12 @@
 import React from "react";
+import PrivateLayout from "../../layouts/PrivateLayout";
 
 const AddShipmentPage = () => {
-  console.log("heree");
-  return <div>AddShipmentPage </div>;
+  return (
+    <PrivateLayout>
+      <div>AddShipmentPage </div>
+    </PrivateLayout>
+  );
 };
 
 export default AddShipmentPage;

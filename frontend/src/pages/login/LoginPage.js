@@ -1,13 +1,21 @@
 import React from "react";
+import "./style.scss";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
 import PublicLayout from "../../layouts/PublicLayout";
-import { getAllAccounts } from "../../api/fetchUser";
+import { getAllAccounts, createUser } from "../../api/user";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useAuth } from "../../context/auth";
 
-const LoginPage = () => {
-  const [state, setState] = useState(null);
+const LoginPage = ({ history }) => {
+  const { login } = useAuth();
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  /*
   const displayAllAccounts = async () => {
     try {
       let { data } = await getAllAccounts();
@@ -20,21 +28,55 @@ const LoginPage = () => {
         setState(error.response.data.status);
       }
     }
-  };
+  };*/
 
-  useEffect(() => {
-    displayAllAccounts();
-  }, []);
+  const handleLogin = async () => {
+    try {
+      // const res = await createUser(email, password);
+      //console.log(res);
+
+      const res = login(email, password);
+      console.log(res);
+      history.push("/admin-dashboard");
+    } catch (error) {
+      console.log("LOGINPAGE ERROR");
+    }
+  };
 
   return (
     <PublicLayout>
-      <div>LoginPage</div>
+      <div className="login">
+        <Form.Group controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+            value={email}
+            type="email"
+            placeholder="Enter email"
+          />
+          <Form.Text className="text-muted">
+            We'll never share your email with anyone else.
+          </Form.Text>
+        </Form.Group>
 
-      {state ? (
-        <div> Message from API: {state}</div>
-      ) : (
-        <div>Loading request...</div>
-      )}
+        <Form.Group controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            value={password}
+            type="password"
+            placeholder="Password"
+          />
+        </Form.Group>
+
+        <Button onClick={handleLogin} variant="primary" type="submit">
+          Submit
+        </Button>
+      </div>
     </PublicLayout>
   );
 };

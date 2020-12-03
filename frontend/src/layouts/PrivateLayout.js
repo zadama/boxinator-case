@@ -1,7 +1,13 @@
 import React from "react";
+import Navbar from "../components/navbar";
 
 const PrivateLayout = ({ children }) => {
-  return <div>{children}</div>;
+  return (
+    <div>
+      <Navbar />
+      <main className="container">{children}</main>
+    </div>
+  );
 };
 
 export default PrivateLayout;
