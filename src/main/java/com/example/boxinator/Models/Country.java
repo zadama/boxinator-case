@@ -22,6 +22,9 @@ public class Country {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false, unique = true)
+    private String countryCode;
+
     @Column
     private double feeMultiplier;
 
@@ -35,6 +38,14 @@ public class Country {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public double getFeeMultiplier() {

@@ -18,7 +18,7 @@ public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @PostMapping("/create")
+    @PostMapping("/register")
     public ResponseEntity<CommonResponse> createAccount(@RequestBody Account account) {
         CommonResponse cr = new CommonResponse();
 
@@ -35,6 +35,8 @@ public class AccountController {
 
         return new ResponseEntity<>(cr, cr.status);
     }
+
+    @PostMapping("/login")
 
     @GetMapping("/all")
     public ResponseEntity<CommonResponse> getAllAccounts() {

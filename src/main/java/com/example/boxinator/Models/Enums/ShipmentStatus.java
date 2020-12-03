@@ -1,4 +1,4 @@
-package com.example.boxinator.Models;
+package com.example.boxinator.Models.Enums;
 
 public enum ShipmentStatus {
     CREATED,
