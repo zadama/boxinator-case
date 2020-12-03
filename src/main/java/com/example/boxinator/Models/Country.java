@@ -44,4 +44,5 @@ public class Country {
     public void setFeeMultiplier(double feeMultiplier) {
         this.feeMultiplier = feeMultiplier;
     }
+
 }

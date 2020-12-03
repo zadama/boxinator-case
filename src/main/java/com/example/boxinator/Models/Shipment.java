@@ -34,11 +34,20 @@ public class Shipment {
     @Column(nullable = false)
     private String sourceCountry;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Long accountId; // relation to who created shipment
+    private ShipmentStatus shipmentStatus;
 
-    @Column(nullable = false)
-    private String shipmentStatus;
+    @ManyToOne
+    private Account account;
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 
     public Long getId() {
         return id;
@@ -88,19 +97,11 @@ public class Shipment {
         this.sourceCountry = sourceCountry;
     }
 
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
-    }
-
-    public String getShipmentStatus() {
+    public ShipmentStatus getShipmentStatus() {
         return shipmentStatus;
     }
 
-    public void setShipmentStatus(String shipmentStatus) {
+    public void setShipmentStatus(ShipmentStatus shipmentStatus) {
         this.shipmentStatus = shipmentStatus;
     }
 
