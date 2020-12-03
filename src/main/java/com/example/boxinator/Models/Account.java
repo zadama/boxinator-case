@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @JsonIdentityInfo(
@@ -46,6 +48,16 @@ public class Account {
     @Column
     private String role;
 
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    private Set<Shipment> shipments = new HashSet<>();
+
+    public Set<Shipment> getShipments() {
+        return shipments;
+    }
+
+    public void setShipments(Set<Shipment> shipments) {
+        this.shipments = shipments;
+    }
 
     public Long getId() {
         return id;
