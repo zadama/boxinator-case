@@ -3,6 +3,7 @@ package com.example.boxinator.Controllers;
 
 import com.example.boxinator.Models.Account;
 import com.example.boxinator.Models.Shipment;
+import com.example.boxinator.Models.ShipmentStatus;
 import com.example.boxinator.Repositories.AccountRepository;
 import com.example.boxinator.Repositories.ShipmentRepository;
 import com.example.boxinator.Utils.CommonResponse;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -161,15 +163,27 @@ public class ShipmentController {
     }
     //* GET/complete
 
-    @GetMapping("/{cancelled}")
-    public ResponseEntity<CommonResponse> getAllCancelledShipments(@PathVariable String shipment_status){
+    @GetMapping("/all/{shipmentStatus}")
+    public ResponseEntity<CommonResponse> getAllCancelledShipments(@PathVariable ("shipmentStatus") ShipmentStatus shipmentStatus){
         CommonResponse cr = new CommonResponse();
+
+        if(shipmentRepository.equals(ShipmentStatus.valueOf("CANCELLED"))){
+        List<Shipment> shipments = shipmentRepository.findAll();
+            cr.data = shipments;
+            cr.msg = "List of all shipments with status: Cancelled";
+            cr.status = HttpStatus.OK;
+        } else {
+            cr.msg = "No cancelled shipments";
+            cr.status = HttpStatus.BAD_REQUEST;
+        }
 
         return new ResponseEntity<>(cr, cr.status);
     }
 
+
+
     //* GET/cancelled
-    @GetMapping("/{complete}")
+    @GetMapping("/all/{complete}")
     public ResponseEntity<CommonResponse> getAllCompletedShipments(@PathVariable String shipment_status){
         CommonResponse cr = new CommonResponse();
 
