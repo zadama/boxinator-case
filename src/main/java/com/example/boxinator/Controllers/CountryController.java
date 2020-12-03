@@ -3,8 +3,6 @@ package com.example.boxinator.Controllers;
 import com.example.boxinator.Models.Country;
 import com.example.boxinator.Repositories.CountryRepository;
 import com.example.boxinator.Utils.CommonResponse;
-import org.hibernate.PropertyValueException;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -53,8 +51,7 @@ public class CountryController {
         CommonResponse cr = new CommonResponse();
 
         try {
-            List<Country> countries = countryRepository.findAll();
-            cr.data = countries;
+            cr.data = countryRepository.findAll();
             cr.msg = "List of all existing countries in the database.";
             cr.status = HttpStatus.OK;
         } catch (Exception e){
@@ -73,27 +70,29 @@ public class CountryController {
 
         if (countryRepository.existsById(country_id)) {
             Optional<Country> countryToUpdateRepo = countryRepository.findById(country_id);
-            Country country = countryToUpdateRepo.get();
+            Country country = countryToUpdateRepo.orElse(null);
 
-            if (countryToUpdate.getName() != null) {
-                country.setName(countryToUpdate.getName());
-            }
+            if (country != null) {
+                if (countryToUpdate.getName() != null) {
+                    country.setName(countryToUpdate.getName());
+                }
 
-            if (countryToUpdate.getCountryCode() != null) {
-                country.setCountryCode(countryToUpdate.getCountryCode());
-            }
+                if (countryToUpdate.getCountryCode() != null) {
+                    country.setCountryCode(countryToUpdate.getCountryCode());
+                }
 
-            if (countryToUpdate.getFeeMultiplier() != 0) {
-                country.setFeeMultiplier(countryToUpdate.getFeeMultiplier());
-            }
+                if (countryToUpdate.getFeeMultiplier() != 0) {
+                    country.setFeeMultiplier(countryToUpdate.getFeeMultiplier());
+                }
 
-            try {
-                countryRepository.save(country);
-                cr.data = country;
-                cr.msg = "Record of country with id: " + country_id + " has been updated.";
-                cr.status = HttpStatus.OK;
-            } catch (Exception e) {
-                cr.status = HttpStatus.BAD_REQUEST;
+                try {
+                    countryRepository.save(country);
+                    cr.data = country;
+                    cr.msg = "Record of country with id: " + country_id + " has been updated.";
+                    cr.status = HttpStatus.OK;
+                } catch (Exception e) {
+                    cr.status = HttpStatus.BAD_REQUEST;
+                }
             }
 
         } else {
