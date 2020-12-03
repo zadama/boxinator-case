@@ -48,8 +48,8 @@ public class CountryController {
             commonResponse.msg = "List of all existing countries in the database.";
             commonResponse.status = HttpStatus.OK;
             } catch (Exception e){
-                commonResponse.msg = "Unable to get list of all countries.";
-                commonResponse.status = HttpStatus.BAD_REQUEST;
+                commonResponse.msg = "Currently unable to get the list of all countries in the database.";
+                commonResponse.status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         }
 
@@ -59,11 +59,11 @@ public class CountryController {
     @PatchMapping(value = "/{country_id}")
     public ResponseEntity<CommonResponse> updateCountryById (
             @RequestBody Country countryToUpdate,
-            @PathVariable ("country_id") Long id) {
+            @PathVariable ("country_id") Long country_id) {
         CommonResponse commonResponse = new CommonResponse();
 
-        if (countryRepository.existsById(id)) {
-            Optional<Country> countryToUpdateRepo = countryRepository.findById(id);
+        if (countryRepository.existsById(country_id)) {
+            Optional<Country> countryToUpdateRepo = countryRepository.findById(country_id);
             Country country = countryToUpdateRepo.get();
 
             if (countryToUpdate.getName() != null) {
@@ -77,7 +77,7 @@ public class CountryController {
             try {
             countryRepository.save(country);
             commonResponse.data = country;
-            commonResponse.msg = "Record of country with id: " + id + " has been updated.";
+            commonResponse.msg = "Record of country with id: " + country_id + " has been updated.";
             commonResponse.status = HttpStatus.OK;
 
             } catch (Exception e) {
@@ -85,7 +85,7 @@ public class CountryController {
             }
 
         } else {
-            commonResponse.msg = "Record of country with id " + id + " was not found.";
+            commonResponse.msg = "Record of country with id " + country_id + " was not found.";
             commonResponse.status = HttpStatus.NOT_FOUND;
         }
         return new ResponseEntity<>(commonResponse, commonResponse.status);
