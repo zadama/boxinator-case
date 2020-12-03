@@ -23,7 +23,7 @@ public class Country {
     private String name;
 
     @Column
-    private Double feeMultiplier;
+    private double feeMultiplier;
 
     public Long getId() {
         return id;
@@ -37,11 +37,11 @@ public class Country {
         this.name = name;
     }
 
-    public Double getFeeMultiplier() {
+    public double getFeeMultiplier() {
         return feeMultiplier;
     }
 
-    public void setFeeMultiplier(Double feeMultiplier) {
+    public void setFeeMultiplier(double feeMultiplier) {
         this.feeMultiplier = feeMultiplier;
     }
 }
