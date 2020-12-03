@@ -46,34 +46,72 @@ public class ShipmentController {
     public ResponseEntity<CommonResponse> getShipment(@PathVariable long shipment_id) {
         CommonResponse cr = new CommonResponse();
 
-        Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
-        Shipment shipment = shipmentRepo.orElse(null);
+        if (shipmentRepository.existsById(shipment_id)){
+            Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
+            Shipment shipment = shipmentRepo.orElse(null);
 
-        cr.data = shipment;
-        cr.msg = "Shipment found";
-        cr.status = HttpStatus.OK;
+            cr.data = shipment;
+            cr.msg = "Shipment found";
+            cr.status = HttpStatus.OK;
+        } else {
+            cr.msg = "Shipment with id: " + shipment_id + " was not found.";
+            cr.status = HttpStatus.NOT_FOUND;
+        }
 
         return new ResponseEntity<>(cr, cr.status);
     }
 
 // * POST/:shipment_id (used to update a shipment, user can only cancel, admin can change status
     @PatchMapping("/{shipment_id}")
-    public ResponseEntity<CommonResponse> updateShipment(@PathVariable long shipment_id){
+    public ResponseEntity<CommonResponse> updateShipment(
+            @RequestBody Shipment newShipment,
+            @PathVariable long shipment_id){
         CommonResponse cr = new CommonResponse();
 
-        Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
-        Shipment shipment = shipmentRepo.orElse(null);
+        if(shipmentRepository.existsById(shipment_id)){
+            Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
+            Shipment shipment = shipmentRepo.orElse(null);
 
-        try {
-            shipmentRepository.save(shipment);
-            cr.data = shipment;
-            cr.msg = "Shipment created";
-            cr.status = HttpStatus.CREATED;
 
+            if(newShipment.getWeight() != 0) {
+                shipment.setWeight(newShipment.getWeight());
+            }
+
+            if(newShipment.getBoxColour() != null) {
+                shipment.setBoxColour(newShipment.getBoxColour());
+            }
+
+            if(newShipment.getReceiver() != null){
+                shipment.setReceiver(newShipment.getReceiver());
+            }
+
+            if(newShipment.getDestinationCountry() != null){
+                shipment.setDestinationCountry(newShipment.getDestinationCountry());
+            }
+
+            if(newShipment.getSourceCountry() != null) {
+                shipment.setSourceCountry(newShipment.getSourceCountry());
+            }
+
+            if(newShipment.getShipmentStatus() != null) {
+                shipment.setShipmentStatus(newShipment.getShipmentStatus());
+            }
+
+            try {
+                shipmentRepository.save(shipment);
+                cr.data = shipment;
+                cr.msg = "Shipment details has been updated.";
+                cr.status = HttpStatus.CREATED;
+
+            }
+            catch(Exception e){
+                cr.status = HttpStatus.BAD_REQUEST;
+            }
+
+        } else {
+            cr.msg = "Shipment with id: " + shipment_id + " was not found.";
         }
-        catch(Exception e){
-            cr.status = HttpStatus.BAD_REQUEST;
-        }
+
         return new ResponseEntity<>(cr,cr.status);
     }
     // *  DELETE/:shipment_id Only accessible by admin, only in extreme situations, can delete complete/cancelled shipments

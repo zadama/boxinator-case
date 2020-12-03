@@ -34,8 +34,9 @@ public class Shipment {
     @Column(nullable = false)
     private String sourceCountry;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String shipmentStatus;
+    private ShipmentStatus shipmentStatus;
 
     @ManyToOne
     private Account account;
@@ -96,11 +97,11 @@ public class Shipment {
         this.sourceCountry = sourceCountry;
     }
 
-    public String getShipmentStatus() {
+    public ShipmentStatus getShipmentStatus() {
         return shipmentStatus;
     }
 
-    public void setShipmentStatus(String shipmentStatus) {
+    public void setShipmentStatus(ShipmentStatus shipmentStatus) {
         this.shipmentStatus = shipmentStatus;
     }
 
