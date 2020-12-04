@@ -18,7 +18,7 @@ let initialUser = localStorage.getItem("user")
   : null;
 
 const useProvideAuthImpl = () => {
-  const [user, setUser] = useState(initialUser);
+  const [user, setUser] = useState(null);
 
   // När man loggar in, hämta i "then" också användaren från backend med roll
   // detsamma i useEffecten (men titta på om token kan sparas i localStorage ist)
@@ -122,6 +122,7 @@ const useProvideAuthImpl = () => {
   }, []);
 
   return { user, login, logout, register, logout, getUserToken };
+
 };
 
 const useAuth = () => {

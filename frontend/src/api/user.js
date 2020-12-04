@@ -10,6 +10,7 @@ const getAllAccounts = (token) => {
   });
 };
 
+
 const checkToken = (token) => {
   return Api.get("/accounttest/checktoken", {
     headers: { Authorization: `Bearer ${token}` },

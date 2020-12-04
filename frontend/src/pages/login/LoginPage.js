@@ -3,6 +3,9 @@ import "./style.scss";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+
 import PublicLayout from "../../layouts/PublicLayout";
 import { getAllAccounts, createUser } from "../../api/user";
 import { useEffect } from "react";
@@ -18,6 +21,7 @@ const LoginPage = ({ history }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
 
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -94,7 +98,6 @@ const LoginPage = ({ history }) => {
             placeholder="Password"
           />
         </Form.Group>
-
         <Button onClick={handleLogin} variant="primary" type="submit">
           Submit
         </Button>

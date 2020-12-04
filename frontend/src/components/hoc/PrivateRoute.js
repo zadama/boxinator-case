@@ -18,8 +18,6 @@ const PrivateRoute = ({ component: Component, requiredRoles, ...rest }) => {
     }
   }, [auth]);
 
-  //console.log(auth, location.pathname);
-
   if (!auth.user) {
     return <PageLoader />;
   }

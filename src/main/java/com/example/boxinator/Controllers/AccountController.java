@@ -8,6 +8,7 @@ import com.example.boxinator.Utils.CommonResponse;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @PostMapping("/create")
+    @PostMapping("/register")
     public ResponseEntity<CommonResponse> createAccount(@RequestBody Account account) {
         CommonResponse cr = new CommonResponse();
 
@@ -30,22 +31,44 @@ public class AccountController {
             cr.data = account;
             cr.msg = "Account created";
             cr.status = HttpStatus.CREATED;
-        } catch (Exception e) {
-            cr.data = null;
-            cr.msg = "Account could not be created";
+        } catch(DataIntegrityViolationException e) {
+            if (e.getCause().toString().contains("PropertyValueException")) {
+                cr.msg = "Some required field might be missing.";
+            } else {
+                cr.msg = "Some value already exists.";
+            }
             cr.status = HttpStatus.BAD_REQUEST;
+        } catch (Exception e) {
+            cr.msg = "You do not have permission to add a country.";
+            cr.status = HttpStatus.UNAUTHORIZED;
         }
 
         return new ResponseEntity<>(cr, cr.status);
     }
 
+//    @PostMapping("/login") // ADD LOGINREQUEST MODEL
+//    public ResponseEntity<CommonResponse> login(@RequestBody LoginRequest loginRequest) {
+//        CommonResponse cr = new CommonResponse();
+//
+//        cr.data = null;
+//        cr.msg = "login";
+//        cr.status = HttpStatus.OK;
+//
+//        return new ResponseEntity<>(cr, cr.status);
+//    }
+
     @GetMapping("/all")
     public ResponseEntity<CommonResponse> getAllAccounts() {
         CommonResponse cr = new CommonResponse();
 
-        cr.data = accountRepository.findAll();
-        cr.msg = "All accounts found";
-        cr.status = HttpStatus.OK;
+        try {
+            cr.data = accountRepository.findAll();
+            cr.msg = "List of all existing accounts in the database.";
+            cr.status = HttpStatus.OK;
+        } catch (Exception e){
+            cr.msg = "Currently unable to get the list of all accounts in the database.";
+            cr.status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
 
         return new ResponseEntity<>(cr, cr.status);
     }
@@ -54,12 +77,17 @@ public class AccountController {
     public ResponseEntity<CommonResponse> getAccount(@PathVariable long account_id) {
         CommonResponse cr = new CommonResponse();
 
-        Optional<Account> accountRepo = accountRepository.findById(account_id);
-        Account account = accountRepo.orElse(null);
+        try {
+            Optional<Account> accountRepo = accountRepository.findById(account_id);
+            Account account = accountRepo.orElse(null);
 
-        cr.data = account;
-        cr.msg = "Account found";
-        cr.status = HttpStatus.OK;
+            cr.data = account;
+            cr.msg = "Account found";
+            cr.status = HttpStatus.OK;
+        } catch (Exception e) {
+            cr.msg = "Account with id: \"account_id\" could not be found";
+            cr.status = HttpStatus.NOT_FOUND;
+        }
 
         return new ResponseEntity<>(cr, cr.status);
     }
@@ -102,7 +130,7 @@ public class AccountController {
 
         } else {
             cr.data = null;
-            cr.msg = "Account not found.";
+            cr.msg = "Account with id: \"account_id\" could not be found";
             cr.status = HttpStatus.NOT_FOUND;
         }
 
@@ -118,13 +146,12 @@ public class AccountController {
 
         if (account != null) {
             accountRepository.deleteById(account_id);
-            cr.data = null;
-            cr.msg = "Account deleted.";
+            cr.data = account;
+            cr.msg = "Account with id: \"account_id\" deleted.";
             cr.status = HttpStatus.OK;
         } else {
-            cr.data = account;
-            cr.msg = "Account could not be deleted.";
-            cr.status = HttpStatus.BAD_REQUEST;
+            cr.msg = "Account with id: \"account_id\" could not be found";
+            cr.status = HttpStatus.NOT_FOUND;
         }
 
         return new ResponseEntity<>(cr, cr.status);
