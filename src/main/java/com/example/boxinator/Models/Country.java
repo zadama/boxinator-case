@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @JsonIdentityInfo(
@@ -24,6 +26,9 @@ public class Country {
 
     @Column(nullable = false, unique = true)
     private String countryCode;
+
+    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
+    private Set<Shipment> shipments = new HashSet<>();
 
     @Column
     private double feeMultiplier;
