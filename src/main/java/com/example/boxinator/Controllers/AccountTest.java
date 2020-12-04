@@ -42,6 +42,9 @@ public class AccountTest {
     @GetMapping("/checktoken")
     public String checkToken(@RequestHeader(value = "Authorization") String token , HttpServletRequest request) throws FirebaseAuthException {
         String [] authToken = token.split(" ");
+
+        // Bearer jkjdflksj13423123123132
+
         String bearerToken = authToken[1];
 
 
@@ -61,6 +64,7 @@ public class AccountTest {
 
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(bearerToken);
         String email = decodedToken.getEmail();
+
 
         Optional<Account> account = accountRepository.findByEmail(email);
 
