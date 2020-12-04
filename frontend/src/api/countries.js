@@ -1,7 +1,7 @@
 import Axios from "axios";
 import Api from "./axios";
 
-const getAllCountries = () => {
+const getAllCountries = (token) => {
   return Api.get("/settings/country");
 };
 

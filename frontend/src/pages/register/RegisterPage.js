@@ -13,6 +13,10 @@ import PublicLayout from "../../layouts/PublicLayout";
 import { useEffect } from "react";
 import PageLoader from "../../components/loader";
 import { getAllCountries } from "../../api/countries";
+import { useAuth } from "../../context/auth";
+import { ADMIN, GUEST, USER } from "../../utils/roles";
+import { Redirect } from "react-router-dom";
+import { createUser } from "../../api/user";
 
 const { Option } = components;
 const IconOption = (props) => (
@@ -20,6 +24,8 @@ const IconOption = (props) => (
 );
 
 const RegisterPage = () => {
+  // Make a component out of the country selecter and have
+  // isLoding only there.
   const [isloading, setIsLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,19 +33,36 @@ const RegisterPage = () => {
   const [zipCode, setZipCode] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [country, setCountry] = useState("");
 
   const [countries, setCountries] = useState([]);
-  const [startDate, setStartDate] = useState(new Date());
+  const { user, register } = useAuth();
 
   /*
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };*/
 
-  const handleRegistration = () => {
-    console.log("clicked");
+  // password should not be sent as it is already saved in firebase
+  // however, uuid for user should be send and work as unique identifier in account table.
+
+  const handleRegistration = async () => {
+    try {
+      const res = await register(
+        email,
+        password,
+        firstName,
+        lastName,
+        dateOfBirth,
+        country,
+        zipCode,
+        contactNumber
+      );
+      // if cases handles redirect when successful..
+    } catch (error) {
+      console.log(error, " -- occured while calling firebase");
+    }
   };
 
   useEffect(() => {
@@ -61,6 +84,22 @@ const RegisterPage = () => {
 
     fetchCountries();
   }, []);
+
+  // If user is null it means we are still fetching him/her
+  // Therefore, show a loading spinner.
+  if (user === null) {
+    return <PageLoader />;
+  }
+
+  // If we already have a user logged in, it is not
+  // neccessary to show this page, redirect to another
+  // page depending on the role.
+  if (user && user.role === ADMIN) {
+    return <Redirect to="admin-dashboard" />;
+  }
+  if (user && user.role === USER) {
+    return <Redirect to="add-shipment" />;
+  }
 
   return (
     <PublicLayout>

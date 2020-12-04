@@ -1,16 +1,32 @@
 import React from "react";
 import "./style.scss";
 import { Link } from "react-router-dom";
-import menu from "./menu";
+import { ADMIN, USER, GUEST } from "../../utils/roles";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuth } from "../../context/auth";
 
 const Navbar = () => {
+  const location = useLocation();
+  const auth = useAuth();
+
+  useEffect(() => {}, [auth.user, location]);
+
   return (
     <nav className="nav">
-      {menu.map((item, index) => (
-        <Link key={index} to={item.path}>
-          {item.name}
-        </Link>
-      ))}
+      {auth.user && (auth.user.role === ADMIN || auth.user.role === USER) ? (
+        <>
+          <Link to="/add-shipment">Add Shipment</Link>
+          {auth.user.role === ADMIN && (
+            <Link to="/admin-dashboard">Admin Dashboard</Link>
+          )}
+        </>
+      ) : (
+        <>
+          <Link to="/login">Login</Link>
+          <Link to="/register">Register</Link>
+        </>
+      )}
     </nav>
   );
 };
