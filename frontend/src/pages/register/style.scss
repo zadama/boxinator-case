@@ -1,0 +1,19 @@
+.register {
+  display: flex;
+  flex-flow: column;
+  max-width: 500px;
+  margin: 0 auto;
+  padding-top: 3rem;
+}
+
+.select {
+  margin-bottom: 10px;
+}
+
+button {
+  margin-top: 10px !important;
+}
+
+.date-picker {
+  cursor: pointer;
+}

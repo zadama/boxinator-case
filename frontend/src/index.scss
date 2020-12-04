@@ -1,0 +1,16 @@
+//Global styling
+
+*,
+:after,
+:before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.container {
+  padding-bottom: 10rem;
+}
