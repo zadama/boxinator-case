@@ -182,26 +182,25 @@ public class ShipmentController {
     @GetMapping("/{account_id}/{shipment_id}")
     public ResponseEntity<CommonResponse> getSpecificShipmentByCustomer(@PathVariable Long account_id, @PathVariable Long shipment_id) {
         CommonResponse cr = new CommonResponse();
+        ShipmentDTO shipmentDTO = new ShipmentDTO();
 
-
-        ShipmentDTO displayShipment = new ShipmentDTO();
         if (accountRepository.existsById(account_id)) {
             if (shipmentRepository.existsById(shipment_id)) {
                 Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
                 Shipment shipment = shipmentRepo.orElse(null);
 
-             //   displayShipment.setAccountId(shipment.getAccount().getId());
-                displayShipment.setBoxColour(shipment.getBoxColour());
-                displayShipment.setDestinationCountry(shipment.getDestinationCountry());
-                displayShipment.setWeight(shipment.getWeight());
-                displayShipment.setReceiver(shipment.getReceiver());
-                displayShipment.setShipmentId(shipment.getId());
-                displayShipment.setSourceCountry(shipment.getSourceCountry());
-                displayShipment.setShipmentStatus(shipment.getShipmentStatus());
+             //   shipmentDTO.setAccountId(shipment.getAccount().getId());
+                shipmentDTO.setBoxColour(shipment.getBoxColour());
+                shipmentDTO.setDestinationCountry(shipment.getDestinationCountry());
+                shipmentDTO.setWeight(shipment.getWeight());
+                shipmentDTO.setReceiver(shipment.getReceiver());
+                shipmentDTO.setShipmentId(shipment.getId());
+                shipmentDTO.setSourceCountry(shipment.getSourceCountry());
+                shipmentDTO.setShipmentStatus(shipment.getShipmentStatus());
 
                 cr.status = HttpStatus.OK;
                 cr.msg = "Specific shipment " + shipment_id + " for account " + account_id + " found";
-                cr.data = displayShipment;
+                cr.data = shipmentDTO;
             } else {
                 cr.status = HttpStatus.NOT_FOUND;
                 cr.msg = "The specific shipment " + shipment_id + " could not be found.";
@@ -211,6 +210,16 @@ public class ShipmentController {
             cr.status = HttpStatus.NOT_FOUND;
             cr.msg = "The Specific account " + account_id + " could not be found.";
         }
+
+        return new ResponseEntity<>(cr, cr.status);
+    }
+
+    //* GET/complete/:shipment_id (get details about specific completed shipment)
+    @GetMapping("/completed/{shipment_id}")
+    public ResponseEntity<CommonResponse> getSpecificCompletedShipment(@PathVariable Long shipment_id){
+        CommonResponse cr = new CommonResponse();
+
+
 
         return new ResponseEntity<>(cr, cr.status);
     }
