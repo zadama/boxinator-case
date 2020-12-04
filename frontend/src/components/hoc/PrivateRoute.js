@@ -19,7 +19,7 @@ const PrivateRoute = ({ component: Component, requiredRoles, ...rest }) => {
   }, [auth]);
 
   if (!auth.user) {
-    return <Route {...rest} component={PageLoader} />;
+    return <PageLoader />;
   }
 
   // kolla om authenticated och kolla om role existerar.

@@ -5,6 +5,8 @@ package com.example.boxinator.Controllers;
 import com.example.boxinator.Models.Account;
 import com.example.boxinator.Repositories.AccountRepository;
 import com.example.boxinator.Utils.CommonResponse;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -154,6 +156,7 @@ public class AccountController {
 
         return new ResponseEntity<>(cr, cr.status);
     }
+
 
     // GET/account/:account_id(CHECK), PUT/account/:account_id(CHECK), POST/account/(CHECK), DELETE/account/:account_id(ONLY IN EXTREME SITUATIONS)()
     // POST/login()

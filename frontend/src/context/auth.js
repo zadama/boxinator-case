@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { createUser, getUserRole } from "../api/user";
 import firebase from "./firebase";
+import { USER, ADMIN, GUEST } from "../utils/roles";
 
 const authContext = createContext();
 
@@ -18,19 +20,37 @@ let initialUser = localStorage.getItem("user")
 const useProvideAuthImpl = () => {
   const [user, setUser] = useState(null);
 
+  // När man loggar in, hämta i "then" också användaren från backend med roll
+  // detsamma i useEffecten (men titta på om token kan sparas i localStorage ist)
+
   const login = (email, password) => {
     return firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then((response) => handleUser(response.user));
+      .then(async (response) => {
+        return handleUser(response.user);
+      });
     // .catch((err) => handleUser(false));
   };
 
-  const register = (email, password) => {
+  const register = (email, password, ...rest) => {
     return firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then((response) => handleUser(response.user));
+      .then(async (response) => {
+        try {
+          await createUser(email, password, ...rest);
+
+          return handleUser(response.user);
+        } catch (error) {
+          // If we saved the user to firebase but not backend(backend call fails),
+          // then we delete the user altogether.
+          // A bit "laggy" atm as the onAuthStateChanged is called before we get here...needs improv.
+          deleteUser();
+
+          throw error;
+        }
+      });
     //.catch((err) => handleUser(false));
   };
 
@@ -41,17 +61,46 @@ const useProvideAuthImpl = () => {
       .then(() => handleUser(false));
   };
 
-  const getUserToken = () => {
-    return firebase.auth().currentUser.getIdToken();
+  const deleteUser = () => {
+    return firebase
+      .auth()
+      .currentUser.delete()
+      .then(function () {
+        return handleUser(false);
+      })
+      .catch(function (error) {
+        // An error happened.
+      });
   };
 
-  const handleUser = (rawUser) => {
+  const getUserToken = () => {
+    return firebase.auth().currentUser.getIdToken(true);
+  };
+
+  const addUserRole = async (user) => {
+    if (user) {
+      const token = await getUserToken();
+
+      const role = await getUserRole(token);
+
+      return role.data;
+    }
+  };
+
+  const formatUser = async (user) => {
+    const role = await addUserRole(user);
+    return {
+      userId: user.uid,
+      email: user.email,
+      role: role,
+    };
+  };
+
+  const handleUser = async (rawUser) => {
     if (rawUser) {
-      console.log(rawUser);
       // Get user object in format expected by front-end
-      const user = formatUser(rawUser);
+      const user = await formatUser(rawUser);
       // below shall change dynamically.
-      user.role = "ADMIN";
 
       // Add or update user in database/backend
       // createUser(user.uid, { email: user.email });
@@ -72,17 +121,8 @@ const useProvideAuthImpl = () => {
     return () => unsubscribe();
   }, []);
 
-  return { user, login, register, logout, getUserToken };
-};
+  return { user, login, logout, register, logout, getUserToken };
 
-// Format user object
-// If there are extra fields you want from the original user
-// object then you'd add those here.
-const formatUser = (user) => {
-  return {
-    userId: user.uid,
-    email: user.email,
-  };
 };
 
 const useAuth = () => {

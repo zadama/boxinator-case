@@ -1,0 +1,22 @@
+.admin-page {
+  display: flex;
+  flex-flow: row wrap;
+  border: 1px solid grey;
+
+  max-width: 960px;
+  margin-top: 20px;
+  margin-left: 20px;
+
+  .sidebar {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .admin-content {
+    flex: 1 0 auto;
+    display: flex;
+    justify-content: center;
+  }
+}

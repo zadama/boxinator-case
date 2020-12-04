@@ -1,4 +1,7 @@
 import React from "react";
+import "./style.scss";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -8,15 +11,21 @@ import { getAllAccounts, createUser } from "../../api/user";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useAuth } from "../../context/auth";
+import { Redirect } from "react-router-dom";
+import { ADMIN, USER } from "../../utils/roles";
+import PageLoader from "../../components/loader";
 
 const LoginPage = ({ history }) => {
-  const { login } = useAuth();
-
-  const [state, setState] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { user, login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  /*
   const displayAllAccounts = async () => {
     try {
       let { data } = await getAllAccounts();
@@ -29,22 +38,40 @@ const LoginPage = ({ history }) => {
         setState(error.response.data.status);
       }
     }
+  };*/
+
+  const handleLogin = async (e) => {
+    setIsLoading(true);
+
+    try {
+      // const res = await createUser(email, password);
+      //console.log(res);
+
+      const loggedInUser = await login(email, password);
+    } catch (error) {
+      console.log(error.code);
+
+      setErrorMessage("Could not login: " + error.code);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  useEffect(() => {
-    displayAllAccounts();
-  }, []);
+  if (user === null || isLoading) {
+    return <PageLoader />;
+  }
+
+  if (user && user.role === ADMIN) {
+    return <Redirect to="admin-dashboard" />;
+  }
+  if (user && user.role === USER) {
+    return <Redirect to="add-shipment" />;
+  }
 
   return (
     <PublicLayout>
-      <div>LoginPage</div>
-      {state ? (
-        <div> Message from API: {state}</div>
-      ) : (
-        <div>Loading request...</div>
-      )}
-      {password} ,{email}
-      <div>
+      <div className="login">
+        {errorMessage}
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
@@ -71,22 +98,7 @@ const LoginPage = ({ history }) => {
             placeholder="Password"
           />
         </Form.Group>
-
-        <Button
-          onClick={async () => {
-            try {
-              // const res = await createUser(email, password);
-              //console.log(res);
-
-              login(email, password);
-              history.push("/admin-dashboard");
-            } catch (error) {
-              console.log(error.response);
-            }
-          }}
-          variant="primary"
-          type="submit"
-        >
+        <Button onClick={handleLogin} variant="primary" type="submit">
           Submit
         </Button>
       </div>
