@@ -1,5 +1,6 @@
 package com.example.boxinator.Models;
 
+import com.example.boxinator.Models.Enums.AccountRole;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -31,7 +32,7 @@ public class Account {
     private String email;
 
     @Column(nullable = false)
-    private String password; // CHANGE THIS // MUCH TEMPORARY
+    private String password;
 
     @Column
     private Date dateOfBirth;
@@ -45,8 +46,9 @@ public class Account {
     @Column
     private long contactNumber;
 
-    @Column
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccountRole role;
 
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     private Set<Shipment> shipments = new HashSet<>();
@@ -131,11 +133,11 @@ public class Account {
         this.contactNumber = contactNumber;
     }
 
-    public String getRole() {
+    public AccountRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(AccountRole role) {
         this.role = role;
     }
 
