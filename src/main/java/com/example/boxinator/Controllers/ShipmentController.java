@@ -4,6 +4,7 @@ package com.example.boxinator.Controllers;
 import com.example.boxinator.Models.Account;
 import com.example.boxinator.Models.Shipment;
 import com.example.boxinator.Models.ShipmentDTO;
+import com.example.boxinator.Models.ShipmentStatus;
 import com.example.boxinator.Repositories.AccountRepository;
 import com.example.boxinator.Repositories.ShipmentRepository;
 import com.example.boxinator.Utils.CommonResponse;
@@ -163,13 +164,13 @@ public class ShipmentController {
 
     //* GET/cancelled
     @GetMapping("/status/{shipmentStatus}")
-    public ResponseEntity<CommonResponse> getAllCancelledShipments(@PathVariable("shipmentStatus") Long shipmentStatus) {
+    public ResponseEntity<CommonResponse> getAllShipmentsByShipmentStatus(@PathVariable("shipmentStatus") Long shipmentStatus) {
         CommonResponse cr = new CommonResponse();
 
         try {
-            //List<Shipment> shipments = shipmentRepository.findAllByShipmentStatus(shipmentStatus);
-            cr.data = shipmentRepository.findAllByShipmentStatus(shipmentStatus);
-            cr.msg = "List of all shipments with status: Cancelled";
+            ShipmentStatus statusType = ShipmentStatus.values()[shipmentStatus.intValue() - 1];
+            cr.data = shipmentRepository.findAllByShipmentStatus(statusType);
+            cr.msg = "List of all shipments with status: " + statusType;
             cr.status = HttpStatus.OK;
         } catch (Exception e) {
             cr.msg = "Unable to find any shipments with status code: " + shipmentStatus;
