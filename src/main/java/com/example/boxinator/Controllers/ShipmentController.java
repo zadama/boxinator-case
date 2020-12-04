@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -214,12 +215,23 @@ public class ShipmentController {
         return new ResponseEntity<>(cr, cr.status);
     }
 
-    //* GET/complete/:shipment_id (get details about specific completed shipment)
-    @GetMapping("/completed/{shipment_id}")
-    public ResponseEntity<CommonResponse> getSpecificCompletedShipment(@PathVariable Long shipment_id){
+    //* GET/complete/:shipment_id (get details about specific completed shipment) NOT FINISHED
+    @GetMapping("/{shipmentStatus}/{shipment_id}")
+    public ResponseEntity<CommonResponse> getSpecificCompletedShipment(@PathVariable Long shipment_id, @PathVariable("shipmentStatus") Long shipmentStatus ){
         CommonResponse cr = new CommonResponse();
+        List<Shipment> completedShipments;
+        ShipmentDTO shipmentDTO = new ShipmentDTO();
 
-
+        try {
+            ShipmentStatus statusType = ShipmentStatus.values()[shipmentStatus.intValue() - 1];
+            completedShipments = shipmentRepository.findAllByShipmentStatus(statusType);
+            cr.data = "";
+            cr.msg = "";
+            cr.status = HttpStatus.OK;
+        } catch (Exception e) {
+            cr.msg = "Unable to find any shipments with status code: " + shipmentStatus;
+            cr.status = HttpStatus.BAD_REQUEST;
+        }
 
         return new ResponseEntity<>(cr, cr.status);
     }
@@ -227,7 +239,7 @@ public class ShipmentController {
     /*
     TODO
     Create endpoints for:
-    * GET/complete/:shipment_id (get details about specific completed shipment),
+
     * GET/complete/:customer_id (get all complete shipments by a customer)
 
     Check so that these endpoints work:
