@@ -65,10 +65,8 @@ public class AccountTest {
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(bearerToken);
         String email = decodedToken.getEmail();
 
-
         Optional<Account> account = accountRepository.findByEmail(email);
 
-
-         return account.isPresent() ? account.get().getRole(): "Not found..";
+         return account.isPresent() ? String.valueOf(account.get().getRole()) : "Not found..";
     }
 }
