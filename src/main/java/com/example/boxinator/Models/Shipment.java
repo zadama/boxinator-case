@@ -1,6 +1,7 @@
 package com.example.boxinator.Models;
 
 
+import com.example.boxinator.Models.Enums.ShipmentStatus;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
