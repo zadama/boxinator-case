@@ -162,11 +162,10 @@ public class ShipmentController {
         return new ResponseEntity<>(cr, cr.status);
     }
 
-    //* GET/cancelled
+    //* GET/shipments by shipmentStatus
     @GetMapping("/status/{shipmentStatus}")
     public ResponseEntity<CommonResponse> getAllShipmentsByShipmentStatus(@PathVariable("shipmentStatus") Long shipmentStatus) {
         CommonResponse cr = new CommonResponse();
-
         try {
             ShipmentStatus statusType = ShipmentStatus.values()[shipmentStatus.intValue() - 1];
             cr.data = shipmentRepository.findAllByShipmentStatus(statusType);
@@ -179,24 +178,6 @@ public class ShipmentController {
         return new ResponseEntity<>(cr, cr.status);
     }
 
-    /*
-        //* GET/completed
-        @GetMapping("/all/{shipmentStatus}")
-        public ResponseEntity<CommonResponse> getAllCompletedShipments(@PathVariable ("shipmentStatus") ShipmentStatus shipmentStatus){
-            CommonResponse cr = new CommonResponse();
-
-            if(shipmentRepository.equals(ShipmentStatus.valueOf("COMPLETED"))){
-                List<Shipment> shipments = shipmentRepository.findAll();
-                cr.data = shipments;
-                cr.msg = "List of all shipments with status: COMPLETED";
-                cr.status = HttpStatus.OK;
-            } else {
-                cr.msg = "No completed shipments";
-                cr.status = HttpStatus.BAD_REQUEST;
-            }
-            return new ResponseEntity<>(cr, cr.status);
-        }
-    */
     //    * GET/:customer_id/:shipment_id (get a specific shipment by a customer)
     @GetMapping("/{account_id}/{shipment_id}")
     public ResponseEntity<CommonResponse> getSpecificShipmentByCustomer(@PathVariable Long account_id, @PathVariable Long shipment_id) {
@@ -233,11 +214,10 @@ public class ShipmentController {
 
         return new ResponseEntity<>(cr, cr.status);
     }
+
     /*
     TODO
     Create endpoints for:
-    * GET/complete
-    * GET/cancelled
     * GET/complete/:shipment_id (get details about specific completed shipment),
     * GET/complete/:customer_id (get all complete shipments by a customer)
 
