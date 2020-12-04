@@ -27,9 +27,6 @@ public class Shipment {
     private String boxColour;
 
     @Column(nullable = false)
-    private String destinationCountry; // Relation to country to get fee multiplier
-
-    @Column(nullable = false)
     private String receiver; // store name/id of receiver
 
     @Column(nullable = false)
@@ -38,6 +35,9 @@ public class Shipment {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ShipmentStatus shipmentStatus;
+
+    @ManyToOne
+    private Country destinationCountry;
 
     @ManyToOne
     private Account account;
@@ -74,11 +74,11 @@ public class Shipment {
         this.boxColour = boxColour;
     }
 
-    public String getDestinationCountry() {
+    public Country getDestinationCountry() {
         return destinationCountry;
     }
 
-    public void setDestinationCountry(String destinationCountry) {
+    public void setDestinationCountry(Country destinationCountry) {
         this.destinationCountry = destinationCountry;
     }
 

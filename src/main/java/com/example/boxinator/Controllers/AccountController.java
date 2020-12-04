@@ -77,15 +77,20 @@ public class AccountController {
     public ResponseEntity<CommonResponse> getAccount(@PathVariable long account_id) {
         CommonResponse cr = new CommonResponse();
 
-        try {
-            Optional<Account> accountRepo = accountRepository.findById(account_id);
-            Account account = accountRepo.orElse(null);
+        if (accountRepository.existsById(account_id)){
+            try {
+                Optional<Account> accountRepo = accountRepository.findById(account_id);
+                Account account = accountRepo.orElse(null);
 
-            cr.data = account;
-            cr.msg = "Account found";
-            cr.status = HttpStatus.OK;
-        } catch (Exception e) {
-            cr.msg = "Account with id: \"account_id\" could not be found";
+                cr.data = account;
+                cr.msg = "Account found";
+                cr.status = HttpStatus.OK;
+            } catch (Exception e) {
+                cr.msg = e.getMessage();
+                cr.status = HttpStatus.BAD_REQUEST;
+            }
+        } else {
+            cr.msg = "Account with id: "+account_id+" could not be found";
             cr.status = HttpStatus.NOT_FOUND;
         }
 
@@ -130,7 +135,7 @@ public class AccountController {
 
         } else {
             cr.data = null;
-            cr.msg = "Account with id: \"account_id\" could not be found";
+            cr.msg = "Account with id: "+account_id+" could not be found";
             cr.status = HttpStatus.NOT_FOUND;
         }
 
@@ -147,18 +152,16 @@ public class AccountController {
         if (account != null) {
             accountRepository.deleteById(account_id);
             cr.data = account;
-            cr.msg = "Account with id: \"account_id\" deleted.";
+            cr.msg = "Account with id: "+account_id+" deleted.";
             cr.status = HttpStatus.OK;
         } else {
-            cr.msg = "Account with id: \"account_id\" could not be found";
+            cr.msg = "Account with id: "+account_id+" could not be found";
             cr.status = HttpStatus.NOT_FOUND;
         }
 
         return new ResponseEntity<>(cr, cr.status);
     }
 
-
-    // GET/account/:account_id(CHECK), PUT/account/:account_id(CHECK), POST/account/(CHECK), DELETE/account/:account_id(ONLY IN EXTREME SITUATIONS)()
     // POST/login()
 
 }
