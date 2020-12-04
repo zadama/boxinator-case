@@ -18,8 +18,6 @@ const PrivateRoute = ({ component: Component, requiredRoles, ...rest }) => {
     }
   }, [auth]);
 
-  console.log(auth);
-
   if (!auth.user) {
     return <Route {...rest} component={PageLoader} />;
   }

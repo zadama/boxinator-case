@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import firebase from "./firebase";
 
 const authContext = createContext();
 
@@ -9,41 +10,79 @@ const AuthProvider = ({ children }) => {
   return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 };
 
+// Remove if firebase is used..
 let initialUser = localStorage.getItem("user")
   ? JSON.parse(localStorage.getItem("user"))
   : null;
 
 const useProvideAuthImpl = () => {
-  const [user, setUser] = useState(initialUser);
+  const [user, setUser] = useState(null);
 
-  const login = (username, password) => {};
+  const login = (email, password) => {
+    return firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((response) => handleUser(response.user));
+    // .catch((err) => handleUser(false));
+  };
 
-  const register = (username, password) => {};
+  const register = (email, password) => {
+    return firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((response) => handleUser(response.user));
+    //.catch((err) => handleUser(false));
+  };
 
-  const logout = () => {};
+  const logout = () => {
+    return firebase
+      .auth()
+      .signOut()
+      .then(() => handleUser(false));
+  };
+
+  const getUserToken = () => {
+    return firebase.auth().currentUser.getIdToken();
+  };
+
+  const handleUser = (rawUser) => {
+    if (rawUser) {
+      console.log(rawUser);
+      // Get user object in format expected by front-end
+      const user = formatUser(rawUser);
+      // below shall change dynamically.
+      user.role = "ADMIN";
+
+      // Add or update user in database/backend
+      // createUser(user.uid, { email: user.email });
+
+      setUser(user);
+      return user;
+    } else {
+      setUser(false);
+      return false;
+    }
+  };
 
   useEffect(() => {
-    console.log("IN PROVIDER");
+    // Subscribe to user on mount
+    const unsubscribe = firebase.auth().onAuthStateChanged(handleUser);
 
-    setTimeout(() => {
-      setUser({ username: "Aman", role: "USER" });
-    }, 3000);
-
-    // make API call to verify user.
-    /*
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(false);
-      }
-    });
-
-    // Cleanup subscription on unmount
-    return () => unsubscribe();*/
+    // Unsubscribe on cleanup
+    return () => unsubscribe();
   }, []);
 
-  return { user, login, register, logout };
+  return { user, login, register, logout, getUserToken };
+};
+
+// Format user object
+// If there are extra fields you want from the original user
+// object then you'd add those here.
+const formatUser = (user) => {
+  return {
+    userId: user.uid,
+    email: user.email,
+  };
 };
 
 const useAuth = () => {
