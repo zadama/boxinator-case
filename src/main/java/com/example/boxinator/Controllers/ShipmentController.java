@@ -161,34 +161,41 @@ public class ShipmentController {
 
         return new ResponseEntity<>(cr, cr.status);
     }
-    //* GET/complete
-
-    @GetMapping("/all/{shipmentStatus}")
-    public ResponseEntity<CommonResponse> getAllCancelledShipments(@PathVariable ("shipmentStatus") ShipmentStatus shipmentStatus){
-        CommonResponse cr = new CommonResponse();
-
-        if(shipmentRepository.equals(ShipmentStatus.valueOf("CANCELLED"))){
-        List<Shipment> shipments = shipmentRepository.findAll();
-            cr.data = shipments;
-            cr.msg = "List of all shipments with status: Cancelled";
-            cr.status = HttpStatus.OK;
-        } else {
-            cr.msg = "No cancelled shipments";
-            cr.status = HttpStatus.BAD_REQUEST;
-        }
-
-        return new ResponseEntity<>(cr, cr.status);
-    }
-
-
 
     //* GET/cancelled
-    @GetMapping("/all/{complete}")
-    public ResponseEntity<CommonResponse> getAllCompletedShipments(@PathVariable String shipment_status){
+    @GetMapping("/status/{shipmentStatus}")
+    public ResponseEntity<CommonResponse> getAllCancelledShipments(@PathVariable ("shipmentStatus") Long shipmentStatus){
         CommonResponse cr = new CommonResponse();
 
+            try {
+                //List<Shipment> shipments = shipmentRepository.findAllByShipmentStatus(shipmentStatus);
+                cr.data = shipmentRepository.findAllByShipmentStatus(shipmentStatus);
+                cr.msg = "List of all shipments with status: Cancelled";
+                cr.status = HttpStatus.OK;
+            } catch(Exception e){
+                cr.msg = "Unable to find any shipments with status code: " + shipmentStatus;
+                cr.status = HttpStatus.BAD_REQUEST;
+            }
         return new ResponseEntity<>(cr, cr.status);
     }
+/*
+    //* GET/completed
+    @GetMapping("/all/{shipmentStatus}")
+    public ResponseEntity<CommonResponse> getAllCompletedShipments(@PathVariable ("shipmentStatus") ShipmentStatus shipmentStatus){
+        CommonResponse cr = new CommonResponse();
+
+        if(shipmentRepository.equals(ShipmentStatus.valueOf("COMPLETED"))){
+            List<Shipment> shipments = shipmentRepository.findAll();
+            cr.data = shipments;
+            cr.msg = "List of all shipments with status: COMPLETED";
+            cr.status = HttpStatus.OK;
+        } else {
+            cr.msg = "No completed shipments";
+            cr.status = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<>(cr, cr.status);
+    }
+*/
     /*
     TODO
     * GET/complete
