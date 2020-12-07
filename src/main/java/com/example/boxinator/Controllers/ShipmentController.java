@@ -2,6 +2,7 @@ package com.example.boxinator.Controllers;
 
 
 import com.example.boxinator.Models.Account;
+import com.example.boxinator.Models.Enums.AccountRole;
 import com.example.boxinator.Models.Shipment;
 import com.example.boxinator.Models.ShipmentDTO;
 import com.example.boxinator.Models.Enums.ShipmentStatus;
@@ -66,9 +67,9 @@ public class ShipmentController {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        if (authService.checkToken(token).getStatusCode() == HttpStatus.OK) {
-            if(authService.checkToken(token).getBody().account.getRole().equals("ADMIN") ||
-                    authService.checkToken(token).getBody().account.getRole().equals("USER")) {
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
+            if(authResponse.getBody().account.getRole().equals(AccountRole.ADMIN) ||
+                    authResponse.getBody().account.getRole().equals(AccountRole.USER)) {
 
                 if (shipmentRepository.existsById(shipment_id)) {
                     Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
@@ -86,7 +87,7 @@ public class ShipmentController {
                 cr.status = HttpStatus.UNAUTHORIZED;
             }
         } else {
-            cr.data = authService.checkToken(token).getBody().msg;
+            cr.data = authResponse.getBody().msg;
             cr.msg = "Unauthorized: Invalid token.";
             cr.status = HttpStatus.UNAUTHORIZED;
         }
@@ -96,53 +97,64 @@ public class ShipmentController {
     // * POST/:shipment_id (used to update a shipment, user can only cancel, admin can change status
     @PatchMapping("/{shipment_id}")
     public ResponseEntity<CommonResponse> updateShipment(
+            @RequestHeader (value ="Authorization") String token,
             @RequestBody Shipment newShipment,
             @PathVariable long shipment_id) {
         CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        if (shipmentRepository.existsById(shipment_id)) {
-            Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
-            Shipment shipment = shipmentRepo.orElse(null);
+        if(authResponse.getStatusCode() == HttpStatus.OK) {
+            if (shipmentRepository.existsById(shipment_id)) {
+                Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
+                Shipment shipment = shipmentRepo.orElse(null);
+                ShipmentStatus tmpStatus = ShipmentStatus.CANCELLED;
+                if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
 
 
-            if (newShipment.getWeight() != 0) {
-                shipment.setWeight(newShipment.getWeight());
+                    if (newShipment.getWeight() != 0) {
+                        shipment.setWeight(newShipment.getWeight());
+                    }
+
+                    if (newShipment.getBoxColour() != null) {
+                        shipment.setBoxColour(newShipment.getBoxColour());
+                    }
+
+                    if (newShipment.getReceiver() != null) {
+                        shipment.setReceiver(newShipment.getReceiver());
+                    }
+
+                    if (newShipment.getDestinationCountry() != null) {
+                        shipment.setDestinationCountry(newShipment.getDestinationCountry());
+                    }
+
+                    if (newShipment.getSourceCountry() != null) {
+                        shipment.setSourceCountry(newShipment.getSourceCountry());
+                    }
+                    if (newShipment.getShipmentStatus() != null) {
+                        shipment.setShipmentStatus(newShipment.getShipmentStatus());
+                    }
+                } else if (newShipment.getShipmentStatus() != null &&
+                        newShipment.getShipmentStatus().equals(ShipmentStatus.CANCELLED) &&
+                        authResponse.getBody().account.getRole().equals(AccountRole.USER)) {
+                            shipment.setShipmentStatus(newShipment.getShipmentStatus());
+                }
+                try {
+                    shipmentRepository.save(shipment);
+                    cr.data = shipment;
+                    cr.msg = "Shipment details have been updated.";
+                    cr.status = HttpStatus.CREATED;
+
+                } catch (Exception e) {
+                    cr.status = HttpStatus.BAD_REQUEST;
+                }
+            } else {
+                cr.msg = "Shipment with id: " + shipment_id + " was not found.";
             }
-
-            if (newShipment.getBoxColour() != null) {
-                shipment.setBoxColour(newShipment.getBoxColour());
-            }
-
-            if (newShipment.getReceiver() != null) {
-                shipment.setReceiver(newShipment.getReceiver());
-            }
-
-            if (newShipment.getDestinationCountry() != null) {
-                shipment.setDestinationCountry(newShipment.getDestinationCountry());
-            }
-
-            if (newShipment.getSourceCountry() != null) {
-                shipment.setSourceCountry(newShipment.getSourceCountry());
-            }
-
-            if (newShipment.getShipmentStatus() != null) {
-                shipment.setShipmentStatus(newShipment.getShipmentStatus());
-            }
-
-            try {
-                shipmentRepository.save(shipment);
-                cr.data = shipment;
-                cr.msg = "Shipment details has been updated.";
-                cr.status = HttpStatus.CREATED;
-
-            } catch (Exception e) {
-                cr.status = HttpStatus.BAD_REQUEST;
-            }
-
         } else {
-            cr.msg = "Shipment with id: " + shipment_id + " was not found.";
+            cr.data = authResponse.getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
+            cr.status = HttpStatus.UNAUTHORIZED;
         }
-
         return new ResponseEntity<>(cr, cr.status);
     }
 
