@@ -4,9 +4,9 @@ package com.example.boxinator.Controllers;
 
 import com.example.boxinator.Models.Account;
 import com.example.boxinator.Repositories.AccountRepository;
+import com.example.boxinator.Utils.AuthService.AuthResponse;
+import com.example.boxinator.Utils.AuthService.AuthenticationService;
 import com.example.boxinator.Utils.CommonResponse;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -21,6 +21,9 @@ public class AccountController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private AuthenticationService authService;
 
     @PostMapping("/register")
     public ResponseEntity<CommonResponse> createAccount(@RequestBody Account account) {
@@ -74,8 +77,12 @@ public class AccountController {
     }
 
     @GetMapping("/{account_id}")
-    public ResponseEntity<CommonResponse> getAccount(@PathVariable long account_id) {
+    public ResponseEntity<CommonResponse> getAccount(
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable long account_id
+    ) {
         CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
         if (accountRepository.existsById(account_id)){
             try {
