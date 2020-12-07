@@ -7,8 +7,11 @@ import com.example.boxinator.Models.ShipmentDTO;
 import com.example.boxinator.Models.Enums.ShipmentStatus;
 import com.example.boxinator.Repositories.AccountRepository;
 import com.example.boxinator.Repositories.ShipmentRepository;
+import com.example.boxinator.Utils.AuthService.AuthResponse;
+import com.example.boxinator.Utils.AuthService.AuthenticationService;
 import com.example.boxinator.Utils.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,20 +29,33 @@ public class ShipmentController {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    AuthenticationService authService;
+
     // * POST/ (create new shipment)
     @PostMapping("/create")
-    public ResponseEntity<CommonResponse> createShipment(@RequestBody Shipment shipment) {
+    public ResponseEntity<CommonResponse> createShipment(@RequestHeader(value = "Authorization") String token, @RequestBody Shipment shipment) {
         CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        try {
-            shipmentRepository.save(shipment);
-            cr.data = shipment;
-            cr.msg = "Shipment created";
-            cr.status = HttpStatus.CREATED;
-        } catch (Exception e) {
-            cr.data = null;
-            cr.msg = "Shipment could not be created";
-            cr.status = HttpStatus.BAD_REQUEST;
+        if (authService.checkToken(token).getStatusCode() == HttpStatus.OK) {
+            try {
+                shipmentRepository.save(shipment);
+                cr.data = shipment;
+                cr.msg = "Shipment created";
+                cr.status = HttpStatus.CREATED;
+            } catch (DataIntegrityViolationException e) {
+                cr.msg = "Some required field might be missing.";
+                cr.status = HttpStatus.BAD_REQUEST;
+            } catch (Exception e) {
+                cr.data = null;
+                cr.msg = "Shipment could not be created";
+                cr.status = HttpStatus.BAD_REQUEST;
+            }
+        } else {
+            cr.data = authService.checkToken(token).getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
+            cr.status = HttpStatus.UNAUTHORIZED;
         }
         return new ResponseEntity<>(cr, cr.status);
     }
@@ -190,7 +206,7 @@ public class ShipmentController {
                 Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
                 Shipment shipment = shipmentRepo.orElse(null);
 
-             //   shipmentDTO.setAccountId(shipment.getAccount().getId());
+                //   shipmentDTO.setAccountId(shipment.getAccount().getId());
                 shipmentDTO.setBoxColour(shipment.getBoxColour());
                 shipmentDTO.setDestinationCountry(shipment.getDestinationCountry());
                 shipmentDTO.setWeight(shipment.getWeight());
@@ -217,7 +233,7 @@ public class ShipmentController {
 
     //* GET/complete/:shipment_id (get details about specific completed shipment) NOT FINISHED
     @GetMapping("/{shipmentStatus}/{shipment_id}")
-    public ResponseEntity<CommonResponse> getSpecificCompletedShipment(@PathVariable Long shipment_id, @PathVariable("shipmentStatus") Long shipmentStatus ){
+    public ResponseEntity<CommonResponse> getSpecificCompletedShipment(@PathVariable Long shipment_id, @PathVariable("shipmentStatus") Long shipmentStatus) {
         CommonResponse cr = new CommonResponse();
         List<Shipment> completedShipments;
         ShipmentDTO shipmentDTO = new ShipmentDTO();
