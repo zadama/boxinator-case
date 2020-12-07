@@ -44,11 +44,11 @@ public class CountryController {
                     }
                     cr.status = HttpStatus.BAD_REQUEST;
                 } catch (Exception e) {
-                    cr.msg = "You do not have permission to add a country.";
-                    cr.status = HttpStatus.UNAUTHORIZED;
+                    cr.msg = "A country could not be created.";
+                    cr.status = HttpStatus.CONFLICT;
                 }
             } else {
-                cr.msg = "You do not have permission to add a country.";
+                cr.msg = "Your role does not have permission to add a country.";
                 cr.status = HttpStatus.UNAUTHORIZED;
             }
         } else {
