@@ -62,21 +62,34 @@ public class ShipmentController {
 
     // * GET/:shipment_id (get details about specific shipment),
     @GetMapping("/{shipment_id}")
-    public ResponseEntity<CommonResponse> getShipment(@PathVariable long shipment_id) {
+    public ResponseEntity<CommonResponse> getShipment(@RequestHeader(value ="Authorization") String token, @PathVariable long shipment_id) {
         CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        if (shipmentRepository.existsById(shipment_id)) {
-            Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
-            Shipment shipment = shipmentRepo.orElse(null);
+        if (authService.checkToken(token).getStatusCode() == HttpStatus.OK) {
+            if(authService.checkToken(token).getBody().account.getRole().equals("ADMIN") ||
+                    authService.checkToken(token).getBody().account.getRole().equals("USER")) {
 
-            cr.data = shipment;
-            cr.msg = "Shipment found";
-            cr.status = HttpStatus.OK;
+                if (shipmentRepository.existsById(shipment_id)) {
+                    Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
+                    Shipment shipment = shipmentRepo.orElse(null);
+
+                    cr.data = shipment;
+                    cr.msg = "Shipment found";
+                    cr.status = HttpStatus.OK;
+                } else {
+                    cr.msg = "Shipment with id: " + shipment_id + " was not found.";
+                    cr.status = HttpStatus.NOT_FOUND;
+                }
+            } else {
+                cr.msg = "Sign in to get shipment by id.";
+                cr.status = HttpStatus.UNAUTHORIZED;
+            }
         } else {
-            cr.msg = "Shipment with id: " + shipment_id + " was not found.";
-            cr.status = HttpStatus.NOT_FOUND;
+            cr.data = authService.checkToken(token).getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
+            cr.status = HttpStatus.UNAUTHORIZED;
         }
-
         return new ResponseEntity<>(cr, cr.status);
     }
 
