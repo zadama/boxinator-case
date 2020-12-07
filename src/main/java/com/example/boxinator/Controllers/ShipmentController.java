@@ -4,7 +4,7 @@ package com.example.boxinator.Controllers;
 import com.example.boxinator.Models.Account;
 import com.example.boxinator.Models.Shipment;
 import com.example.boxinator.Models.ShipmentDTO;
-import com.example.boxinator.Models.ShipmentStatus;
+import com.example.boxinator.Models.Enums.ShipmentStatus;
 import com.example.boxinator.Repositories.AccountRepository;
 import com.example.boxinator.Repositories.ShipmentRepository;
 import com.example.boxinator.Utils.CommonResponse;
