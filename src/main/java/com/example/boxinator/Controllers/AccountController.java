@@ -42,8 +42,8 @@ public class AccountController {
             }
             cr.status = HttpStatus.BAD_REQUEST;
         } catch (Exception e) {
-            cr.msg = "You do not have permission to add a country.";
-            cr.status = HttpStatus.UNAUTHORIZED;
+            cr.msg = "This service is currently unavailable.";
+            cr.status = HttpStatus.CONFLICT;
         }
 
         return new ResponseEntity<>(cr, cr.status);
@@ -84,91 +84,121 @@ public class AccountController {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        if (accountRepository.existsById(account_id)){
-            try {
-                Optional<Account> accountRepo = accountRepository.findById(account_id);
-                Account account = accountRepo.orElse(null);
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
+            if (accountRepository.existsById(account_id)){
+                try {
+                    Optional<Account> accountRepo = accountRepository.findById(account_id);
+                    Account account = accountRepo.orElse(null);
 
-                cr.data = account;
-                cr.msg = "Account found";
-                cr.status = HttpStatus.OK;
-            } catch (Exception e) {
-                cr.msg = e.getMessage();
-                cr.status = HttpStatus.BAD_REQUEST;
+                    cr.data = account;
+                    cr.msg = "Account found";
+                    cr.status = HttpStatus.OK;
+                } catch (Exception e) {
+                    cr.msg = e.getMessage();
+                    cr.status = HttpStatus.BAD_REQUEST;
+                }
+            } else {
+                cr.msg = "Account with id: "+account_id+" could not be found";
+                cr.status = HttpStatus.NOT_FOUND;
             }
         } else {
-            cr.msg = "Account with id: "+account_id+" could not be found";
-            cr.status = HttpStatus.NOT_FOUND;
+            cr.data = null;
+            cr.msg = authResponse.getBody().msg;
+            cr.status = HttpStatus.UNAUTHORIZED;
         }
 
         return new ResponseEntity<>(cr, cr.status);
     }
 
     @PatchMapping("/{account_id}")
-    public ResponseEntity<CommonResponse> changeAccountDetails(@PathVariable long account_id, @RequestBody Account changedAccount) {
+    public ResponseEntity<CommonResponse> changeAccountDetails(
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable long account_id,
+            @RequestBody Account changedAccount
+    ) {
         CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        if(accountRepository.existsById(account_id)) {
-            Optional<Account> accountRepo = accountRepository.findById(account_id);
-            Account account = accountRepo.orElse(null);
-            if (account != null) {
-                if (changedAccount.getFirstName() != null) { account.setFirstName(changedAccount.getFirstName()); }
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
+            if(accountRepository.existsById(account_id)) {
+                Optional<Account> accountRepo = accountRepository.findById(account_id);
+                Account account = accountRepo.orElse(null);
+                cr.msg = "You do not have permission to change: ";
+                if (account != null) {
+                    if (changedAccount.getFirstName() != null) { account.setFirstName(changedAccount.getFirstName()); }
 
-                if (changedAccount.getLastName() != null) { account.setLastName(changedAccount.getLastName()); }
+                    if (changedAccount.getLastName() != null) { account.setLastName(changedAccount.getLastName()); }
 
-                if (changedAccount.getEmail() != null) { account.setEmail(changedAccount.getEmail()); }
+                    if (changedAccount.getEmail() != null) { account.setEmail(changedAccount.getEmail()); }
 
-                if (changedAccount.getPassword() != null) { account.setPassword(changedAccount.getPassword()); }
+                    if (changedAccount.getPassword() != null) { account.setPassword(changedAccount.getPassword()); }
 
-                if (changedAccount.getDateOfBirth() != null) { account.setDateOfBirth(changedAccount.getDateOfBirth()); }
+                    if (changedAccount.getDateOfBirth() != null) { account.setDateOfBirth(changedAccount.getDateOfBirth()); }
 
-                if (changedAccount.getCountry() != null) { account.setCountry(changedAccount.getCountry()); }
+                    if (changedAccount.getCountry() != null) { account.setCountry(changedAccount.getCountry()); }
 
-                if (changedAccount.getZipCode() != 0) { account.setZipCode(changedAccount.getZipCode()); }
+                    if (changedAccount.getZipCode() != 0) { account.setZipCode(changedAccount.getZipCode()); }
 
-                if (changedAccount.getContactNumber() != 0) { account.setContactNumber(changedAccount.getContactNumber()); }
+                    if (changedAccount.getContactNumber() != 0) { account.setContactNumber(changedAccount.getContactNumber()); }
 
-                if (changedAccount.getRole() != null) { account.setRole(changedAccount.getRole()); }
+                    if (changedAccount.getRole() != null && authResponse.getBody().account.getRole().equals("ADMIN")) {
+                        account.setRole(changedAccount.getRole());
+                    } else {
+                        cr.msg += "Role ";
+                    }
 
-                try {
-                    Account newAccount = accountRepository.save(account);
-                    cr.data = newAccount;
-                    cr.msg = newAccount != null ? "Account changed!" : "This service is currently unavailable.";
-                    cr.status = newAccount != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
-                } catch (Exception e) {
-                    cr.status = HttpStatus.BAD_REQUEST;
+                    try {
+                        Account newAccount = accountRepository.save(account);
+                        cr.data = newAccount;
+                        cr.msg = newAccount != null ? "Account changed!" : "This service is currently unavailable.";
+                        cr.status = newAccount != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+                    } catch (Exception e) {
+                        cr.status = HttpStatus.BAD_REQUEST;
+                    }
                 }
+            } else {
+                cr.data = null;
+                cr.msg = "Account with id: "+account_id+" could not be found";
+                cr.status = HttpStatus.NOT_FOUND;
             }
-
         } else {
             cr.data = null;
-            cr.msg = "Account with id: "+account_id+" could not be found";
-            cr.status = HttpStatus.NOT_FOUND;
+            cr.msg = authResponse.getBody().msg;
+            cr.status = HttpStatus.UNAUTHORIZED;
         }
 
         return new ResponseEntity<>(cr, cr.status);
     }
 
     @DeleteMapping("/{account_id}")
-    public ResponseEntity<CommonResponse> deleteAccount(@PathVariable long account_id) {
+    public ResponseEntity<CommonResponse> deleteAccount(
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable long account_id
+    ) {
         CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        Optional<Account> accountRepo = accountRepository.findById(account_id);
-        Account account = accountRepo.orElse(null);
+        if (authResponse.getStatusCode() == HttpStatus.OK && authResponse.getBody().account.getRole().equals("ADMIN")) {
+            Optional<Account> accountRepo = accountRepository.findById(account_id);
+            Account account = accountRepo.orElse(null);
 
-        if (account != null) {
-            accountRepository.deleteById(account_id);
-            cr.data = account;
-            cr.msg = "Account with id: "+account_id+" deleted.";
-            cr.status = HttpStatus.OK;
+            if (account != null) {
+                accountRepository.deleteById(account_id);
+                cr.data = account;
+                cr.msg = "Account with id: "+account_id+" deleted.";
+                cr.status = HttpStatus.OK;
+            } else {
+                cr.msg = "Account with id: "+account_id+" could not be found";
+                cr.status = HttpStatus.NOT_FOUND;
+            }
         } else {
-            cr.msg = "Account with id: "+account_id+" could not be found";
-            cr.status = HttpStatus.NOT_FOUND;
+            cr.data = authResponse.getBody().msg;
+            cr.msg = "Your role does not have permission for this action.";
+            cr.status = HttpStatus.UNAUTHORIZED;
         }
 
         return new ResponseEntity<>(cr, cr.status);
     }
 
-    // POST/login()
 
 }
