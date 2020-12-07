@@ -37,7 +37,7 @@ public class AuthenticationService {
 
             Optional<Account> accountRepo = accountRepository.findByEmail(email);
 
-            res.account = accountRepo.orElse(null);
+            res.account = accountRepo.orElse(null); // TODO send object, if email does not exist, create temp"account" with email and receiptgeneration
             res.msg = "Account verified";
             res.status = HttpStatus.OK;
         } catch (FirebaseAuthException e) {
