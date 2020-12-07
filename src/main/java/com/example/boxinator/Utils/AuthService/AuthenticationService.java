@@ -19,8 +19,8 @@ public class AuthenticationService {
 
     @Bean
     @ConditionalOnMissingBean
-    public MyAuthService authService() {
-        return new MyAuthService();
+    public AuthenticationService authService() {
+        return new AuthenticationService();
     }
 
     @Autowired
