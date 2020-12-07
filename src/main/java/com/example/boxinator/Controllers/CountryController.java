@@ -2,6 +2,7 @@ package com.example.boxinator.Controllers;
 
 import com.example.boxinator.Models.Country;
 import com.example.boxinator.Repositories.CountryRepository;
+import com.example.boxinator.Utils.AuthService.AuthenticationService;
 import com.example.boxinator.Utils.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -20,26 +20,40 @@ public class CountryController {
  // GET/countries(CHECK), POST/countries/:country_id, PUT/countries/country_id
 
     @Autowired
-    CountryRepository countryRepository;
+    private CountryRepository countryRepository;
+
+    @Autowired
+    AuthenticationService authService;
 
     @PostMapping("/create")
-    public ResponseEntity<CommonResponse> addCountry(@RequestBody Country countryToAdd){
+    public ResponseEntity<CommonResponse> addCountry(@RequestHeader(value = "Authorization") String token, @RequestBody Country countryToAdd){
         CommonResponse cr = new CommonResponse();
 
-        try {
-            countryRepository.save(countryToAdd);
-            cr.data = countryToAdd;
-            cr.msg = "The country " + countryToAdd.getName() + " has been added.";
-            cr.status = HttpStatus.CREATED;
-        } catch(DataIntegrityViolationException e) {
-            if (e.getCause().toString().contains("PropertyValueException")) {
-                cr.msg = "Some required field might be missing.";
+        if(authService.checkToken(token).getStatusCode() == HttpStatus.OK) {
+            if(authService.checkToken(token).getBody().account.getRole().equals("ADMIN")){
+                try {
+                    countryRepository.save(countryToAdd);
+                    cr.data = countryToAdd;
+                    cr.msg = "The country " + countryToAdd.getName() + " has been added.";
+                    cr.status = HttpStatus.CREATED;
+                } catch(DataIntegrityViolationException e) {
+                    if (e.getCause().toString().contains("PropertyValueException")) {
+                        cr.msg = "Some required field might be missing.";
+                    } else {
+                        cr.msg = "Some value already exists.";
+                    }
+                    cr.status = HttpStatus.BAD_REQUEST;
+                } catch (Exception e) {
+                    cr.msg = "You do not have permission to add a country.";
+                    cr.status = HttpStatus.UNAUTHORIZED;
+                }
             } else {
-                cr.msg = "Some value already exists.";
+                cr.msg = "You do not have permission to add a country.";
+                cr.status = HttpStatus.UNAUTHORIZED;
             }
-            cr.status = HttpStatus.BAD_REQUEST;
-        } catch (Exception e) {
-            cr.msg = "You do not have permission to add a country.";
+        } else {
+            cr.data = authService.checkToken(token).getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
             cr.status = HttpStatus.UNAUTHORIZED;
         }
 
@@ -47,7 +61,7 @@ public class CountryController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<CommonResponse> getAllCountries() {
+    public ResponseEntity<CommonResponse> getAllCountries(){
         CommonResponse cr = new CommonResponse();
 
         try {
