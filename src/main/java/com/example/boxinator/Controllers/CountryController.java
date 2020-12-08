@@ -1,6 +1,7 @@
 package com.example.boxinator.Controllers;
 
 import com.example.boxinator.Models.Country;
+import com.example.boxinator.Models.Enums.AccountRole;
 import com.example.boxinator.Repositories.CountryRepository;
 import com.example.boxinator.Utils.AuthService.AuthResponse;
 import com.example.boxinator.Utils.AuthService.AuthenticationService;
@@ -24,7 +25,7 @@ public class CountryController {
     private CountryRepository countryRepository;
 
     @Autowired
-    AuthenticationService authService;
+    private AuthenticationService authService;
 
     @PostMapping("/create")
     public ResponseEntity<CommonResponse> addCountry(
@@ -35,7 +36,7 @@ public class CountryController {
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
         if(authResponse.getStatusCode() == HttpStatus.OK) {
-            if(authResponse.getBody().account.getRole().equals("ADMIN")){
+            if(authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)){
                 try {
                     countryRepository.save(countryToAdd);
                     cr.data = countryToAdd;
@@ -90,7 +91,7 @@ public class CountryController {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        if (authResponse.getStatusCode() == HttpStatus.OK && authResponse.getBody().account.getRole().equals("ADMIN")) {
+        if (authResponse.getStatusCode() == HttpStatus.OK && authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
             if (countryRepository.existsById(country_id)) {
                 Optional<Country> countryToUpdateRepo = countryRepository.findById(country_id);
                 Country country = countryToUpdateRepo.orElse(null);
