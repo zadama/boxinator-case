@@ -121,7 +121,7 @@ const useProvideAuthImpl = () => {
     return () => unsubscribe();
   }, []);
 
-  return { user, login, logout, register, logout, getUserToken };
+  return { user, login, logout, register, getUserToken };
 
 };
 
