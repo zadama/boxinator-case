@@ -4,6 +4,7 @@ package com.example.boxinator.Controllers;
 
 import com.example.boxinator.Models.Account;
 import com.example.boxinator.Models.Enums.AccountRole;
+import com.example.boxinator.Models.LoginRequest;
 import com.example.boxinator.Repositories.AccountRepository;
 import com.example.boxinator.Utils.AuthService.AuthResponse;
 import com.example.boxinator.Utils.AuthService.AuthenticationService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -26,11 +28,17 @@ public class AccountController {
     @Autowired
     private AuthenticationService authService;
 
+    @Autowired
+    private PasswordEncoder encoder;
+
     @PostMapping("/register")
     public ResponseEntity<CommonResponse> createAccount(@RequestBody Account account) {
         CommonResponse cr = new CommonResponse();
 
         try {
+            String hashedPW = encoder.encode(account.getPassword());
+            account.setPassword(hashedPW);
+
             accountRepository.save(account);
             cr.data = account;
             cr.msg = "Account created";
@@ -50,16 +58,31 @@ public class AccountController {
         return new ResponseEntity<>(cr, cr.status);
     }
 
-//    @PostMapping("/login") // ADD LOGINREQUEST MODEL
-//    public ResponseEntity<CommonResponse> login(@RequestBody LoginRequest loginRequest) {
-//        CommonResponse cr = new CommonResponse();
-//
-//        cr.data = null;
-//        cr.msg = "login";
-//        cr.status = HttpStatus.OK;
-//
-//        return new ResponseEntity<>(cr, cr.status);
-//    }
+    @PostMapping("/login")
+    public ResponseEntity<CommonResponse> login(@RequestBody LoginRequest loginReq) {
+        CommonResponse cr = new CommonResponse();
+
+        try {
+            Optional<Account> foundAccountRepo = accountRepository.findByEmail(loginReq.getEmail());
+            Account foundAccount = foundAccountRepo.orElse(null);
+
+            if (foundAccount != null && encoder.matches(loginReq.getPassword(), foundAccount.getPassword())) {
+                cr.data = foundAccount;
+                cr.msg = "Valid user login.";
+                cr.status = HttpStatus.OK;
+            } else {
+                cr.data = null;
+                cr.msg = "Incorrect credentials.";
+                cr.status = HttpStatus.UNAUTHORIZED;
+            }
+
+        } catch (Exception e) {
+            cr.msg = "Error occured";
+            cr.status = HttpStatus.CONFLICT;
+        }
+
+        return new ResponseEntity<>(cr, cr.status);
+    }
 
     @GetMapping("/all")
     public ResponseEntity<CommonResponse> getAllAccounts() {

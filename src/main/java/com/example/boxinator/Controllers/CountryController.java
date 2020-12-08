@@ -54,7 +54,7 @@ public class CountryController {
                     cr.status = HttpStatus.CONFLICT;
                 }
             } else {
-                cr.msg = "Your role does not have permission to add a country.";
+                cr.msg = "Unauthorized: Your role does not have permission to add a country.";
                 cr.status = HttpStatus.UNAUTHORIZED;
             }
         } else {
