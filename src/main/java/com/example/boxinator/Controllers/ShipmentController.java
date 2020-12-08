@@ -107,7 +107,6 @@ public class ShipmentController {
             if (shipmentRepository.existsById(shipment_id)) {
                 Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
                 Shipment shipment = shipmentRepo.orElse(null);
-                ShipmentStatus tmpStatus = ShipmentStatus.CANCELLED;
                 if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
 
 
@@ -160,19 +159,29 @@ public class ShipmentController {
 
     // *  DELETE/:shipment_id Only accessible by admin, only in extreme situations, can delete complete/cancelled shipments
     @DeleteMapping("/{shipment_id}")
-    public ResponseEntity<CommonResponse> deleteShipment(@PathVariable long shipment_id) {
+    public ResponseEntity<CommonResponse> deleteShipment(
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable long shipment_id) {
         CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
         Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
         Shipment shipment = shipmentRepo.orElse(null);
 
-        try {
-            cr.data = shipment;
-            shipmentRepository.deleteById(shipment_id);
-            cr.msg = "Shipment deleted";
-            cr.status = HttpStatus.CREATED;
-        } catch (Exception e) {
-
+        if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
+            try {
+                cr.data = shipment;
+                shipmentRepository.deleteById(shipment_id);
+                cr.msg = "Shipment with id: " + shipment_id + " has been deleted";
+                cr.status = HttpStatus.CREATED;
+            } catch (Exception e) {
+                cr.msg = "Unable to delete shipment with id: " + shipment_id;
+                cr.status = HttpStatus.BAD_REQUEST;
+            }
+        } else {
+            cr.data = authResponse.getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
+            cr.status = HttpStatus.UNAUTHORIZED;
         }
         return new ResponseEntity<>(cr, cr.status);
     }
