@@ -63,12 +63,12 @@ public class ShipmentController {
 
     // * GET/:shipment_id (get details about specific shipment),
     @GetMapping("/{shipment_id}")
-    public ResponseEntity<CommonResponse> getShipment(@RequestHeader(value ="Authorization") String token, @PathVariable long shipment_id) {
+    public ResponseEntity<CommonResponse> getShipment(@RequestHeader(value = "Authorization") String token, @PathVariable long shipment_id) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
         if (authResponse.getStatusCode() == HttpStatus.OK) {
-            if(authResponse.getBody().account.getRole().equals(AccountRole.ADMIN) ||
+            if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN) ||
                     authResponse.getBody().account.getRole().equals(AccountRole.USER)) {
 
                 if (shipmentRepository.existsById(shipment_id)) {
@@ -97,13 +97,13 @@ public class ShipmentController {
     // * POST/:shipment_id (used to update a shipment, user can only cancel, admin can change status
     @PatchMapping("/{shipment_id}")
     public ResponseEntity<CommonResponse> updateShipment(
-            @RequestHeader (value ="Authorization") String token,
+            @RequestHeader(value = "Authorization") String token,
             @RequestBody Shipment newShipment,
             @PathVariable long shipment_id) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        if(authResponse.getStatusCode() == HttpStatus.OK) {
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
             if (shipmentRepository.existsById(shipment_id)) {
                 Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
                 Shipment shipment = shipmentRepo.orElse(null);
@@ -135,7 +135,7 @@ public class ShipmentController {
                 } else if (newShipment.getShipmentStatus() != null &&
                         newShipment.getShipmentStatus().equals(ShipmentStatus.CANCELLED) &&
                         authResponse.getBody().account.getRole().equals(AccountRole.USER)) {
-                            shipment.setShipmentStatus(newShipment.getShipmentStatus());
+                    shipment.setShipmentStatus(newShipment.getShipmentStatus());
                 }
                 try {
                     shipmentRepository.save(shipment);
@@ -200,16 +200,27 @@ public class ShipmentController {
 
     //    * GET/:customer_id (get all shipments by a customer)
     @GetMapping("/all/{account_id}")
-    public ResponseEntity<CommonResponse> getAllShipmentsByAccount(@PathVariable Long account_id) {
+    public ResponseEntity<CommonResponse> getAllShipmentsByAccount(@RequestHeader(value = "Authorization") String token, @PathVariable Long account_id) {
         CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
         Optional<Account> accountRepo = accountRepository.findById(account_id);
         Account account = accountRepo.orElse(null);
 
-        cr.data = account.getShipments();
-        cr.msg = "All shipments found for customer";
-        cr.status = HttpStatus.OK;
-
+        if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN) || (authResponse.getBody().account.getRole().equals(AccountRole.USER))) {
+            try {
+                cr.data = account.getShipments();
+                cr.msg = "All shipments found for customer";
+                cr.status = HttpStatus.OK;
+            } catch (Exception e) {
+                cr.msg = "Unable to find all shipments with this id: " + account_id;
+                cr.status = HttpStatus.BAD_REQUEST;
+            }
+        } else {
+            cr.data = authResponse.getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
+            cr.status = HttpStatus.UNAUTHORIZED;
+        }
         return new ResponseEntity<>(cr, cr.status);
     }
 
