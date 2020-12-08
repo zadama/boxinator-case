@@ -170,7 +170,7 @@ public class ShipmentController {
         Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
         Shipment shipment = shipmentRepo.orElse(null);
 
-        if(authResponse.getStatusCode() == HttpStatus.OK) {
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
             if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
                 try {
                     cr.data = shipment;
@@ -192,11 +192,11 @@ public class ShipmentController {
 
     //     * GET/ (get all relevant to user, admin sees all, non-cancelled, non-complete, can be filtered using status or date)
     @GetMapping("/all")
-    public ResponseEntity<CommonResponse> getAllShipmentsByRole( @RequestHeader(value ="Authorization") String token) {
+    public ResponseEntity<CommonResponse> getAllShipmentsByRole(@RequestHeader(value = "Authorization") String token) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        if(authResponse.getStatusCode() == HttpStatus.OK) {
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
             try {
                 if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
                     cr.data = shipmentRepository.findAll();
@@ -218,7 +218,7 @@ public class ShipmentController {
         return new ResponseEntity<>(cr, cr.status);
     }
 
-    //    * GET/:customer_id (get all shipments by a customer)
+    //    * GET/:customer_id (get all shipments by a customer) Redundant? Due to the endpoint above having the functionality
     @GetMapping("/all/{account_id}")
     public ResponseEntity<CommonResponse> getAllShipmentsByAccount(@RequestHeader(value = "Authorization") String token, @PathVariable Long account_id) {
         CommonResponse cr = new CommonResponse();
@@ -227,7 +227,8 @@ public class ShipmentController {
         Optional<Account> accountRepo = accountRepository.findById(account_id);
         Account account = accountRepo.orElse(null);
 
-        if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN) || (authResponse.getBody().account.getRole().equals(AccountRole.USER))) {
+
+        if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
             try {
                 cr.data = account.getShipments();
                 cr.msg = "All shipments found for customer";
@@ -246,8 +247,11 @@ public class ShipmentController {
 
     //* GET/shipments by shipmentStatus
     @GetMapping("/status/{shipmentStatus}")
-    public ResponseEntity<CommonResponse> getAllShipmentsByShipmentStatus(@PathVariable("shipmentStatus") Long shipmentStatus) {
+    public ResponseEntity<CommonResponse> getAllShipmentsByShipmentStatus(@RequestHeader(value = "Authorization") String token, @PathVariable("shipmentStatus") Long shipmentStatus) {
         CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
+
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
             try {
                 ShipmentStatus statusType = ShipmentStatus.values()[shipmentStatus.intValue() - 1];
                 cr.data = shipmentRepository.findAllByShipmentStatus(statusType);
@@ -257,10 +261,17 @@ public class ShipmentController {
                 cr.msg = "Unable to find any shipments with status code: " + shipmentStatus;
                 cr.status = HttpStatus.BAD_REQUEST;
             }
+        } else {
+            cr.data = authResponse.getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
+            cr.status = HttpStatus.UNAUTHORIZED;
+        }
         return new ResponseEntity<>(cr, cr.status);
     }
 
-    //    * GET/:customer_id/:shipment_id (get a specific shipment by a customer)
+  /*  Redundant?
+      * GET/:customer_id/:shipment_id (get a specific shipment by a customer)
+
     @GetMapping("/{account_id}/{shipment_id}")
     public ResponseEntity<CommonResponse> getSpecificShipmentByCustomer(@PathVariable Long account_id, @PathVariable Long shipment_id) {
         CommonResponse cr = new CommonResponse();
@@ -316,15 +327,5 @@ public class ShipmentController {
 
         return new ResponseEntity<>(cr, cr.status);
     }
-
-    /*
-    TODO
-    Create endpoints for:
-
-    * GET/complete/:customer_id (get all complete shipments by a customer)
-
-    Check so that these endpoints work:
-    * GET/:customer_id/:shipment_id (get a specific shipment by a customer)
     */
-
 }
