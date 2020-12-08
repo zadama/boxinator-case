@@ -11,6 +11,7 @@ import com.example.boxinator.Repositories.ShipmentRepository;
 import com.example.boxinator.Utils.AuthService.AuthResponse;
 import com.example.boxinator.Utils.AuthService.AuthenticationService;
 import com.example.boxinator.Utils.CommonResponse;
+import com.google.api.Http;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -39,8 +40,9 @@ public class ShipmentController {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        if (authService.checkToken(token).getStatusCode() == HttpStatus.OK) {
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
             try {
+                shipment.setAccount(authResponse.getBody().account);
                 shipmentRepository.save(shipment);
                 cr.data = shipment;
                 cr.msg = "Shipment created";
@@ -168,15 +170,17 @@ public class ShipmentController {
         Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
         Shipment shipment = shipmentRepo.orElse(null);
 
-        if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
-            try {
-                cr.data = shipment;
-                shipmentRepository.deleteById(shipment_id);
-                cr.msg = "Shipment with id: " + shipment_id + " has been deleted";
-                cr.status = HttpStatus.CREATED;
-            } catch (Exception e) {
-                cr.msg = "Unable to delete shipment with id: " + shipment_id;
-                cr.status = HttpStatus.BAD_REQUEST;
+        if(authResponse.getStatusCode() == HttpStatus.OK) {
+            if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
+                try {
+                    cr.data = shipment;
+                    shipmentRepository.deleteById(shipment_id);
+                    cr.msg = "Shipment with id: " + shipment_id + " has been deleted";
+                    cr.status = HttpStatus.CREATED;
+                } catch (Exception e) {
+                    cr.msg = "Unable to delete shipment with id: " + shipment_id;
+                    cr.status = HttpStatus.BAD_REQUEST;
+                }
             }
         } else {
             cr.data = authResponse.getBody().msg;
@@ -188,13 +192,29 @@ public class ShipmentController {
 
     //     * GET/ (get all relevant to user, admin sees all, non-cancelled, non-complete, can be filtered using status or date)
     @GetMapping("/all")
-    public ResponseEntity<CommonResponse> getAllShipments() {
+    public ResponseEntity<CommonResponse> getAllShipmentsByRole( @RequestHeader(value ="Authorization") String token) {
         CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        cr.data = shipmentRepository.findAll();
-        cr.msg = "All shipments found";
-        cr.status = HttpStatus.OK;
-
+        if(authResponse.getStatusCode() == HttpStatus.OK) {
+            try {
+                if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
+                    cr.data = shipmentRepository.findAll();
+                    cr.msg = "List of all shipments in the database.";
+                } else if (authResponse.getBody().account.getRole().equals(AccountRole.USER)) {
+                    cr.data = shipmentRepository.findAllByAccount(authResponse.getBody().account);
+                    cr.msg = "List of all shipments by user.";
+                }
+                cr.status = HttpStatus.OK;
+            } catch (Exception e) {
+                cr.msg = "Currently unable to get list of all shipments.";
+                cr.status = HttpStatus.INTERNAL_SERVER_ERROR;
+            }
+        } else {
+            cr.data = authResponse.getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
+            cr.status = HttpStatus.UNAUTHORIZED;
+        }
         return new ResponseEntity<>(cr, cr.status);
     }
 
@@ -217,15 +237,15 @@ public class ShipmentController {
     @GetMapping("/status/{shipmentStatus}")
     public ResponseEntity<CommonResponse> getAllShipmentsByShipmentStatus(@PathVariable("shipmentStatus") Long shipmentStatus) {
         CommonResponse cr = new CommonResponse();
-        try {
-            ShipmentStatus statusType = ShipmentStatus.values()[shipmentStatus.intValue() - 1];
-            cr.data = shipmentRepository.findAllByShipmentStatus(statusType);
-            cr.msg = "List of all shipments with status: " + statusType;
-            cr.status = HttpStatus.OK;
-        } catch (Exception e) {
-            cr.msg = "Unable to find any shipments with status code: " + shipmentStatus;
-            cr.status = HttpStatus.BAD_REQUEST;
-        }
+            try {
+                ShipmentStatus statusType = ShipmentStatus.values()[shipmentStatus.intValue() - 1];
+                cr.data = shipmentRepository.findAllByShipmentStatus(statusType);
+                cr.msg = "List of all shipments with status: " + statusType;
+                cr.status = HttpStatus.OK;
+            } catch (Exception e) {
+                cr.msg = "Unable to find any shipments with status code: " + shipmentStatus;
+                cr.status = HttpStatus.BAD_REQUEST;
+            }
         return new ResponseEntity<>(cr, cr.status);
     }
 
