@@ -3,6 +3,7 @@ package com.example.boxinator.Controllers;
 
 
 import com.example.boxinator.Models.Account;
+import com.example.boxinator.Models.Enums.AccountRole;
 import com.example.boxinator.Repositories.AccountRepository;
 import com.example.boxinator.Utils.AuthService.AuthResponse;
 import com.example.boxinator.Utils.AuthService.AuthenticationService;
@@ -102,8 +103,8 @@ public class AccountController {
                 cr.status = HttpStatus.NOT_FOUND;
             }
         } else {
-            cr.data = null;
-            cr.msg = authResponse.getBody().msg;
+            cr.data = authResponse.getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
             cr.status = HttpStatus.UNAUTHORIZED;
         }
 
@@ -141,7 +142,7 @@ public class AccountController {
 
                     if (changedAccount.getContactNumber() != 0) { account.setContactNumber(changedAccount.getContactNumber()); }
 
-                    if (changedAccount.getRole() != null && authResponse.getBody().account.getRole().equals("ADMIN")) {
+                    if (changedAccount.getRole() != null && authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
                         account.setRole(changedAccount.getRole());
                     } else {
                         cr.msg += "Role ";
@@ -150,7 +151,7 @@ public class AccountController {
                     try {
                         Account newAccount = accountRepository.save(account);
                         cr.data = newAccount;
-                        cr.msg = newAccount != null ? "Account changed!" : "This service is currently unavailable.";
+                        cr.msg += newAccount != null ? " Account changed!" : " This service is currently unavailable.";
                         cr.status = newAccount != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
                     } catch (Exception e) {
                         cr.status = HttpStatus.BAD_REQUEST;
@@ -162,8 +163,8 @@ public class AccountController {
                 cr.status = HttpStatus.NOT_FOUND;
             }
         } else {
-            cr.data = null;
-            cr.msg = authResponse.getBody().msg;
+            cr.data = authResponse.getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
             cr.status = HttpStatus.UNAUTHORIZED;
         }
 
@@ -178,27 +179,31 @@ public class AccountController {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        if (authResponse.getStatusCode() == HttpStatus.OK && authResponse.getBody().account.getRole().equals("ADMIN")) {
-            Optional<Account> accountRepo = accountRepository.findById(account_id);
-            Account account = accountRepo.orElse(null);
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
+            if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
+                Optional<Account> accountRepo = accountRepository.findById(account_id);
+                Account account = accountRepo.orElse(null);
 
-            if (account != null) {
-                accountRepository.deleteById(account_id);
-                cr.data = account;
-                cr.msg = "Account with id: "+account_id+" deleted.";
-                cr.status = HttpStatus.OK;
+                if (account != null) {
+                    accountRepository.deleteById(account_id);
+                    cr.data = account;
+                    cr.msg = "Account with id: "+account_id+" deleted.";
+                    cr.status = HttpStatus.OK;
+                } else {
+                    cr.data = null;
+                    cr.msg = "Account with id: "+account_id+" could not be found";
+                    cr.status = HttpStatus.NOT_FOUND;
+                }
             } else {
-                cr.msg = "Account with id: "+account_id+" could not be found";
-                cr.status = HttpStatus.NOT_FOUND;
+                cr.data = authResponse.getBody().msg;
+                cr.msg = "Unauthorized: Your role does not have permission to do this.";
+                cr.status = HttpStatus.UNAUTHORIZED;
             }
         } else {
             cr.data = authResponse.getBody().msg;
-            cr.msg = "Your role does not have permission for this action.";
+            cr.msg = "Unauthorized: Invalid token.";
             cr.status = HttpStatus.UNAUTHORIZED;
         }
-
         return new ResponseEntity<>(cr, cr.status);
     }
-
-
 }
