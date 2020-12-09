@@ -1,5 +1,7 @@
 package com.example.boxinator.Models;
 
+import com.example.boxinator.Models.Enums.ShipmentStatus;
+
 public class ShipmentDTO {
     private Long shipmentId;
     private Long weight;

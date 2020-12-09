@@ -48,6 +48,7 @@ public class CountryController {
 
     @GetMapping("/all")
     public ResponseEntity<CommonResponse> getAllCountries() {
+        System.out.println("HERE");
         CommonResponse cr = new CommonResponse();
 
         try {
