@@ -118,14 +118,6 @@ const LoginPage = ({ history }) => {
           </Button>
         </div>
       </div>
-
-      <button
-        onClick={() => {
-          setShowModal(true);
-        }}
-      >
-        showModal
-      </button>
     </PublicLayout>
   );
 };

@@ -15,15 +15,15 @@ const LoginModal = ({ children, onClose, firebase, resolver }) => {
   let captchaVerifier = useRef();
   const verificationVerifier = useRef();
   const [phoneNbr, setPhoneNbr] = useState(0);
-  const [verificationCode, setVerificationCode] = useState();
+  const [verificationCode, setVerificationCode] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // sätt captchan som i index.modal
 
   useEffect(() => {
-    //handleSendPhoneVerification();
+    handleSendPhoneVerification();
   }, []);
 
   const handleSendPhoneVerification = async () => {
