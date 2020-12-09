@@ -14,6 +14,7 @@ import {
 } from "./pages";
 import PrivateRoute from "./components/hoc/PrivateRoute";
 import { ADMIN, USER, GUEST } from "./utils/roles";
+import CountryPage from "./pages/country/CountryPage";
 
 function App() {
   return (
@@ -37,7 +38,9 @@ function App() {
           requiredRoles={[ADMIN]}
           component={AdminPage}
         />
-
+        <Route path="/admin-dashboard/country"
+        exact={true}
+        component={CountryPage}/>
         <Route component={NotFoundPage} />
       </Switch>
     </Router>
