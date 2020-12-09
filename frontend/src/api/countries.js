@@ -1,4 +1,3 @@
-import Axios from "axios";
 import Api from "./axios";
 
 const getAllCountries = (token) => {

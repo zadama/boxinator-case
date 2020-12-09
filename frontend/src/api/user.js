@@ -10,7 +10,6 @@ const getAllAccounts = (token) => {
   });
 };
 
-
 const checkToken = (token) => {
   return Api.get("/accounttest/checktoken", {
     headers: { Authorization: `Bearer ${token}` },
@@ -38,7 +37,7 @@ const createUser = (
   zipCode,
   contactNumber
 ) => {
-  return Api.post("/accounttest/create", {
+  return Api.post("/account/register", {
     email,
     password,
     firstName,

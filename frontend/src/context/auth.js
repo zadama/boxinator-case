@@ -29,11 +29,30 @@ const useProvideAuthImpl = () => {
       .signInWithEmailAndPassword(email, password)
       .then(async (response) => {
         return handleUser(response.user);
-      });
-    // .catch((err) => handleUser(false));
+      })
+      .catch((err) => console.log(err));
   };
 
-  const register = (email, password, ...rest) => {
+  const reloadUser = async () => {
+    let updatedUser = await firebase.auth().currentUser.reload();
+    updatedUser = firebase.auth().currentUser;
+    handleUser(updatedUser);
+  };
+
+  const register = async (email, password, ...rest) => {
+    try {
+      const userCreds = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
+
+      await userCreds.user.sendEmailVerification();
+    } catch (error) {
+      //deleteUser();
+
+      throw error;
+    }
+
+    /*
     return firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
@@ -50,7 +69,7 @@ const useProvideAuthImpl = () => {
 
           throw error;
         }
-      });
+      });*/
     //.catch((err) => handleUser(false));
   };
 
@@ -97,13 +116,9 @@ const useProvideAuthImpl = () => {
   };
 
   const handleUser = async (rawUser) => {
-    if (rawUser) {
-      // Get user object in format expected by front-end
+    console.log("authstatechanged called...");
+    if (rawUser && rawUser.emailVerified) {
       const user = await formatUser(rawUser);
-      // below shall change dynamically.
-
-      // Add or update user in database/backend
-      // createUser(user.uid, { email: user.email });
 
       setUser(user);
       return user;
@@ -121,7 +136,16 @@ const useProvideAuthImpl = () => {
     return () => unsubscribe();
   }, []);
 
-  return { user, login, logout, register, getUserToken };
+  return {
+    user,
+    login,
+    logout,
+    deleteUser,
+    register,
+    logout,
+    getUserToken,
+    reloadUser,
+  };
 
 };
 

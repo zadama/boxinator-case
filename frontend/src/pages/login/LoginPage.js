@@ -13,6 +13,10 @@ import { Redirect } from "react-router-dom";
 import { ADMIN, USER } from "../../utils/roles";
 import PageLoader from "../../components/loader";
 
+import firebase from "../../context/firebase";
+import Modal from "../../components/modal/LoginModal";
+import { useRef } from "react";
+
 const LoginPage = ({ history }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { user, login } = useAuth();
@@ -20,38 +24,31 @@ const LoginPage = ({ history }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
   const [errorMessage, setErrorMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
-  /*
-  const displayAllAccounts = async () => {
-    try {
-      let { data } = await getAllAccounts();
-
-      setState(data.msg);
-    } catch (error) {
-      if (error.response.status === 404) {
-        console.log(error.response.data.status);
-
-        setState(error.response.data.status);
-      }
-    }
-  };*/
+  const resolverRef = useRef();
 
   const handleLogin = async (e) => {
-    setIsLoading(true);
+    // setIsLoading(true);
 
     try {
-      // const res = await createUser(email, password);
-      //console.log(res);
+      await firebase.auth().signInWithEmailAndPassword(email, password);
 
-      const loggedInUser = await login(email, password);
+      alert("User without 2 factor not allowed....");
     } catch (error) {
-      console.log(error.code);
+      if (error.code === "auth/wrong-password") {
+        //....
+        setErrorMessage("Could not login: " + error.code);
+      }
 
-      setErrorMessage("Could not login: " + error.code);
+      if (error.code === "auth/multi-factor-auth-required") {
+        // The user is enrolled in MFA, must be verified
+        resolverRef.current = error.resolver;
+        setShowModal(true);
+      }
     } finally {
-      setIsLoading(false);
+      //setIsLoading(false);
     }
   };
 
@@ -68,37 +65,58 @@ const LoginPage = ({ history }) => {
 
   return (
     <PublicLayout>
+      {showModal && (
+        <Modal
+          firebase={firebase}
+          resolver={resolverRef.current}
+          onClose={() => {
+            setShowModal(false);
+          }}
+        ></Modal>
+      )}
+
       <div className="login">
         {errorMessage}
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            value={email}
-            type="email"
-            placeholder="Enter email"
-          />
-          <Form.Text className="text-muted">
-            We'll never share your email with anyone else.
-          </Form.Text>
-        </Form.Group>
 
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            value={password}
-            type="password"
-            placeholder="Password"
-          />
-        </Form.Group>
-        <Button onClick={handleLogin} variant="primary" type="submit">
-          Submit
-        </Button>
+        <div className="form">
+          <div className="custom-form-group">
+            <label className="label">Email</label>
+            <input
+              type="email"
+              placeholder="Email"
+              className="input"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            ></input>
+
+            <Form.Text className="text-muted">
+              We'll never share your email with anyone else.
+            </Form.Text>
+          </div>
+
+          <div className="custom-form-group">
+            <label className="label">Password</label>
+            <input
+              type="password"
+              placeholder="Password"
+              className="input"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            ></input>
+          </div>
+          <Button
+            className="btn"
+            onClick={handleLogin}
+            variant="primary"
+            type="submit"
+          >
+            Login
+          </Button>
+        </div>
       </div>
     </PublicLayout>
   );
