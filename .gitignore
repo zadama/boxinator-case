@@ -51,6 +51,7 @@ build/
 /frontend/.env.test.local
 /frontend/.env.production.local
 
+/frontend/debug.log
 /frontend/npm-debug.log*
 /frontend/yarn-debug.log*
 /frontend/yarn-error.log*
