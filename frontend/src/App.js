@@ -12,8 +12,10 @@ import {
   NotFoundPage,
   RegisterPage,
 } from "./pages";
+
 import PrivateRoute from "./components/hoc/PrivateRoute";
 import { ADMIN, USER, GUEST } from "./utils/roles";
+import HandleShipmentsPage from "./pages/admin/HandleShipmentsPage";
 
 function App() {
   return (
@@ -22,7 +24,7 @@ function App() {
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>
-
+        <Route exact path="/handleShipments" component={HandleShipmentsPage}/>
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/register" component={RegisterPage} />
         <PrivateRoute
