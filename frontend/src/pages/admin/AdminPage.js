@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { getAllCountries } from "../../api/countries";
 import { checkToken } from "../../api/user";
+import UserDetails from "./UserDetails";
 
 /**
  * hämta alla shipments från backend, skicka med firebase token
@@ -19,6 +20,7 @@ import { checkToken } from "../../api/user";
 const AdminPage = () => {
   const auth = useAuth();
   const [data, setData] = useState(null);
+  const [showUsers, setShowUsers] = useState(false);
 
   const renderExampleDataWithToken = async () => {
     try {
@@ -37,11 +39,15 @@ const AdminPage = () => {
     renderExampleDataWithToken();
   }, []);
 
+  const handleUserDetailsClick = (event) => {
+    setShowUsers(!showUsers);
+  }
+
   return (
     <PrivateLayout>
       <div className="admin-page">
         <section className="sidebar">
-          <Sidebar />
+          <Sidebar getDetails={event => handleUserDetailsClick(event)}/>
         </section>
 
         <section className="admin-content">
@@ -52,6 +58,9 @@ const AdminPage = () => {
               Logged in user's email(verified from server via token): {data}
             </div>
           )}
+        </section>
+        <section>
+          {!showUsers ?  "" : <UserDetails />}
         </section>
       </div>
     </PrivateLayout>

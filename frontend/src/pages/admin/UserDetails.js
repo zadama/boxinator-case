@@ -25,14 +25,7 @@ const UserDetails = () => {
 
     useEffect(() => {
         renderUserDataWithAdminToken();
-        //if(data != null) setUsers(data.data);
     }, [])
-    
-    // const user = users != null ? users.map(function(u){
-    //     return <tr>
-    //         <td>{u.id}</td>
-    //     </tr>
-    // }) : "test";
 
 
     return (
