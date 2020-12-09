@@ -8,7 +8,6 @@ import { useAuth } from "../../context/auth";
 const UserDetails = () => {
     const auth = useAuth();
     const [data, setData] = useState(null);
-    const [users, setUsers] = useState(null);
 
     const renderUserDataWithAdminToken = async () => {
         try {
@@ -27,6 +26,17 @@ const UserDetails = () => {
         renderUserDataWithAdminToken();
     }, [])
 
+    const modifyField = (field) => {
+        console.log(field.innerHTML);
+    }
+
+    const handleEditClick = (user) => {
+        console.log("Edit ", user);
+    }
+
+    const handleDeleteClick = (user) => {
+        alert("Are you sure you want to delete the account with id: "+ user.id);
+    }
 
     return (
         <>
@@ -45,11 +55,14 @@ const UserDetails = () => {
                         <th>Contact number</th>
                         <th>Role</th>
                         <th>Shipments</th>
+                        <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
                     {data.data.map(function(user){
-                            return <tr key={user.id}>
+                            return <tr key={user.id} onClick={(event) => {
+                                if(!event.target.className) modifyField(event.target)
+                            }}>
                                 <td>{user.id}</td>
                                 <td>{user.firstName} {user.lastName}</td>
                                 <td>{user.email}</td>
@@ -59,6 +72,10 @@ const UserDetails = () => {
                                 <td>{!user.contactNumber ? "Not defined" : user.contactNumber}</td>
                                 <td>{user.role}</td>
                                 <td>{user.shipments}</td>
+                                <td className="btns">
+                                    <button className="btns" onClick={() => handleEditClick(user)}>Edit </button>
+                                    <button className="btns" onClick={() => handleDeleteClick(user)}> Delete</button>
+                                </td>
                             </tr>
                     })}
                 </tbody> 
