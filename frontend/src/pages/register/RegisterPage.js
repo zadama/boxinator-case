@@ -19,7 +19,7 @@ import { createUser } from "../../api/user";
 
 import firebase from "../../context/firebase";
 import { useRef } from "react";
-import Modal from "../../components/modal";
+import Modal from "../../components/modal/RegisterModal";
 var appVerifier = null;
 
 const { Option } = components;
