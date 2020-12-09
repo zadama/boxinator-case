@@ -6,7 +6,7 @@ public class ShipmentDTO {
     private Long shipmentId;
     private Long weight;
     private String boxColour;
-    private String destinationCountry;
+    private Country destinationCountry;
     private String receiver;
     private String sourceCountry;
     private ShipmentStatus shipmentStatus;
@@ -35,11 +35,11 @@ public class ShipmentDTO {
         this.boxColour = boxColour;
     }
 
-    public String getDestinationCountry() {
+    public Country getDestinationCountry() {
         return destinationCountry;
     }
 
-    public void setDestinationCountry(String destinationCountry) {
+    public void setDestinationCountry(Country destinationCountry) {
         this.destinationCountry = destinationCountry;
     }
 

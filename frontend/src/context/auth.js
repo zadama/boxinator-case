@@ -146,6 +146,7 @@ const useProvideAuthImpl = () => {
     getUserToken,
     reloadUser,
   };
+
 };
 
 const useAuth = () => {
