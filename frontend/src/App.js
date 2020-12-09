@@ -26,6 +26,7 @@ function App() {
 
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/register" component={RegisterPage} />
+
         <PrivateRoute
           exact={true}
           path="/add-shipment"

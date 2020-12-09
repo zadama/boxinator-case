@@ -2,6 +2,7 @@ package com.example.boxinator.Controllers;
 
 
 import com.example.boxinator.Models.Account;
+
 import com.example.boxinator.Models.Enums.AccountRole;
 import com.example.boxinator.Models.Shipment;
 import com.example.boxinator.Models.ShipmentDTO;
@@ -284,7 +285,7 @@ public class ShipmentController {
 
                 //   shipmentDTO.setAccountId(shipment.getAccount().getId());
                 shipmentDTO.setBoxColour(shipment.getBoxColour());
-                shipmentDTO.setDestinationCountry(shipment.getDestinationCountry());
+                shipmentDTO.setDestinationCountry(shipment.getDestinationCountry().getName());
                 shipmentDTO.setWeight(shipment.getWeight());
                 shipmentDTO.setReceiver(shipment.getReceiver());
                 shipmentDTO.setShipmentId(shipment.getId());

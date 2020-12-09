@@ -1,4 +1,3 @@
-import Axios from "axios";
 import Api from "./axios";
 import {ADMIN} from "../utils/roles";
 
