@@ -129,10 +129,10 @@ const RegisterPage = ({ history }) => {
   // neccessary to show this page, redirect to another
   // page depending on the role.
   if (user && user.role === ADMIN) {
-    return <Redirect to="admin-dashboard" />;
+    return <Redirect to="/admin-dashboard" />;
   }
   if (user && user.role === USER) {
-    return <Redirect to="add-shipment" />;
+    return <Redirect to="/add-shipment" />;
   }
 
   return (

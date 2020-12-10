@@ -25,7 +25,7 @@ const getUserRole = (token) => {
   });
 };
 
-//{...body} instead
+//{...body, role:USER} instead
 
 const createUser = (
   email,
