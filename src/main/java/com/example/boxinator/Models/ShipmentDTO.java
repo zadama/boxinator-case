@@ -9,8 +9,7 @@ public class ShipmentDTO {
     private String receiver;
     private String sourceCountry;
     private ShipmentStatus shipmentStatus;
-
-
+    
     public Long getWeight() {
         return weight;
     }
