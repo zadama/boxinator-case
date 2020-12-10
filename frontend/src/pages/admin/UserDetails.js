@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
 import { getAllAccounts } from '../../api/user';
+import DatePicker from 'react-datepicker';
+import { parseISO } from 'date-fns';
 
 import "./style.scss";
 
@@ -12,6 +14,7 @@ const UserDetails = () => {
     const auth = useAuth();
     const [data, setData] = useState(null);
     const [countries, setCountries] = useState([]);
+    const [dateOfBirth, setDateOfBirth] = useState(new Date()); 
     const [editUserView, setEditUserView] = useState(false);
     const [thisUser, setThisUser] = useState(null);
     const [editedUser, setEditedUser] = useState({});
@@ -46,7 +49,7 @@ const UserDetails = () => {
 
     const handleEditClick = (user) => {
         console.log("EDITING");
-        console.log(countries);
+        setDateOfBirth(parseISO(user.dateOfBirth));
         setEditUserView(!editUserView);
         setThisUser(user);
     }
@@ -76,6 +79,7 @@ const UserDetails = () => {
         }
 
         if (id === "dateOfBirth") {
+            setDateOfBirth(input);
             setEditedUser(prevState => ({...prevState, dateOfBirth: input}))
         }
 
@@ -84,8 +88,7 @@ const UserDetails = () => {
         }
 
         if (id === "country") {
-            console.log(input);
-            //setEditedUser(prevState => ({...prevState, country: input}))
+            setEditedUser(prevState => ({...prevState, country: JSON.parse(input)}))
         }
 
         if (id === "contactNumber") {
@@ -183,11 +186,15 @@ const UserDetails = () => {
                     </div>
                     <div>
                         <label>Date of birth: </label><br/>
-                        <input 
-                        type="text"
-                        id="dateOfBirth" 
-                        defaultValue={thisUser.dateOfBirth}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
+                        
+                        <DatePicker
+                            selected={dateOfBirth}
+                            showYearDropdown
+                            maxDate={new Date()}
+                            placeholderText="MM/DD/YYYY"
+                            onChange={(value) => updateField(value, "dateOfBirth")}
+                            className="date-picker"
+                        />
                     </div>
                 </div>
                 <div className="dual-inputs">
@@ -206,12 +213,12 @@ const UserDetails = () => {
                             options={countries}
                             id="country"
                             onChange={(event) => {
-                            updateField(event.target, event.target.id);
+                            updateField(event.target.value, event.target.id);
                             }}
                         >
                             {!countries ? "loading..." :
-                            countries.map((country) => {
-                                return <option>{country.name}</option>
+                            countries.map((country, index) => {
+                                return <option key={index} value={JSON.stringify(country)}>{country.name}</option>
                             })}
                         </select>
                     </div>
