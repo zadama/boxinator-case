@@ -19,7 +19,7 @@ import { createUser } from "../../api/user";
 
 import firebase from "../../context/firebase";
 import { useRef } from "react";
-import Modal from "../../components/modal";
+import Modal from "../../components/modal/RegisterModal";
 var appVerifier = null;
 
 const { Option } = components;
@@ -129,10 +129,10 @@ const RegisterPage = ({ history }) => {
   // neccessary to show this page, redirect to another
   // page depending on the role.
   if (user && user.role === ADMIN) {
-    return <Redirect to="admin-dashboard" />;
+    return <Redirect to="/admin-dashboard" />;
   }
   if (user && user.role === USER) {
-    return <Redirect to="add-shipment" />;
+    return <Redirect to="/add-shipment" />;
   }
 
   return (
