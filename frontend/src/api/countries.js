@@ -1,5 +1,4 @@
 import Api from "./axios";
-import {ADMIN} from "../utils/roles";
 
 const addCountry = (
     name,
@@ -17,13 +16,13 @@ const addCountry = (
     };
 
 const updateCountryById  = (
-    countryId,
+    id,
     name,
     countryCode,
     feeMultiplier,
     token
 ) => {
-    return Api.patch(`settings/country/${countryId}`, {
+    return Api.patch(`settings/country/${id}`, {
         name,
         countryCode,
         feeMultiplier,

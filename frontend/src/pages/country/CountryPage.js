@@ -4,48 +4,44 @@ import {getAllCountries} from "../../api/countries";
 import {useAuth} from "../../context/auth";
 
 import "./styles.scss";
+import EditModal from "./EditModal";
+import AddCountryModal from "./AddCountryModal";
 
 
 const CountryPage = () => {
-
-    const [isLoading, setIsLoading] = useState(false);
-    const [countryName, setCountryName] = useState("");
-    const [countryCode, setCountryCode] = useState("");
-    const [feeMultiplier, setFeeMultiplier] = useState(0);
-    const [countries, setCountries] = useState([]);
-
     const auth = useAuth();
 
+    const [isLoading, setIsLoading] = useState(false);
+    const [countries, setCountries] = useState([]);
 
-    const onAddCountryClicked = async () => {
+    const onAddCountryClicked = async (countryName, countryCode, feeMultiplier) => {
         setIsLoading(true);
-        let result;
         try {
             const token = await auth.getUserToken();
-            result = await addCountry(countryName,countryCode, feeMultiplier, token);
+            await addCountry(countryName,countryCode, feeMultiplier, token);
         } catch (error) {
             console.log(error, "Unable to add new country");
         } finally {
             setIsLoading(false);
-            console.log(result);
+            await fetchCountries();
         }
     };
 
-    const onUpdateCountryClicked = async () => {
+   const onUpdateCountryClicked = async (country) => {
         setIsLoading(true);
-        let result;
         try {
             const token = await auth.getUserToken();
-            result = await updateCountryById(countryName, countryCode, feeMultiplier);
+            console.log(country);
+            await updateCountryById(country.id, country.countryName, country.countryCode, country.feeMultiplier, token);
         }catch (error){
             console.log(error, "Unable to update country details");
         }finally {
             setIsLoading(false);
-            console.log(result);
+            await fetchCountries();
         }
-    }
+    };
 
-    useEffect( () => {
+    useEffect(() => {
         fetchCountries();
     }, []);
 
@@ -53,11 +49,13 @@ const CountryPage = () => {
         setIsLoading(true);
         let response = await getAllCountries();
         let {data: savedCountries} = response.data;
-
-        savedCountries = savedCountries.map((country) => {
+        savedCountries = savedCountries
+            .sort(function(a,b){
+                return a.id - b.id
+        }).map((country) => {
 
             return {
-                countryId: country.id,
+                id: country.id,
                 countryName: country.name,
                 countryCode: country.countryCode,
                 feeMultiplier: country.feeMultiplier,
@@ -65,58 +63,32 @@ const CountryPage = () => {
         });
         setCountries(savedCountries);
         setIsLoading(false);
-        console.log(savedCountries);
     };
 
-    const countryObjects = countries.map((entry, index) =>
-        <tr key={index}>
-            <td>{entry.countryId}</td>
-            <td>{entry.countryName}</td>
-            <td>{entry.countryCode}</td>
-            <td>{entry.feeMultiplier}</td>
+    const countryObjects = countries.map((country) =>
+        <tr key={country.id}>
+            <td>{country.id}</td>
+            <td>{country.countryName}</td>
+            <td>{country.countryCode}</td>
+            <td>{country.feeMultiplier}</td>
             <td>
-                <button className="btn btn-info btn-sm mt-0">Edit</button>
+                <EditModal country={country} updateCountry={onUpdateCountryClicked}/>
             </td>
         </tr>
     );
-
-    //button handle click
-    //loading || result
-    const onCountryNameChanged = event => setCountryName(event.target.value.trim());
-    const onCountryCodeChanged = event => setCountryCode(event.target.value.trim());
-    const onFeeMultiplierChanged = event => setFeeMultiplier(event.target.value.trim());
 
     return(
         <div>
             <h1>Shipping Countries</h1>
 
-                <div className="addCountryForm">
-                    <form>
-                        <div className="form-group">
-                            <label htmlFor="countryName">Country name: </label>
-                            <input type="text" className="form-control"
-                                   placeholder="Country Name" id="countryName" onChange={onCountryNameChanged}/>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="countryCode">Country code: </label>
-                            <input type="text" className="form-control"
-                                   placeholder="Country Code" id="countryCode" onChange={onCountryCodeChanged}/>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="feeMultiplier">Fee Multiplier: </label>
-                            <input type="text" className="form-control"
-                                   placeholder="Fee Multiplier" id="feeMultiplier" onChange={onFeeMultiplierChanged}/>
-                        </div>
-                        <button onClick={onAddCountryClicked} className="btn btn-info" type="button"> Add country </button>
-                    </form>
-                </div>
+            <div className="search-container">
                 <button onClick={fetchCountries} className="btn btn-info" type="button">Get all countries</button>
+            </div>
 
-
-            <div className="allCountriesTable">
-                <div className="row">
+            <div className="all-countries-container">
+                <div className="row country-table-header">
                     <h3>All Countries</h3>
-                    <button onClick={onAddCountryClicked} className="btn btn-info btn-sm mt-0" type="submit"> Add country </button>
+                    <AddCountryModal addCountry={onAddCountryClicked}/>
                 </div>
 
                 <table className="table table-bordered">
@@ -126,18 +98,17 @@ const CountryPage = () => {
                         <th scope="col">Country Name</th>
                         <th scope="col">Country Code</th>
                         <th scope="col">Fee Multiplier</th>
-                        <th scope="col">Edit</th>
+                        <th scope="col">Edit Details</th>
                     </tr>
                     </thead>
                     <tbody>
                         {countryObjects}
                     </tbody>
                 </table>
+
             </div>
         </div>
     );
-
-
 };
 
 export default CountryPage;
