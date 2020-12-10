@@ -1,9 +1,11 @@
 import Api from "./axios";
 
 const addCountry = (
-    name,
-    countryCode,
-    feeMultiplier,
+    {
+        name,
+        countryCode,
+        feeMultiplier
+    },
     token
 ) => {
       return Api.post("settings/country/create", {
@@ -16,10 +18,12 @@ const addCountry = (
     };
 
 const updateCountryById  = (
-    id,
-    name,
-    countryCode,
-    feeMultiplier,
+    {
+        id,
+        name,
+        countryCode,
+        feeMultiplier
+    },
     token
 ) => {
     return Api.patch(`settings/country/${id}`, {

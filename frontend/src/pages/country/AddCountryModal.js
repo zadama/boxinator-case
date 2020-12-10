@@ -7,22 +7,22 @@ const AddCountryModal = props => {
 
     const [modal, showModal] = useState(false);
 
-    const [countryName, setCountryName] = useState("");
+    const [name, setName] = useState("");
     const [countryCode, setCountryCode] = useState("");
     const [feeMultiplier, setFeeMultiplier] = useState(0);
 
+    const onCountryNameChanged = event => setName(event.target.value.trim());
+    const onCountryCodeChanged = event => setCountryCode(event.target.value.trim());
+    const onFeeMultiplierChanged = event => setFeeMultiplier(event.target.value.trim());
+
     const onAddClicked = () => {
-        props.addCountry(countryName, countryCode, feeMultiplier);
+        props.addCountry({name, countryCode, feeMultiplier});
         showModal(false);
     }
 
     const onClose = () => {
         showModal(false);
     };
-
-        const onCountryNameChanged = event => setCountryName(event.target.value.trim());
-        const onCountryCodeChanged = event => setCountryCode(event.target.value.trim());
-        const onFeeMultiplierChanged = event => setFeeMultiplier(event.target.value.trim());
 
         return (
             <div>
@@ -56,6 +56,7 @@ const AddCountryModal = props => {
                     </div>
                     <button onClick={onAddClicked} className="btn btn-info"
                             type="button">Add</button>
+                    <button onClick={onClose} className="btn btn-danger">Cancel</button>
                 </Modal>
             </div>
         );

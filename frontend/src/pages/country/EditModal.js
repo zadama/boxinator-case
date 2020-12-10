@@ -7,11 +7,11 @@ const EditModal = props => {
 
     const [modal, showModal] = useState(false);
     const [id, setId] = useState(props.country.id);
-    const [countryName, setCountryName] = useState(props.country.countryName);
+    const [name, setName] = useState(props.country.name);
     const [countryCode, setCountryCode] = useState(props.country.countryCode);
     const [feeMultiplier, setFeeMultiplier] = useState(props.country.feeMultiplier);
 
-    const onCountryNameChanged = event => setCountryName(event.target.value.trim());
+    const onCountryNameChanged = event => setName(event.target.value.trim());
     const onCountryCodeChanged = event => setCountryCode(event.target.value.trim());
     const onFeeMultiplierChanged = event => setFeeMultiplier(event.target.value.trim());
 
@@ -20,7 +20,7 @@ const EditModal = props => {
     };
 
     const onUpdateClicked = () => {
-        props.updateCountry({id, countryName, countryCode, feeMultiplier});
+        props.updateCountry({id, name, countryCode, feeMultiplier});
         showModal(false);
     }
 
@@ -38,7 +38,7 @@ const EditModal = props => {
                         <div className="form-group">
                             <label htmlFor="countryName">Country name: </label>
                             <input type="text" className="form-control"
-                                   value={countryName} id="countryName"
+                                   value={name} id="countryName"
                                    onChange={onCountryNameChanged}/>
                         </div>
                         <div className="form-group">
@@ -55,7 +55,8 @@ const EditModal = props => {
                         </div>
                     </form>
                 </div>
-                <button onClick={onUpdateClicked}>Save changes</button>
+                <button onClick={onUpdateClicked} className="btn btn-info">Save</button>
+                <button onClick={onClose} className="btn btn-danger">Cancel</button>
             </Modal>
         </div>
     );

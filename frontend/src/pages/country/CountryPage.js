@@ -14,11 +14,11 @@ const CountryPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [countries, setCountries] = useState([]);
 
-    const onAddCountryClicked = async (countryName, countryCode, feeMultiplier) => {
+    const onAddCountryClicked = async (country) => {
         setIsLoading(true);
         try {
             const token = await auth.getUserToken();
-            await addCountry(countryName,countryCode, feeMultiplier, token);
+            await addCountry(country, token);
         } catch (error) {
             console.log(error, "Unable to add new country");
         } finally {
@@ -31,8 +31,7 @@ const CountryPage = () => {
         setIsLoading(true);
         try {
             const token = await auth.getUserToken();
-            console.log(country);
-            await updateCountryById(country.id, country.countryName, country.countryCode, country.feeMultiplier, token);
+            await updateCountryById(country, token);
         }catch (error){
             console.log(error, "Unable to update country details");
         }finally {
@@ -56,7 +55,7 @@ const CountryPage = () => {
 
             return {
                 id: country.id,
-                countryName: country.name,
+                name: country.name,
                 countryCode: country.countryCode,
                 feeMultiplier: country.feeMultiplier,
             };
@@ -68,7 +67,7 @@ const CountryPage = () => {
     const countryObjects = countries.map((country) =>
         <tr key={country.id}>
             <td>{country.id}</td>
-            <td>{country.countryName}</td>
+            <td>{country.name}</td>
             <td>{country.countryCode}</td>
             <td>{country.feeMultiplier}</td>
             <td>
