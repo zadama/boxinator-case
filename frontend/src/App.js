@@ -34,7 +34,7 @@ function App() {
         <PrivateRoute
           exact={true}
           path="/admin-dashboard"
-          requiredRoles={[ADMIN, USER]} //ADDED USER FOR TESTING
+          requiredRoles={[ADMIN]} 
           component={AdminPage}
         />
 
