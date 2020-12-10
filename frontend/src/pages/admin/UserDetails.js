@@ -5,21 +5,34 @@ import { getAllAccounts } from '../../api/user';
 import "./style.scss";
 
 import { useAuth } from "../../context/auth";
+import { getAllCountries } from '../../api/countries';
 
 
 const UserDetails = () => {
     const auth = useAuth();
     const [data, setData] = useState(null);
+    const [countries, setCountries] = useState([]);
     const [editUserView, setEditUserView] = useState(false);
     const [thisUser, setThisUser] = useState(null);
-    const [editedUser, setEditedUser] = useState([]);
+    const [editedUser, setEditedUser] = useState({});
 
     const renderUserDataWithAdminToken = async () => {
         try {
             const token = await auth.getUserToken();
 
-            const { data } = await getAllAccounts(token);
+            const { data } = await getAllAccounts(token); 
+            
+            let { data: savedCountries } = await getAllCountries();
 
+            savedCountries = savedCountries.data.map((country) => {
+                return {
+                    name: country.name, 
+                    code: country.countryCode,
+                    feeMulti: country.feeMultiplier
+                };
+            });
+
+            setCountries(savedCountries);
             setData(data);
         } catch (error) {
             console.log(error);
@@ -32,26 +45,69 @@ const UserDetails = () => {
     }, [])
 
     const handleEditClick = (user) => {
+        console.log("EDITING");
+        console.log(countries);
         setEditUserView(!editUserView);
         setThisUser(user);
     }
 
     const handleDeleteClick = (user) => {
-        alert("Are you sure you want to delete the account with id: "+ user.id);
-    }
+        let confirm = prompt("Are you sure you want to delete the account with id: "
+        +user.id+"?\nProvide this phrase to confirm delete: "+user.email, "");
 
-    const handleEditUserView = () => {
-        setEditUserView(!editUserView);
+        if (confirm !== user.email) {
+            alert("Incorrect confirmation credentials provided. Try again.");
+        } else {
+            console.log("DELETE"); // DELETE FROM FIREBASE AND SEND API REQUEST
+        }
     }
 
     const updateField = (input, id) => {
-        setEditedUser({
-            "id": input // create field of the input user just changed
-        })
+        if (id === "firstName") {
+            setEditedUser(prevState => ({...prevState, firstName: input}))
+        }
+        
+        if (id === "lastName") {
+            setEditedUser(prevState => ({...prevState, lastName: input}))
+        }
+
+        if (id === "email") {
+            setEditedUser(prevState => ({...prevState, email: input}))
+        }
+
+        if (id === "dateOfBirth") {
+            setEditedUser(prevState => ({...prevState, dateOfBirth: input}))
+        }
+
+        if (id === "zipCode") {
+            setEditedUser(prevState => ({...prevState, zipCode: input}))
+        }
+
+        if (id === "country") {
+            console.log(input);
+            //setEditedUser(prevState => ({...prevState, country: input}))
+        }
+
+        if (id === "contactNumber") {
+            setEditedUser(prevState => ({...prevState, contactNumber: input}))
+        }
+
+        if (id === "role") {
+            setEditedUser(prevState => ({...prevState, role: input}))
+        }
+        
     }
 
     const handleSaveEditedUser = () => {
-        console.log(editedUser);
+        console.log("SAVED");
+        console.log(editedUser); // EDIT FIREBASE USER AND SEND API REQUEST
+        setEditedUser([]);
+        setEditUserView(!editUserView);
+    }
+
+    const handleCancelEditUserView = () => {
+        console.log("CANCELLED");
+        setEditedUser([]);
         setEditUserView(!editUserView);
     }
 
@@ -109,44 +165,79 @@ const UserDetails = () => {
                     </div>
                     <div>
                         <label>Lastname: </label><br/>
-                        <input type="text" defaultValue={thisUser.lastName}></input>
+                        <input 
+                        type="text" 
+                        id="lastName"
+                        defaultValue={thisUser.lastName}
+                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
                     </div>
                 </div>
-                
                 <div className="dual-inputs">
                     <div>
                         <label>Email: </label><br/>
-                        <input type="text" defaultValue={thisUser.email}></input>
+                        <input 
+                        type="text"
+                        id="email"
+                        defaultValue={thisUser.email}
+                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
                     </div>
                     <div>
                         <label>Date of birth: </label><br/>
-                        <input type="text" defaultValue={thisUser.dateOfBirth}></input>
+                        <input 
+                        type="text"
+                        id="dateOfBirth" 
+                        defaultValue={thisUser.dateOfBirth}
+                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
                     </div>
                 </div>
                 <div className="dual-inputs">
                     <div>
                         <label>Zip Code: </label><br/>
-                        <input type="text" defaultValue={thisUser.zipCode}></input>
+                        <input 
+                        type="text" 
+                        id="zipCode"
+                        defaultValue={thisUser.zipCode}
+                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
                     </div>
                     <div>
                         <label>Country: </label><br/>
-                        <input type="text" defaultValue={thisUser.country}></input>
+                        <select
+                            placeholder={thisUser.country}
+                            options={countries}
+                            id="country"
+                            onChange={(event) => {
+                            updateField(event.target, event.target.id);
+                            }}
+                        >
+                            {!countries ? "loading..." :
+                            countries.map((country) => {
+                                return <option>{country.name}</option>
+                            })}
+                        </select>
                     </div>
                 </div>
 
                 <div className="dual-inputs">
                     <div>
                         <label>Contact Number: </label><br/>
-                        <input type="text" defaultValue={thisUser.contactNumber}></input>
+                        <input 
+                        type="text"
+                        id="contactNumber"
+                        defaultValue={thisUser.contactNumber}
+                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
                     </div>
                     <div>
                         <label>Role: </label><br/>
-                        <input type="text" defaultValue={thisUser.role}></input>
+                        <input 
+                        type="text"
+                        id="role"
+                        defaultValue={thisUser.role}
+                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
                     </div>
                 </div>
 
             <button onClick={handleSaveEditedUser}>Save</button>
-            <button onClick={handleEditUserView}>Cancel</button>
+            <button onClick={handleCancelEditUserView}>Cancel</button>
         </div>}
     </>
     )
