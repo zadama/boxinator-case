@@ -1,13 +1,22 @@
 import React from "react";
+import { useState } from "react";
 import { Button } from "react-bootstrap";
 
-const Sidebar = () => {
+const Sidebar = props => {
+
+  const [showUsers, setShowUsers] = useState(false);
+
+  const getUserDetails = () => {
+    setShowUsers(!showUsers);
+    props.getDetails(showUsers);
+  }
+
   return (
     <>
       <Button>Shipments</Button>
 
       <Button>Countries</Button>
-      <Button>User details</Button>
+      <Button onClick={getUserDetails}>User details</Button>
     </>
   );
 };
