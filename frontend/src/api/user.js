@@ -13,20 +13,17 @@ const getAllAccounts = (token) => {
 const deleteAccount = (token, account_id) => {
   return Api.delete("/account/"+account_id, {
     headers: {
-      Authorization: `${token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 };
 
 const updateAccount = (token, account_id, newUser) => {
-  return Api.patch("/account/"+account_id, {
+  return Api.patch("/account/"+account_id, { newUser }, {
     headers: {
-      Authorization: `${token}`
+      Authorization: `Bearer ${token}`,
     },
-    body: {
-      newUser // ?? something like this
-    }
-  })
+  });
 }
 
 
@@ -70,4 +67,4 @@ const createUser = (
   });
 };
 
-export { getAllAccounts, deleteAccount, createUser, checkToken, getUserRole };
+export { getAllAccounts, updateAccount, deleteAccount, createUser, checkToken, getUserRole };

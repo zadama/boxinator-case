@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
-import { getAllAccounts, deleteAccount } from '../../api/user';
+import { getAllAccounts, updateAccount, deleteAccount } from '../../api/user';
 import DatePicker from 'react-datepicker';
 import { parseISO } from 'date-fns';
 
@@ -109,11 +109,19 @@ const UserDetails = () => {
         
     }
 
-    const handleSaveEditedUser = () => {
+    const handleSaveEditedUser = async () => {
         console.log("SAVED");
-        console.log(editedUser); // EDIT FIREBASE USER AND SEND API REQUEST
-        setEditedUser([]);
-        setEditUserView(!editUserView);
+        try {
+            const token = await auth.getUserToken();
+
+            await updateAccount(token, thisUser.id, editedUser);// EDIT FIREBASE USER AND SEND API REQUEST
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setEditedUser([]);
+            setEditUserView(!editUserView);
+        }
+        
     }
 
     const handleCancelEditUserView = () => {
