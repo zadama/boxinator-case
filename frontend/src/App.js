@@ -24,7 +24,6 @@ function App() {
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>
-        <Route exact path="/handleShipments" component={HandleShipmentsPage}/>
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/register" component={RegisterPage} />
         <PrivateRoute
@@ -39,6 +38,11 @@ function App() {
           requiredRoles={[ADMIN]}
           component={AdminPage}
         />
+             <PrivateRoute 
+             exact={true} 
+             path="/handleShipments"
+             requiredRoles={[ADMIN]}
+             component={HandleShipmentsPage}/>
 
         <Route component={NotFoundPage} />
       </Switch>
