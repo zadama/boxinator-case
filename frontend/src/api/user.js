@@ -10,6 +10,7 @@ const getAllAccounts = (token) => {
   });
 };
 
+
 const deleteAccount = (token, account_id) => {
   return Api.delete("/account/"+account_id, {
     headers: {
@@ -42,7 +43,7 @@ const getUserRole = (token) => {
   });
 };
 
-//{...body} instead
+//{...body, role:USER} instead
 
 const createUser = (
   email,
@@ -54,7 +55,7 @@ const createUser = (
   zipCode,
   contactNumber
 ) => {
-  return Api.post("/accounttest/create", {
+  return Api.post("/account/register", {
     email,
     password,
     firstName,
