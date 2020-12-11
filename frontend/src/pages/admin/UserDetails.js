@@ -49,9 +49,10 @@ const UserDetails = () => {
 
     const handleEditClick = (user) => {
         console.log("EDITING");
-        setDateOfBirth(parseISO(user.dateOfBirth));
+        !user.dateOfBirth ? setDateOfBirth(new Date()) : setDateOfBirth(parseISO(user.dateOfBirth));
         setEditUserView(!editUserView);
         setThisUser(user);
+        setEditedUser();
     }
 
     const handleDeleteClick = async (user) => {
@@ -73,7 +74,7 @@ const UserDetails = () => {
         }
     }
 
-    const updateField = (input, id) => {
+    const updateField = (input, id) => { // ADD VALIDATION TO EACH INPUT
         if (id === "firstName") {
             setEditedUser(prevState => ({...prevState, firstName: input}))
         }
@@ -115,6 +116,7 @@ const UserDetails = () => {
             const token = await auth.getUserToken();
 
             await updateAccount(token, thisUser.id, editedUser);// EDIT FIREBASE USER AND SEND API REQUEST
+            renderUserDataWithAdminToken();
         } catch (error) {
             console.log(error);
         } finally {
