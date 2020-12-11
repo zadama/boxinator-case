@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
-import { getAllAccounts } from '../../api/user';
+import { getAllAccounts, deleteAccount } from '../../api/user';
 import DatePicker from 'react-datepicker';
 import { parseISO } from 'date-fns';
 
@@ -54,13 +54,21 @@ const UserDetails = () => {
         setThisUser(user);
     }
 
-    const handleDeleteClick = (user) => {
+    const handleDeleteClick = async (user) => {
         let confirm = prompt("Are you sure you want to delete the account with id: "
         +user.id+"?\nProvide this phrase to confirm delete: "+user.email, "");
 
         if (confirm !== user.email) {
             alert("Incorrect confirmation credentials provided. Try again.");
         } else {
+            try {
+                const token = await auth.getUserToken();
+
+                await deleteAccount(token, user.id); // NOT WORKING (object is not a function??)
+
+            } catch (error) {
+                console.log(error);
+            }
             console.log("DELETE"); // DELETE FROM FIREBASE AND SEND API REQUEST
         }
     }

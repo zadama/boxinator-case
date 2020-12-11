@@ -1,4 +1,4 @@
-import { USER } from "../utils/roles";
+import { USER, ADMIN } from "../utils/roles";
 import Api from "./axios";
 
 // Only for testing purposes...
@@ -9,6 +9,25 @@ const getAllAccounts = (token) => {
     },
   });
 };
+
+const deleteAccount = (token, account_id) => {
+  return Api.delete("/account/"+account_id, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
+};
+
+const updateAccount = (token, account_id, newUser) => {
+  return Api.patch("/account/"+account_id, {
+    headers: {
+      Authorization: `${token}`
+    },
+    body: {
+      newUser // ?? something like this
+    }
+  })
+}
 
 
 const checkToken = (token) => {
@@ -51,4 +70,4 @@ const createUser = (
   });
 };
 
-export { getAllAccounts, createUser, checkToken, getUserRole };
+export { getAllAccounts, deleteAccount, createUser, checkToken, getUserRole };
