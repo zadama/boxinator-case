@@ -42,4 +42,13 @@ const getAllCountries = (token) => {
         });
 };
 
-export { addCountry, getAllCountries, updateCountryById };
+const deleteCountryById = (
+        id,
+        token
+) => {
+    return Api.get(`/settings/country/remove/${id}`, {
+        headers: {Authorization: `Bearer ${token}`}
+    });
+};
+
+export { addCountry, getAllCountries, updateCountryById, deleteCountryById };

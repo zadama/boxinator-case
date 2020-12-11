@@ -71,7 +71,11 @@ const CountryPage = () => {
             <td>{country.countryCode}</td>
             <td>{country.feeMultiplier}</td>
             <td>
-                <EditModal country={country} updateCountry={onUpdateCountryClicked}/>
+                <div className="row">
+                    <EditModal country={country} updateCountry={onUpdateCountryClicked}/>
+                    <button className="btn btn-sm btn-danger">Delete</button>
+                </div>
+
             </td>
         </tr>
     );
