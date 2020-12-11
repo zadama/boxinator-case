@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {addCountry, updateCountryById} from "../../api/countries";
+import {addCountry, deleteCountryById, updateCountryById} from "../../api/countries";
 import {getAllCountries} from "../../api/countries";
 import {useAuth} from "../../context/auth";
 
 import "./styles.scss";
 import EditModal from "./EditModal";
 import AddCountryModal from "./AddCountryModal";
+import DeleteCountryModal from "./DeleteCountryModal";
 
 
 const CountryPage = () => {
@@ -64,6 +65,19 @@ const CountryPage = () => {
         setIsLoading(false);
     };
 
+    const onDeleteCountryClicked = async (id) => {
+        setIsLoading(true);
+        try {
+            const token = await auth.getUserToken();
+            await deleteCountryById(id, token);
+        } catch (error) {
+            console.log(error, "Unable to delete country with id: " + id);
+        }finally {
+            setIsLoading(false);
+            await fetchCountries();
+        }
+    }
+
     const countryObjects = countries.map((country) =>
         <tr key={country.id}>
             <td>{country.id}</td>
@@ -73,7 +87,7 @@ const CountryPage = () => {
             <td>
                 <div className="row">
                     <EditModal country={country} updateCountry={onUpdateCountryClicked}/>
-                    <button className="btn btn-sm btn-danger">Delete</button>
+                    <DeleteCountryModal country={country} deleteCountry={onDeleteCountryClicked}/>
                 </div>
 
             </td>

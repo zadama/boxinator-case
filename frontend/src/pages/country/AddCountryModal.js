@@ -6,7 +6,6 @@ const { useState } = require("react");
 const AddCountryModal = props => {
 
     const [modal, showModal] = useState(false);
-
     const [name, setName] = useState("");
     const [countryCode, setCountryCode] = useState("");
     const [feeMultiplier, setFeeMultiplier] = useState(0);
@@ -53,10 +52,11 @@ const AddCountryModal = props => {
                                        onChange={onFeeMultiplierChanged}/>
                             </div>
                         </form>
+                        <button onClick={onAddClicked} className="btn btn-info"
+                                type="button">Add</button>
+                        <button onClick={onClose} className="btn btn-danger">Cancel</button>
                     </div>
-                    <button onClick={onAddClicked} className="btn btn-info"
-                            type="button">Add</button>
-                    <button onClick={onClose} className="btn btn-danger">Cancel</button>
+
                 </Modal>
             </div>
         );

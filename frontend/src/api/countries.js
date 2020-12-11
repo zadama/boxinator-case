@@ -46,7 +46,7 @@ const deleteCountryById = (
         id,
         token
 ) => {
-    return Api.get(`/settings/country/remove/${id}`, {
+    return Api.delete(`/settings/country/remove/${id}`, {
         headers: {Authorization: `Bearer ${token}`}
     });
 };

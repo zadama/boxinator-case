@@ -29,7 +29,7 @@ const EditModal = props => {
         <div className="edit-country-modal">
             <button onClick={() => {
                 showModal(true);
-            }} className="btn btn-info btn-sm mt-0">Edit</button>
+            }} className="btn btn-info btn-sm ml-2 mt-0">Edit</button>
 
             <Modal isVisible={modal} onClose={onClose}>
 
@@ -54,9 +54,10 @@ const EditModal = props => {
                                    onChange={onFeeMultiplierChanged}/>
                         </div>
                     </form>
+                    <button onClick={onUpdateClicked} className="btn btn-info">Save</button>
+                    <button onClick={onClose} className="btn btn-danger">Cancel</button>
                 </div>
-                <button onClick={onUpdateClicked} className="btn btn-info">Save</button>
-                <button onClick={onClose} className="btn btn-danger">Cancel</button>
+
             </Modal>
         </div>
     );
