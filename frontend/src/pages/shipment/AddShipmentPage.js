@@ -59,8 +59,10 @@ const AddShipmentPage = ({ history }) => {
       );
 
       if (result.status === 201) {
-        // create a toast,popup or something that shows that order was successful
+        // create a confirm modal of some sort...
         // also maybe, redirect to user handle shipments?
+        // Send shipment Id with and show success message in handle shipments instead
+        // with latest shipment highlughted by getting shipment id in location state
       }
     } catch (error) {
       console.log(error);
