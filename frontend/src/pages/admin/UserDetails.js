@@ -5,8 +5,9 @@ import "./style.scss";
 
 import { useAuth } from "../../context/auth";
 import { getAllCountries } from '../../api/countries';
-import { getAllAccounts, deleteAccount } from '../../api/user';
+import { getAllAccounts } from '../../api/user';
 import EditUserModal from './userdetails/EditUserModal';
+import DeleteUserModal from './userdetails/DeleteUserModal';
 
 
 const UserDetails = () => {
@@ -14,6 +15,7 @@ const UserDetails = () => {
     const [data, setData] = useState(null);
     const [countries, setCountries] = useState([]);
     const [editUserView, setEditUserView] = useState(false);
+    const [deleteUserView, setDeleteUserView] = useState(false);
     const [thisUser, setThisUser] = useState(null);
 
     const renderUserDataWithAdminToken = async () => {
@@ -49,22 +51,9 @@ const UserDetails = () => {
         setThisUser(user);
     }
 
-    const handleDeleteClick = async (user) => { // Open modal when admin wants to delete account
-        let confirm = prompt("Are you sure you want to delete the account with id: "
-        +user.id+"?\nProvide this phrase to confirm delete: "+user.email, "");
-
-        if (confirm !== user.email) {
-            alert("Incorrect confirmation credentials provided. Try again.");
-        } else {
-            try {
-                const token = await auth.getUserToken(); // Get sessiontoken
-
-                await deleteAccount(token, user.id); // Pass token and pathvariable
-
-            } catch (error) {
-                console.log(error);
-            }
-        }
+    const handleDeleteClick = (user) => { // Open modal when admin wants to delete account
+        setDeleteUserView(!deleteUserView);
+        setThisUser(user);
     }
 
     return (
@@ -110,6 +99,7 @@ const UserDetails = () => {
         )}
         <section>
             {editUserView && <EditUserModal thisUser={thisUser} countries={countries} reRender={renderUserDataWithAdminToken} />}
+            {deleteUserView && <DeleteUserModal thisUser={thisUser} />}
         </section>
     </>
     )
