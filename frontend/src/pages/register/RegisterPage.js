@@ -1,6 +1,7 @@
 import React from "react";
+import { useForm } from "react-hook-form";
+
 import { useState } from "react";
-import Form from "react-bootstrap/Form";
 import Select, { components } from "react-select";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -39,17 +40,16 @@ const IconOption = (props) => {
 };
 
 const RegisterPage = ({ history }) => {
-  // Make a component out of the country selecter and have
-  // isLoding only there.
-  const [isloading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const {
+    register: registerForm,
+    handleSubmit,
+    watch,
+    errors,
+    getValues,
+  } = useForm();
 
-  const [contactNumber, setContactNumber] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [isloading, setIsLoading] = useState(false);
+
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [country, setCountry] = useState("");
 
@@ -74,9 +74,9 @@ const RegisterPage = ({ history }) => {
    * samma email.
    */
 
-  const handleRegistration = async () => {
+  const handleRegistration = async (data) => {
     try {
-      const user = await register(email, password);
+      const user = await register(data.email, data.password);
 
       alert(
         "You need to enroll with 2-factor authentication! Verify your email before adding your number."
@@ -85,6 +85,7 @@ const RegisterPage = ({ history }) => {
       setShowModal(true);
     } catch (error) {
       const errorHandler = AuthErrorHandling[error.code];
+      console.log(error.code);
 
       if (errorHandler != null) {
         setErrorMessage(errorHandler.response);
@@ -117,6 +118,15 @@ const RegisterPage = ({ history }) => {
   }, []);
 
   const onSuccess = async () => {
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      zipCode,
+      contactNumber,
+    } = getValues();
+
     try {
       await createUser(
         email,
@@ -158,8 +168,8 @@ const RegisterPage = ({ history }) => {
       {showModal && (
         <Modal
           onSuccess={onSuccess}
+          initialNumber={watch("contactNumber")}
           firebase={firebase}
-          initialNumber={contactNumber}
           onClose={() => {
             setShowModal(false);
           }}
@@ -169,7 +179,7 @@ const RegisterPage = ({ history }) => {
       {isloading ? (
         <PageLoader />
       ) : (
-        <div className="register">
+        <form className="register" onSubmit={handleSubmit(handleRegistration)}>
           {errorMessage && (
             <Alert
               message={errorMessage}
@@ -184,77 +194,116 @@ const RegisterPage = ({ history }) => {
             <label className="label">Firstname</label>
             <input
               type="text"
+              name="firstName"
               placeholder="Firstname"
               className="input"
-              value={firstName}
-              onChange={(e) => {
-                setFirstName(e.target.value);
-              }}
+              ref={registerForm({
+                required: true,
+                minLength: 2,
+                maxLength: 35,
+              })}
+              style={{ borderColor: errors.firstName && "red" }}
             ></input>
+            {errors.firstName && (
+              <span className="error-span">Invalid Firstname</span>
+            )}
           </div>
           <div className="register-form-group half-width">
             <label className="label">Lastname</label>
             <input
               type="text"
+              name="lastName"
               placeholder="Lastname"
               className="input"
-              value={lastName}
-              onChange={(e) => {
-                setLastName(e.target.value);
-              }}
+              ref={registerForm({
+                required: true,
+                minLength: 2,
+                maxLength: 35,
+              })}
+              style={{ borderColor: errors.lastName && "red" }}
             ></input>
+            {errors.lastName && (
+              <span className="error-span">Invalid Lastname</span>
+            )}
           </div>
 
           <div className="register-form-group full-width">
             <label className="label">Email</label>
             <input
               type="email"
+              name="email"
               placeholder="Email"
               className="input"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
+              ref={registerForm({
+                required: "Enter your e-mail",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                  message: "Enter a valid e-mail address",
+                },
+              })}
+              style={{ borderColor: errors.email && "red" }}
             ></input>
+
+            {errors.email && (
+              <span className="error-span">{errors.email.message}</span>
+            )}
           </div>
 
           <div className="register-form-group half-width">
             <label className="label">Password</label>
             <input
               type="password"
+              name="password"
               placeholder="Password"
               className="input"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              ref={registerForm({
+                required: true,
+                minLength: 6,
+              })}
+              style={{ borderColor: errors.password && "red" }}
             ></input>
+            {errors.password && (
+              <span className="error-span">Invalid Password</span>
+            )}
           </div>
 
           <div className="register-form-group half-width">
             <label className="label">Confirm Password</label>
             <input
               type="password"
+              name="confirmPassword"
               placeholder="Confirm Password"
               className="input"
-              value={confirmPassword}
-              onChange={(e) => {
-                setConfirmPassword(e.target.value);
-              }}
+              ref={registerForm({
+                required: true,
+                minLength: 6,
+                validate: (value) =>
+                  value === watch("password") || "Passwords don't match.",
+              })}
+              style={{ borderColor: errors.confirmPassword && "red" }}
             ></input>
+            {errors.confirmPassword && (
+              <span className="error-span">
+                {errors.confirmPassword.message}
+              </span>
+            )}
           </div>
 
           <div className="register-form-group half-width">
             <label className="label">Phone number</label>
             <input
               type="text"
+              name="contactNumber"
               placeholder="Phone number"
               className="input"
-              value={contactNumber}
-              onChange={(e) => {
-                setContactNumber(e.target.value);
-              }}
+              ref={registerForm({
+                required: true,
+              })}
+              style={{ borderColor: errors.contactNumber && "red" }}
             ></input>
+            {errors.contactNumber && (
+              <span className="error-span">Invalid ContactNumber</span>
+            )}
           </div>
 
           <div className="register-form-group half-width">
@@ -286,24 +335,27 @@ const RegisterPage = ({ history }) => {
             <label className="label">Zip code</label>
             <input
               type="text"
+              name="zipCode"
               placeholder="Zip code"
               className="input"
-              value={zipCode}
-              onChange={(e) => {
-                setZipCode(e.target.value);
-              }}
+              ref={registerForm({
+                required: true,
+                minLength: {
+                  value: 4,
+                  message: "Zip code must be at least 4 digits long",
+                },
+              })}
             ></input>
           </div>
 
           <Button
             className="btn register-button"
-            onClick={handleRegistration}
             variant="primary"
             type="submit"
           >
             Register
           </Button>
-        </div>
+        </form>
       )}
     </PublicLayout>
   );

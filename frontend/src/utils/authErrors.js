@@ -11,6 +11,9 @@ const AuthErrorHandling = {
   "auth/invalid-email": {
     response: "The email address is badly formatted.",
   },
+  "auth/email-already-in-use": {
+    response: "Email already in use.",
+  },
   "auth/invalid-verification-code": {
     response: "Invalid verification code.",
   },

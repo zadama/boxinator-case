@@ -81,9 +81,10 @@ const RegisterModal = ({
       setEnterVerificationCode(true);
     } catch (error) {
       const errorHandler = AuthErrorHandling[error.code];
+      console.log(error.code, errorHandler.response);
 
       if (errorHandler != null) {
-        setErrorMessage(errorHandler.response);
+        setErrorMessage({ code: error.code, response: errorHandler.response });
       }
 
       if (error.code === "auth/requires-recent-login") {
@@ -120,7 +121,7 @@ return user.reauthenticateWithCredential(credential);
       const errorHandler = AuthErrorHandling[error.code];
 
       if (errorHandler != null) {
-        setErrorMessage(errorHandler.response);
+        setErrorMessage({ code: error.code, response: errorHandler.response });
       }
     }
   };
@@ -136,14 +137,12 @@ return user.reauthenticateWithCredential(credential);
 
         {errorMessage && (
           <>
-            {errorMessage === "auth/unverified-email" ? (
+            {errorMessage.code === "auth/unverified-email" ? (
               <section
                 className="resend-code"
                 style={{ width: "100%", padding: "20px" }}
               >
-                <p className="error-message">
-                  Did the verification email not work? Try again.
-                </p>
+                <p className="error-message">{errorMessage.response}</p>
 
                 <button
                   onClick={() => {
