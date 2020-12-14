@@ -1,7 +1,6 @@
-const authErrors = {
-  "correct-now": { response: "hejehej" },
-  wrong: { response: "ddaåsdpåasdp" },
-};
+const { ntc } = require("./ntc");
 
-const res = authErrors["correct-now"];
-console.log(res == null ? "unhandled error" : res.response);
+var n_match = ntc.name("#34eb86");
+var n_name = n_match[1]; // This is the text string for the name of the match
+
+console.log(n_name);

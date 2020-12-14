@@ -6,6 +6,7 @@ import { useAuth } from "../../context/auth";
 import ShipmentForm from "./components/ShipmentForm";
 import CompleteOrder from "./components/CompleteOrder";
 import { createShipment } from "../../api/shipments";
+import { ntc as convertHex } from "../../utils/ntc";
 
 const AddShipmentPage = ({ history }) => {
   const { logout, getUserToken } = useAuth();
@@ -43,13 +44,15 @@ const AddShipmentPage = ({ history }) => {
   };
 
   const onHandleShipment = async () => {
+    const match = convertHex.name(state.colorValue);
+    const colorName = match[1];
     try {
       const token = await getUserToken();
-      // set shipmentstatus in backend instead?
+      // set shipmentstatus in backend instead? (IN_TRANSIT part)
       const result = await createShipment(
         {
           weight: state.boxWeight,
-          boxColour: state.colorValue,
+          boxColour: colorName ? colorName : state.colorValue,
           receiver: state.receiver,
           sourceCountry: state.sourceCountry.value,
           shipmentStatus: "IN_TRANSIT",
