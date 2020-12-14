@@ -15,7 +15,9 @@ import PageLoader from "../../components/loader";
 
 import firebase from "../../context/firebase";
 import Modal from "../../components/modal/LoginModal";
+import Alert from "../../components/alert";
 import { useRef } from "react";
+import { AuthErrorHandling } from "../../utils/authErrors";
 
 const LoginPage = ({ history }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,15 +33,19 @@ const LoginPage = ({ history }) => {
 
   const handleLogin = async (e) => {
     // setIsLoading(true);
-
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password);
 
       alert("User without 2 factor not allowed....");
     } catch (error) {
-      if (error.code === "auth/wrong-password") {
-        //....
-        setErrorMessage("Could not login: " + error.code);
+      const errorHandler = AuthErrorHandling[error.code];
+
+      if (errorHandler != null) {
+        setErrorMessage(errorHandler.response);
+        // After 3 seconds, remove the error message
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 3000);
       }
 
       if (error.code === "auth/multi-factor-auth-required") {
@@ -47,8 +53,6 @@ const LoginPage = ({ history }) => {
         resolverRef.current = error.resolver;
         setShowModal(true);
       }
-    } finally {
-      //setIsLoading(false);
     }
   };
 
@@ -76,7 +80,15 @@ const LoginPage = ({ history }) => {
       )}
 
       <div className="login">
-        {errorMessage}
+        {errorMessage && (
+          <Alert
+            message={errorMessage}
+            onClose={() => {
+              setErrorMessage("");
+            }}
+            variant={"danger"}
+          />
+        )}
 
         <div className="form">
           <div className="custom-form-group">

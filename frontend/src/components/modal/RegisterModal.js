@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { useRef, useState } from "react";
+import { AuthErrorHandling } from "../../utils/authErrors";
 
 import "./style.scss";
 import useClickOuteside from "./useClickOutside";
@@ -44,7 +45,7 @@ const RegisterModal = ({
       {
         size: "invisible",
         callback: function (response) {
-          console.log("[CAPTCHA RESOLVED]", response);
+          console.log("[CAPTCHA RESOLVED]");
         },
       }
     );
@@ -79,16 +80,22 @@ const RegisterModal = ({
 
       setEnterVerificationCode(true);
     } catch (error) {
-      console.log(error);
-      if (
-        error.code === "auth/unverified-email" ||
-        error.message === "auth/unverified-email"
-      ) {
-        setErrorMessage(error.code);
+      const errorHandler = AuthErrorHandling[error.code];
+
+      if (errorHandler != null) {
+        setErrorMessage(errorHandler.response);
       }
 
-      // handle "auth/requires-recent-login", occurs when there is a "break" between sending
-      // a new verification code
+      if (error.code === "auth/requires-recent-login") {
+        // Re-authenticate user.
+        /**
+         * var user = firebase.auth().currentUser;
+var credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
+
+// Prompt the user to re-provide their sign-in credentials
+return user.reauthenticateWithCredential(credential);
+         */
+      }
     }
   };
 
@@ -110,7 +117,11 @@ const RegisterModal = ({
 
       onSuccess();
     } catch (error) {
-      setErrorMessage(error.code);
+      const errorHandler = AuthErrorHandling[error.code];
+
+      if (errorHandler != null) {
+        setErrorMessage(errorHandler.response);
+      }
     }
   };
 

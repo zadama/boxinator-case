@@ -20,6 +20,8 @@ import { createUser } from "../../api/user";
 import firebase from "../../context/firebase";
 import { useRef } from "react";
 import Modal from "../../components/modal/RegisterModal";
+import { AuthErrorHandling } from "../../utils/authErrors";
+import Alert from "../../components/alert";
 var appVerifier = null;
 
 const { Option } = components;
@@ -46,6 +48,7 @@ const RegisterPage = ({ history }) => {
   const { user, register, reloadUser, deleteUser } = useAuth();
 
   const [showModal, setShowModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   /*
   const handleChange = (e) => {
@@ -72,8 +75,14 @@ const RegisterPage = ({ history }) => {
 
       setShowModal(true);
     } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
-        console.log("That email address is already in use!");
+      const errorHandler = AuthErrorHandling[error.code];
+
+      if (errorHandler != null) {
+        setErrorMessage(errorHandler.response);
+
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 3000);
       }
     }
   };
@@ -152,6 +161,16 @@ const RegisterPage = ({ history }) => {
         <PageLoader />
       ) : (
         <div className="register">
+          {errorMessage && (
+            <Alert
+              message={errorMessage}
+              onClose={() => {
+                setErrorMessage("");
+              }}
+              variant={"danger"}
+            />
+          )}
+
           <div className="register-form-group half-width">
             <label className="label">Firstname</label>
             <input

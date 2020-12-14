@@ -5,6 +5,8 @@ import { useRef, useState } from "react";
 import "./style.scss";
 import Loader from "../../components/loader";
 import useClickOuteside from "./useClickOutside";
+import { AuthErrorHandling } from "../../utils/authErrors";
+import Alert from "../alert";
 
 const LoginModal = ({ children, onClose, firebase, resolver }) => {
   const recaptchaWrapperRef = useRef();
@@ -37,7 +39,7 @@ const LoginModal = ({ children, onClose, firebase, resolver }) => {
       {
         size: "invisible",
         callback: function (response) {
-          console.log("[CAPTCHA RESOLVED]", response);
+          console.log("[CAPTCHA RESOLVED]");
         },
       }
     );
@@ -57,8 +59,13 @@ const LoginModal = ({ children, onClose, firebase, resolver }) => {
 
       alert("sms text sent!");
     } catch (error) {
-      if (error.code) {
-        setErrorMessage(error.code.substring(5));
+      const errorHandler = AuthErrorHandling[error.code];
+      if (errorHandler != null) {
+        setErrorMessage(errorHandler.response);
+
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 3000);
       }
     } finally {
       setIsLoading(false);
@@ -79,7 +86,10 @@ const LoginModal = ({ children, onClose, firebase, resolver }) => {
     try {
       await resolver.resolveSignIn(multiFactorAssertion);
     } catch (error) {
-      console.log(error);
+      const errorHandler = AuthErrorHandling[error.code];
+      if (errorHandler != null) {
+        alert(errorHandler.response);
+      }
     }
   };
 
@@ -92,7 +102,18 @@ const LoginModal = ({ children, onClose, firebase, resolver }) => {
         <div ref={recaptchaWrapperRef}>
           <div style={{ display: "none" }} id="recaptcha-container"></div>
         </div>
-        {!isLoading && errorMessage == null ? (
+
+        {errorMessage && (
+          <Alert
+            message={errorMessage}
+            onClose={() => {
+              setErrorMessage("");
+            }}
+            variant={"danger"}
+          />
+        )}
+
+        {!isLoading ? (
           <div>
             <h4>Enter the verification code that was sent to your Phone</h4>
             <input
@@ -110,8 +131,6 @@ const LoginModal = ({ children, onClose, firebase, resolver }) => {
               Submit
             </button>{" "}
           </div>
-        ) : !isLoading && errorMessage != null ? (
-          <div>{errorMessage} - Please try again later...</div>
         ) : (
           <Loader />
         )}
