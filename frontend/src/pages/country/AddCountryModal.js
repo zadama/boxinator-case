@@ -9,7 +9,7 @@ const AddCountryModal = props => {
 
     const [modal, showModal] = useState(false);
 
-    const {values, errors,handleChange, handleSubmit} = useForm(addCountry, validate);
+    const {values, errors, handleChange, handleSubmit} = useForm(addCountry, validate);
 
     function addCountry() {
         props.addCountry(values);

@@ -16,6 +16,7 @@ const CountryPage = () => {
     const [countries, setCountries] = useState([]);
 
     const onAddCountryClicked = async (country) => {
+        console.log("inside onAddcountryclicked");
         setIsLoading(true);
         try {
             const token = await auth.getUserToken();
@@ -29,6 +30,7 @@ const CountryPage = () => {
     };
 
    const onUpdateCountryClicked = async (country) => {
+       console.log(country);
         setIsLoading(true);
         try {
             const token = await auth.getUserToken();
