@@ -6,7 +6,7 @@ export default function validate(values) {
 
     if (!values.name) {
         errors.name = "Name of country is required.";
-    } else if (!/^[a-zA-Z]+$/.test(values.name)) {
+    } else if (!/^[a-zA-Z ]+$/.test(values.name)) {
         errors.name = 'Country name is invalid, please enter letters only.';
     }
     if (!values.countryCode) {

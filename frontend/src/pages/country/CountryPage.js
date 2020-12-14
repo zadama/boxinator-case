@@ -4,7 +4,7 @@ import {getAllCountries} from "../../api/countries";
 import {useAuth} from "../../context/auth";
 
 import "./styles.scss";
-import EditModal from "./EditModal";
+import EditModal from "./UpdateCountryModal";
 import AddCountryModal from "./AddCountryModal";
 import DeleteCountryModal from "./DeleteCountryModal";
 

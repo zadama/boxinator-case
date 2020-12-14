@@ -1,11 +1,11 @@
-import Modal from "../../components/modal/index";
+import Modal from "../../components/modal";
 import React, {useEffect} from "react";
 import useForm from "./useForm";
 import validate from "./FormValidations";
 
 const { useState } = require("react");
 
-const EditModal = props => {
+const UpdateCountryModal = props => {
 
     const [modal, showModal] = useState(false);
     const [id, setId] = useState(props.country.id);
@@ -43,7 +43,7 @@ const EditModal = props => {
                                 <strong>Country name:</strong>
                             </label>
                             <input  type="text"
-                                    className={`form-control has-validation ${errors.name && "is-invalid"}`}
+                                    className={`form-control ${errors.name && "is-invalid"}`}
                                     value={values.name || ""}
                                     id="countryName"
                                     name="name"
@@ -57,7 +57,7 @@ const EditModal = props => {
                                 <strong>Country Abbreviation:</strong>
                             </label>
                             <input  type="text"
-                                    className={`form-control has-validation ${errors.countryCode && "is-invalid"}`}
+                                    className={`form-control ${errors.countryCode && "is-invalid"}`}
                                     value={values.countryCode || ""}
                                     id="countryCode"
                                     name="countryCode"
@@ -71,7 +71,7 @@ const EditModal = props => {
                                 <strong>Fee multiplier:</strong>
                             </label>
                             <input  type="text"
-                                    className={`form-control has-validation ${errors.feeMultiplier && "is-invalid"}`}
+                                    className={`form-control ${errors.feeMultiplier && "is-invalid"}`}
                                     value={values.feeMultiplier || ""}
                                     id="feeMultiplier"
                                     name="feeMultiplier"
@@ -91,4 +91,4 @@ const EditModal = props => {
     );
 };
 
-export default EditModal;
+export default UpdateCountryModal;

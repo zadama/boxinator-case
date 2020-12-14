@@ -1,4 +1,4 @@
-import Modal from "../../components/modal/index";
+import Modal from "../../components/modal";
 import React from "react";
 import useForm from "./useForm";
 import validate from "./FormValidations";
@@ -28,16 +28,14 @@ const AddCountryModal = props => {
                     Add country </button>
 
                 <Modal className="add-country-modal" isVisible={modal} onClose={onClose}>
-
                     <div className="add-country-form">
-
                         <form onSubmit={handleSubmit} className="needs-validation" noValidate>
                             <div className="form-group">
                                 <label htmlFor="countryName" className="form-label">
                                     <strong>Country name:</strong>
                                 </label>
                                 <input type="text"
-                                       className={`form-control has-validation ${errors.name && "is-invalid"}`}
+                                       className={`form-control ${errors.name && "is-invalid"}`}
                                        placeholder="Country Name"
                                        id="countryName"
                                        name="name"
@@ -52,7 +50,7 @@ const AddCountryModal = props => {
                                     <strong>Country Abbreviation:</strong>
                                 </label>
                                 <input type="text"
-                                       className={`form-control has-validation ${errors.countryCode && "is-invalid"}`}
+                                       className={`form-control ${errors.countryCode && "is-invalid"}`}
                                        placeholder="Country Code"
                                        id="countryCode"
                                        name="countryCode"
@@ -67,7 +65,7 @@ const AddCountryModal = props => {
                                     <strong>Fee multiplier:</strong>
                                 </label>
                                 <input type="text"
-                                       className={`form-control has-validation ${errors.feeMultiplier && "is-invalid"}`}
+                                       className={`form-control ${errors.feeMultiplier && "is-invalid"}`}
                                        placeholder="Fee Multiplier"
                                        id="feeMultiplier"
                                        name="feeMultiplier"
