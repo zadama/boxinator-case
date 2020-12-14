@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
-import { getAllAccounts, updateAccount, deleteAccount } from '../../api/user';
 import DatePicker from 'react-datepicker';
 import { parseISO } from 'date-fns';
+import Modal from '../../components/modal/index';
 
 import "./style.scss";
 
 import { useAuth } from "../../context/auth";
 import { getAllCountries } from '../../api/countries';
+import { getAllAccounts, updateAccount, deleteAccount } from '../../api/user';
+import { ADMIN, USER } from '../../utils/roles';
 
 
 const UserDetails = () => {
@@ -18,6 +20,7 @@ const UserDetails = () => {
     const [editUserView, setEditUserView] = useState(false);
     const [thisUser, setThisUser] = useState(null);
     const [editedUser, setEditedUser] = useState({});
+    const [invalidInput, setInvalidInput] = useState(false);
 
     const renderUserDataWithAdminToken = async () => {
         try {
@@ -47,15 +50,14 @@ const UserDetails = () => {
         renderUserDataWithAdminToken();
     }, [])
 
-    const handleEditClick = (user) => {
-        console.log("EDITING");
-        !user.dateOfBirth ? setDateOfBirth(new Date()) : setDateOfBirth(parseISO(user.dateOfBirth));
+    const handleEditClick = (user) => { // Called when an admin starts to edit an account
+        !user.dateOfBirth ? setDateOfBirth(new Date()) : setDateOfBirth(parseISO(user.dateOfBirth)); // If user does not have a chosen DoB, set a temporary one
         setEditUserView(!editUserView);
         setThisUser(user);
         setEditedUser();
     }
 
-    const handleDeleteClick = async (user) => {
+    const handleDeleteClick = async (user) => { // Open modal when admin wants to delete account
         let confirm = prompt("Are you sure you want to delete the account with id: "
         +user.id+"?\nProvide this phrase to confirm delete: "+user.email, "");
 
@@ -63,28 +65,47 @@ const UserDetails = () => {
             alert("Incorrect confirmation credentials provided. Try again.");
         } else {
             try {
-                const token = await auth.getUserToken();
+                const token = await auth.getUserToken(); // Get sessiontoken
 
-                await deleteAccount(token, user.id); // NOT WORKING (object is not a function??)
+                await deleteAccount(token, user.id); // Pass token and pathvariable
 
             } catch (error) {
                 console.log(error);
             }
-            console.log("DELETE"); // DELETE FROM FIREBASE AND SEND API REQUEST
         }
     }
 
-    const updateField = (input, id) => { // ADD VALIDATION TO EACH INPUT
+    const updateField = (input, id) => { // ADD VALIDATION TO EACH INPUT, logic is currently messed up
+        let regex = "";
         if (id === "firstName") {
-            setEditedUser(prevState => ({...prevState, firstName: input}))
+            regex = /^[A-Za-z]+$/;
+            if (input.match(regex)) {
+                setInvalidInput(false);
+                setEditedUser(prevState => ({...prevState, firstName: input}))
+            } else {
+                setInvalidInput(true);
+            }
         }
         
         if (id === "lastName") {
-            setEditedUser(prevState => ({...prevState, lastName: input}))
+            regex = /^[A-Za-z]+$/;
+            if (input.match(regex)) {
+                setInvalidInput(false);
+                setEditedUser(prevState => ({...prevState, lastName: input}))
+            } else {
+                setInvalidInput(true);
+            }
         }
 
         if (id === "email") {
-            setEditedUser(prevState => ({...prevState, email: input}))
+            regex = /\S+@\S+\.\S+/;
+            if (input.match(regex)) {
+                setInvalidInput(false);
+                setEditedUser(prevState => ({...prevState, email: input}))
+            } else {
+                setInvalidInput(true);
+            }
+            
         }
 
         if (id === "dateOfBirth") {
@@ -93,7 +114,13 @@ const UserDetails = () => {
         }
 
         if (id === "zipCode") {
-            setEditedUser(prevState => ({...prevState, zipCode: input}))
+            regex = /^[0-9]/;
+            if (input.match(regex)) {
+                setInvalidInput(false);
+                setEditedUser(prevState => ({...prevState, zipCode: input}))
+            } else {
+                setInvalidInput(true);
+            }
         }
 
         if (id === "country") {
@@ -101,33 +128,38 @@ const UserDetails = () => {
         }
 
         if (id === "contactNumber") {
-            setEditedUser(prevState => ({...prevState, contactNumber: input}))
+            regex = /^[0-9]/;
+            if (input.match(regex)) {
+                setInvalidInput(false);
+                setEditedUser(prevState => ({...prevState, contactNumber: input}))
+            } else {
+                setInvalidInput(true);
+            }
         }
-
         if (id === "role") {
+            console.log(input);
             setEditedUser(prevState => ({...prevState, role: input}))
         }
+
         
     }
 
-    const handleSaveEditedUser = async () => {
-        console.log("SAVED");
+    const handleSaveEditedUser = async () => { // Called when an admin saves changes to an account
         try {
-            const token = await auth.getUserToken();
+            const token = await auth.getUserToken(); // Get sessiontoken
 
-            await updateAccount(token, thisUser.id, editedUser);// EDIT FIREBASE USER AND SEND API REQUEST
-            renderUserDataWithAdminToken();
+            await updateAccount(token, thisUser.id, editedUser); // Pass token, pathvariable and body with request
+            renderUserDataWithAdminToken(); // Rerender page
         } catch (error) {
             console.log(error);
         } finally {
-            setEditedUser([]);
+            setEditedUser([]); // No matter what, editedUser object is reset and popup closed
             setEditUserView(!editUserView);
         }
         
     }
 
-    const handleCancelEditUserView = () => {
-        console.log("CANCELLED");
+    const handleCancelEditUserView = () => { // Called if the admin cancels editing an account
         setEditedUser([]);
         setEditUserView(!editUserView);
     }
@@ -173,11 +205,11 @@ const UserDetails = () => {
                 </tbody> 
             </Table>
         )}
-        {!editUserView ? "" : <div className="edit-user-view">
+        {!editUserView ? "" : <Modal isVisible={editUserView} onClose={handleCancelEditUserView}>
                 <h1>{thisUser.firstName} {thisUser.lastName}</h1>
-                <div className="dual-inputs">
+                
                     <div>
-                        <label>Firstname: </label><br/>
+                        <label>Firstname: </label>
                         <input 
                         type="text" 
                         id="firstName"
@@ -185,17 +217,15 @@ const UserDetails = () => {
                         onChange={(event) => updateField(event.target.value, event.target.id)}></input>
                     </div>
                     <div>
-                        <label>Lastname: </label><br/>
+                        <label>Lastname: </label>
                         <input 
                         type="text" 
                         id="lastName"
                         defaultValue={thisUser.lastName}
                         onChange={(event) => updateField(event.target.value, event.target.id)}></input>
                     </div>
-                </div>
-                <div className="dual-inputs">
                     <div>
-                        <label>Email: </label><br/>
+                        <label>Email: </label>
                         <input 
                         type="text"
                         id="email"
@@ -203,8 +233,7 @@ const UserDetails = () => {
                         onChange={(event) => updateField(event.target.value, event.target.id)}></input>
                     </div>
                     <div>
-                        <label>Date of birth: </label><br/>
-                        
+                        <label>Date of birth: </label>
                         <DatePicker
                             selected={dateOfBirth}
                             showYearDropdown
@@ -214,18 +243,17 @@ const UserDetails = () => {
                             className="date-picker"
                         />
                     </div>
-                </div>
-                <div className="dual-inputs">
                     <div>
-                        <label>Zip Code: </label><br/>
+                        <label>Zip Code: </label>
                         <input 
                         type="text" 
                         id="zipCode"
+                        maxLength="6"
                         defaultValue={thisUser.zipCode}
                         onChange={(event) => updateField(event.target.value, event.target.id)}></input>
                     </div>
                     <div>
-                        <label>Country: </label><br/>
+                        <label>Country: </label>
                         <select
                             placeholder={thisUser.country}
                             options={countries}
@@ -240,30 +268,29 @@ const UserDetails = () => {
                             })}
                         </select>
                     </div>
-                </div>
-
-                <div className="dual-inputs">
                     <div>
-                        <label>Contact Number: </label><br/>
+                        <label>Contact Number: </label>
                         <input 
                         type="text"
                         id="contactNumber"
+                        maxLength="20"
                         defaultValue={thisUser.contactNumber}
                         onChange={(event) => updateField(event.target.value, event.target.id)}></input>
                     </div>
                     <div>
-                        <label>Role: </label><br/>
-                        <input 
-                        type="text"
+                        <label>Role: </label>
+                        <select
+                        placeholder={thisUser.role}
                         id="role"
-                        defaultValue={thisUser.role}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
+                        onChange={(event) => updateField(event.target.value, event.target.id)}>
+                            <option value={USER}>USER</option>
+                            <option value={ADMIN}>ADMIN</option>
+                        </select>
                     </div>
-                </div>
 
-            <button onClick={handleSaveEditedUser}>Save</button>
+            <button disabled={invalidInput ? true : false} onClick={handleSaveEditedUser}>Save</button>
             <button onClick={handleCancelEditUserView}>Cancel</button>
-        </div>}
+        </Modal>}
     </>
     )
 
