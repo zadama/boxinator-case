@@ -22,12 +22,21 @@ import { useRef } from "react";
 import Modal from "../../components/modal/RegisterModal";
 import { AuthErrorHandling } from "../../utils/authErrors";
 import Alert from "../../components/alert";
-var appVerifier = null;
 
 const { Option } = components;
-const IconOption = (props) => (
-  <Option {...props}>Ikonhär -{props.data.label}</Option>
-);
+const IconOption = (props) => {
+  console.log(props.data);
+  return (
+    <Option {...props}>
+      <img
+        src={require("../../assets/" + props.data.label + ".svg").default}
+        alt={props.data.label}
+        style={{ maxWidth: "40px", marginRight: "10px" }}
+      ></img>{" "}
+      {props.data.label}
+    </Option>
+  );
+};
 
 const RegisterPage = ({ history }) => {
   // Make a component out of the country selecter and have
