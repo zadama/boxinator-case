@@ -36,26 +36,27 @@ const EditModal = props => {
                 <div className="edit-country-form">
                     <form>
                         <div className="form-group">
-                            <label htmlFor="countryName">Country name: </label>
+                            <label htmlFor="countryName"><strong>Country name:</strong></label>
                             <input type="text" className="form-control"
                                    value={name} id="countryName"
                                    onChange={onCountryNameChanged}/>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="countryCode">Country code: </label>
+                            <label htmlFor="countryCode"><strong>Country Abbreviation:</strong></label>
                             <input type="text" className="form-control"
                                    value={countryCode} id="countryCode"
                                    onChange={onCountryCodeChanged}/>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="feeMultiplier">Fee Multiplier: </label>
+                            <label htmlFor="feeMultiplier"><strong>Fee multiplier:</strong></label>
                             <input type="text" className="form-control"
                                    value={feeMultiplier} id="feeMultiplier"
                                    onChange={onFeeMultiplierChanged}/>
                         </div>
+                        <button onClick={onUpdateClicked} className="btn btn-info">Save</button>
+                        <button onClick={onClose} className="btn btn-danger">Cancel</button>
                     </form>
-                    <button onClick={onUpdateClicked} className="btn btn-info">Save</button>
-                    <button onClick={onClose} className="btn btn-danger">Cancel</button>
+
                 </div>
 
             </Modal>

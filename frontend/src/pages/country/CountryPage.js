@@ -113,7 +113,7 @@ const CountryPage = () => {
                     <tr>
                         <th scope="col">Country Id</th>
                         <th scope="col">Country Name</th>
-                        <th scope="col">Country Code</th>
+                        <th scope="col">Country Abbreviation</th>
                         <th scope="col">Fee Multiplier</th>
                         <th scope="col">Edit Details</th>
                     </tr>
