@@ -7,10 +7,14 @@ import { useState, useEffect } from "react";
 import Navbar from "../../components/navbar";
 import Table from "react-bootstrap/Table";
 import {getAllShipments} from "../../api/shipments";
+import { Button } from "react-bootstrap";
+import EditShipmentModal from "./EditShipmentModal";
 
 const HandleShipmentsPage = () => {
   const {getUserToken} = useAuth();
+  const [editShipmentModal, setEditShipmentModal] = useState(false);
   const [result, setResult] = useState(null);
+  const [thisShipment, setThisShipment] = useState(null);
   const renderShipmentData = async () => {
     try {
       const token = await getUserToken();
@@ -23,6 +27,11 @@ const HandleShipmentsPage = () => {
     catch(error){
       console.log(error);
     }
+  }
+
+  const handleEditClick = (item) => {
+    setEditShipmentModal(!editShipmentModal);
+    setThisShipment(item);
   }
   
   useEffect(( ) => {
@@ -70,11 +79,14 @@ const HandleShipmentsPage = () => {
               <td>{item.shipmentStatus}</td>
               <td>{item.destinationCountry}</td>
               <td>{item.sourceCountry}</td>
-              <td><button>Edit</button> <button>Delete</button></td>
+              <td><Button variant="primary"
+              onClick={()=> handleEditClick(item)}
+              >Edit</Button> <button>Delete</button></td>
               </tr>)
             })}
               </tbody>            
       </Table>
+      {editShipmentModal && <EditShipmentModal thisShipment={thisShipment}></EditShipmentModal>}
       </div>  
       </>
     }
