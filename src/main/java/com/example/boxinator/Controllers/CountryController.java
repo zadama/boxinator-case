@@ -67,6 +67,7 @@ public class CountryController {
     }
 
     @GetMapping("/all")
+
     public ResponseEntity<CommonResponse> getAllCountries(){
         CommonResponse cr = new CommonResponse();
 

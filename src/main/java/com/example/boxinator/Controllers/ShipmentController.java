@@ -2,11 +2,14 @@ package com.example.boxinator.Controllers;
 
 
 import com.example.boxinator.Models.Account;
+
+import com.example.boxinator.Models.Country;
 import com.example.boxinator.Models.Enums.AccountRole;
 import com.example.boxinator.Models.Shipment;
 import com.example.boxinator.Models.ShipmentDTO;
 import com.example.boxinator.Models.Enums.ShipmentStatus;
 import com.example.boxinator.Repositories.AccountRepository;
+import com.example.boxinator.Repositories.CountryRepository;
 import com.example.boxinator.Repositories.ShipmentRepository;
 import com.example.boxinator.Utils.AuthService.AuthResponse;
 import com.example.boxinator.Utils.AuthService.AuthenticationService;
@@ -32,17 +35,33 @@ public class ShipmentController {
     private AccountRepository accountRepository;
 
     @Autowired
+    private CountryRepository countryRepository;
+
+    @Autowired
     AuthenticationService authService;
 
     // * POST/ (create new shipment)
     @PostMapping("/create")
-    public ResponseEntity<CommonResponse> createShipment(@RequestHeader(value = "Authorization") String token, @RequestBody Shipment shipment) {
+    public ResponseEntity<CommonResponse> createShipment(@RequestHeader(value = "Authorization") String token, @RequestBody ShipmentDTO shipmentDTO) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
         if (authResponse.getStatusCode() == HttpStatus.OK) {
             try {
+                Shipment shipment = new Shipment();
                 shipment.setAccount(authResponse.getBody().account);
+                shipment.setBoxColour(shipmentDTO.getBoxColour());
+                shipment.setReceiver(shipmentDTO.getReceiver());
+                shipment.setWeight(shipmentDTO.getWeight());
+                shipment.setShipmentStatus(shipmentDTO.getShipmentStatus());
+                shipment.setSourceCountry(shipmentDTO.getSourceCountry());
+
+                Optional<Country> coutryRepo = countryRepository.findByName(shipmentDTO.getDestinationCountry());
+                Country country = coutryRepo.orElse(null);
+                shipment.setDestinationCountry(country);
+                // Must be calculated AFTER the the DestinationCountry is set.
+                shipment.setTotalPrice(shipmentDTO.getWeight() * shipment.getDestinationCountry().getFeeMultiplier());
+
                 shipmentRepository.save(shipment);
                 cr.data = shipment;
                 cr.msg = "Shipment created";
@@ -284,7 +303,7 @@ public class ShipmentController {
 
                 //   shipmentDTO.setAccountId(shipment.getAccount().getId());
                 shipmentDTO.setBoxColour(shipment.getBoxColour());
-                shipmentDTO.setDestinationCountry(shipment.getDestinationCountry());
+                shipmentDTO.setDestinationCountry(shipment.getDestinationCountry().getName());
                 shipmentDTO.setWeight(shipment.getWeight());
                 shipmentDTO.setReceiver(shipment.getReceiver());
                 shipmentDTO.setShipmentId(shipment.getId());

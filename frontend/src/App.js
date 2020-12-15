@@ -26,6 +26,7 @@ function App() {
         </Route>
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/register" component={RegisterPage} />
+
         <PrivateRoute
           exact={true}
           path="/add-shipment"
@@ -35,7 +36,7 @@ function App() {
         <PrivateRoute
           exact={true}
           path="/admin-dashboard"
-          requiredRoles={[ADMIN]}
+          requiredRoles={[ADMIN]} 
           component={AdminPage}
         />
              <PrivateRoute 

@@ -1,4 +1,4 @@
-import { USER } from "../utils/roles";
+import { USER, ADMIN } from "../utils/roles";
 import Api from "./axios";
 
 // Only for testing purposes...
@@ -9,6 +9,23 @@ const getAllAccounts = (token) => {
     },
   });
 };
+
+
+const deleteAccount = (token, account_id) => {
+  return Api.delete("/account/"+account_id, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+const updateAccount = (token, account_id, newUser) => {
+  return Api.patch("/account/"+account_id, { newUser }, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
 
 
 const checkToken = (token) => {
@@ -26,7 +43,7 @@ const getUserRole = (token) => {
   });
 };
 
-//{...body} instead
+//{...body, role:USER} instead
 
 const createUser = (
   email,
@@ -38,7 +55,7 @@ const createUser = (
   zipCode,
   contactNumber
 ) => {
-  return Api.post("/accounttest/create", {
+  return Api.post("/account/register", {
     email,
     password,
     firstName,
@@ -51,4 +68,4 @@ const createUser = (
   });
 };
 
-export { getAllAccounts, createUser, checkToken, getUserRole };
+export { getAllAccounts, updateAccount, deleteAccount, createUser, checkToken, getUserRole };
