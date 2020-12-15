@@ -16,7 +16,7 @@ const DeleteUserModal = (props) => {
             const token = await auth.getUserToken(); // Get sessiontoken
 
             await deleteAccount(token, user.id); // Pass token and pathvariable
-
+            props.toggleToast("deleted");
         } catch (error) {
             console.log(error);
         } finally {
@@ -24,7 +24,7 @@ const DeleteUserModal = (props) => {
         }
     }
 
-    const validateInput = (input) => {
+    const validateInput = (input) => { // Check if input matches the requested string, if not disable button
         if(input === props.thisUser.email) setDeleteBtn(!deleteBtn);
     }
 
@@ -39,8 +39,8 @@ const DeleteUserModal = (props) => {
                     Provide this phrase to confirm delete: <strong>{props.thisUser.email}</strong></p>
                 <form>
                     <input type="text" onChange={(event) => validateInput(event.target.value)}/>
-                    <button disabled={!deleteBtn}type="button" onClick={() => deleteUser(props.thisUser)}>Delete User</button>
-                    <button type="button" onClick={onClose}>Cancel</button>
+                    <button className="btn btn-primary" disabled={!deleteBtn} type="button" onClick={() => deleteUser(props.thisUser)}>Delete User</button>
+                    <button className="btn btn-secondary" type="button" onClick={onClose}>Cancel</button>
                 </form>
             </Modal>
         </>

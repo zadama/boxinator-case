@@ -16,6 +16,7 @@ const EditUserModal = (props) => {
 
     const [dateOfBirth, setDateOfBirth] = useState(new Date()); 
     const [editedUser, setEditedUser] = useState({});
+    const [invalidInputs, setInvalidInputs] = useState({});
     const [invalidInput, setInvalidInput] = useState(false);
 
     useEffect(() => {
@@ -27,30 +28,30 @@ const EditUserModal = (props) => {
         if (id === "firstName") {
             regex = /^[A-Za-z]+$/;
             if (input.match(regex)) {
-                setInvalidInput(false);
+                setInvalidInputs(prevState =>({...prevState, fNameVal: true}));
                 setEditedUser(prevState => ({...prevState, firstName: input}))
             } else {
-                setInvalidInput(true);
+                setInvalidInputs(prevState =>({...prevState, fNameVal: false}));
             }
         }
         
         if (id === "lastName") {
             regex = /^[A-Za-z]+$/;
             if (input.match(regex)) {
-                setInvalidInput(false);
+                setInvalidInputs(prevState =>({...prevState, lNameVal: true}));
                 setEditedUser(prevState => ({...prevState, lastName: input}))
             } else {
-                setInvalidInput(true);
+                setInvalidInputs(prevState =>({...prevState, lNameVal: false}));
             }
         }
 
         if (id === "email") {
             regex = /\S+@\S+\.\S+/;
             if (input.match(regex)) {
-                setInvalidInput(false);
+                setInvalidInputs(prevState =>({...prevState, emailVal: true}));
                 setEditedUser(prevState => ({...prevState, email: input}))
             } else {
-                setInvalidInput(true);
+                setInvalidInputs(prevState =>({...prevState, emailVal: false}));
             }
             
         }
@@ -63,10 +64,10 @@ const EditUserModal = (props) => {
         if (id === "zipCode") {
             regex = /^[0-9]/;
             if (input.match(regex)) {
-                setInvalidInput(false);
+                setInvalidInputs(prevState =>({...prevState, zipVal: true}));
                 setEditedUser(prevState => ({...prevState, zipCode: input}))
             } else {
-                setInvalidInput(true);
+                setInvalidInputs(prevState =>({...prevState, zipVal: false}));
             }
         }
 
@@ -77,16 +78,24 @@ const EditUserModal = (props) => {
         if (id === "contactNumber") {
             regex = /^[0-9]/;
             if (input.match(regex)) {
-                setInvalidInput(false);
+                setInvalidInputs(prevState =>({...prevState, cNumVal: true}));
                 setEditedUser(prevState => ({...prevState, contactNumber: input}))
             } else {
-                setInvalidInput(true);
+                setInvalidInputs(prevState =>({...prevState, cNumVal: true}));
             }
         }
         if (id === "role") {
             console.log(input);
             setEditedUser(prevState => ({...prevState, role: input}))
         }
+
+        if (Object.values(invalidInputs).indexOf(false) > -1) {
+            setInvalidInput(true);
+            console.log("has false")
+        } else {
+            setInvalidInput(false);
+        }
+
     }
 
     const handleSaveEditedUser = async () => { // Called when an admin saves changes to an account
@@ -95,6 +104,7 @@ const EditUserModal = (props) => {
 
             await updateAccount(token, props.thisUser.id, editedUser); // Pass token, pathvariable and body with request
             props.reRender(); // Rerender page
+            props.toggleToast("saved");
         } catch (error) {
             console.log(error);
         } finally {
@@ -193,8 +203,8 @@ const EditUserModal = (props) => {
                         </select>
                     </div>
 
-                <button disabled={invalidInput ? true : false} onClick={handleSaveEditedUser}>Save</button>
-                <button onClick={onClose}>Cancel</button>
+                <button className="btn btn-primary" disabled={invalidInput ? true : false} onClick={handleSaveEditedUser}>Save</button>
+                <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
             </Modal>
         </>
     )
