@@ -2,9 +2,12 @@ import Modal from "../../components/modal";
 import "./styles.scss";
 import React from "react";
 
+import {faTrashAlt} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+
 const { useState } = require("react");
 
-const DeleteCountryModal = props => {
+const DeleteCountryModal = (props) => {
 
     const [modal, showModal] = useState(false);
     const [id, setId] = useState(props.country.id);
@@ -19,6 +22,7 @@ const DeleteCountryModal = props => {
     const onDeleteClicked = () => {
         props.deleteCountry(id);
         showModal(false);
+
     };
 
     return (
@@ -26,9 +30,8 @@ const DeleteCountryModal = props => {
             <button
                 onClick={() => {
                     showModal(true);
-                }} className="btn btn-danger btn-sm ml-2 mt-0"
-            >
-                Delete
+                }} className="btn btn-danger btn-sm ml-2 mt-0">
+                <FontAwesomeIcon icon={faTrashAlt}/>
             </button>
 
             <Modal isVisible={modal} onClose={onClose}>

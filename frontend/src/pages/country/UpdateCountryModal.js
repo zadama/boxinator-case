@@ -2,13 +2,16 @@ import Modal from "../../components/modal";
 import React, {useEffect} from "react";
 import useForm from "./useForm";
 import validate from "./FormValidations";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPencilAlt} from "@fortawesome/free-solid-svg-icons";
 
 const { useState } = require("react");
 
-const UpdateCountryModal = props => {
+const UpdateCountryModal = (props) => {
 
     const [modal, showModal] = useState(false);
     const [id, setId] = useState(props.country.id);
+
 
     const updateCountry = () => {
         props.updateCountry({id, ...values});
@@ -32,7 +35,9 @@ const UpdateCountryModal = props => {
         <div className="edit-country-modal">
             <button onClick={() => {
                 showModal(true);
-            }} className="btn btn-info btn-sm ml-2 mt-0">Edit</button>
+            }} className="btn btn-info btn-sm ml-2 mt-0">
+                <FontAwesomeIcon icon={faPencilAlt} />
+            </button>
 
             <Modal isVisible={modal} onClose={onClose}>
 

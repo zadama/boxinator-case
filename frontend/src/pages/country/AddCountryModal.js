@@ -5,7 +5,7 @@ import validate from "./FormValidations";
 
 const { useState } = require("react");
 
-const AddCountryModal = props => {
+const AddCountryModal = (props) => {
 
     const [modal, showModal] = useState(false);
 
