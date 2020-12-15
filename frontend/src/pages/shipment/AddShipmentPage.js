@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PrivateLayout from "../../layouts/PrivateLayout";
 import "./style.scss";
 import Button from "react-bootstrap/Button";
@@ -9,6 +9,8 @@ import { createShipment } from "../../api/shipments";
 import { ntc as convertHex } from "../../utils/ntc";
 
 const AddShipmentPage = ({ history }) => {
+  const isFirstSubmission = useRef(true);
+
   const { logout, getUserToken } = useAuth();
   const [state, setState] = useState({
     sourceCountry: { value: "", label: "" },
@@ -17,6 +19,8 @@ const AddShipmentPage = ({ history }) => {
     boxWeight: "0",
     receiver: "",
   });
+
+  const [errors, setErrors] = useState({});
 
   const handleChange = (event) => {
     // differentiate between general event and react-select event.
@@ -43,7 +47,54 @@ const AddShipmentPage = ({ history }) => {
     setState({ ...state, colorValue: color });
   };
 
+  useEffect(() => {
+    if (isFirstSubmission.current) {
+      return;
+    }
+
+    hasErrors();
+  }, [state]);
+
+  const hasErrors = () => {
+    let hasErr = false;
+    let errorObj = {};
+
+    if (state.receiver === "") {
+      errorObj.receiver = "Receiver is required.";
+      hasErr = true;
+    }
+    if (state.boxWeight === "0" || state.boxWeight === "") {
+      errorObj.boxWeight = "Box Weight is required.";
+      hasErr = true;
+    }
+    if (state.destinationCountry.value === "") {
+      errorObj.destinationCountry = "Destination country must be picked.";
+      hasErr = true;
+    }
+
+    if (state.colorValue === "") {
+      errorObj.colorValue = "A color must be picked.";
+      hasErr = true;
+    }
+
+    if (state.sourceCountry.value === "") {
+      errorObj.sourceCountry = "Source country must be picked.";
+      hasErr = true;
+    }
+
+    setErrors(errorObj);
+
+    return hasErr;
+  };
+
   const onHandleShipment = async () => {
+    if (hasErrors()) {
+      if (isFirstSubmission.current) {
+        isFirstSubmission.current = false;
+      }
+      return;
+    }
+
     const match = convertHex.name(state.colorValue);
     const colorName = match[1];
     try {
@@ -66,6 +117,10 @@ const AddShipmentPage = ({ history }) => {
         // also maybe, redirect to user handle shipments?
         // Send shipment Id with and show success message in handle shipments instead
         // with latest shipment highlughted by getting shipment id in location state
+
+        alert(
+          "Shipment was addded! This will change to something more appropriate, when other pages are done; such as redirect,alerts etc."
+        );
       }
     } catch (error) {
       console.log(error);
@@ -82,6 +137,7 @@ const AddShipmentPage = ({ history }) => {
             setColorValue={setColorValue}
             handleChange={handleChange}
             state={state}
+            errors={errors}
           />
 
           <div className="shipment-summary-container">
