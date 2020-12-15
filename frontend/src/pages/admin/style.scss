@@ -19,21 +19,5 @@
     display: flex;
     justify-content: center;
   }
-  .edit-user-view {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 10%;
-    border: 2px solid black;
-    padding: 15px;
-    background-color: white;
 
-    .dual-inputs {
-      display: grid;
-      grid-template-columns: auto auto;
-      justify-content: space-around;
-      
-    }
-
-  }
 }

@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
-import { getAllAccounts, updateAccount, deleteAccount } from '../../api/user';
-import DatePicker from 'react-datepicker';
-import { parseISO } from 'date-fns';
+import Toast from 'react-bootstrap/Toast'
 
 import "./style.scss";
 
 import { useAuth } from "../../context/auth";
 import { getAllCountries } from '../../api/countries';
+import { getAllAccounts } from '../../api/user';
+import EditUserModal from './userdetails/EditUserModal';
+import DeleteUserModal from './userdetails/DeleteUserModal';
 
 
 const UserDetails = () => {
     const auth = useAuth();
     const [data, setData] = useState(null);
     const [countries, setCountries] = useState([]);
-    const [dateOfBirth, setDateOfBirth] = useState(new Date()); 
     const [editUserView, setEditUserView] = useState(false);
+    const [deleteUserView, setDeleteUserView] = useState(false);
     const [thisUser, setThisUser] = useState(null);
-    const [editedUser, setEditedUser] = useState({});
+    const [toast, setToast] = useState(false);
+    const [toastMsg, setToastMsg] = useState("");
 
     const renderUserDataWithAdminToken = async () => {
         try {
@@ -42,96 +44,37 @@ const UserDetails = () => {
         }
     };
 
+    const toggleToast = (action) => {
+        setToastMsg(action);
+        setToast(true);
+    }
 
     useEffect(() => {
         renderUserDataWithAdminToken();
     }, [])
 
-    const handleEditClick = (user) => {
-        console.log("EDITING");
-        setDateOfBirth(parseISO(user.dateOfBirth));
+    const handleEditClick = (user) => { // Open modal when admin wants to edit an account
         setEditUserView(!editUserView);
         setThisUser(user);
     }
 
-    const handleDeleteClick = async (user) => {
-        let confirm = prompt("Are you sure you want to delete the account with id: "
-        +user.id+"?\nProvide this phrase to confirm delete: "+user.email, "");
-
-        if (confirm !== user.email) {
-            alert("Incorrect confirmation credentials provided. Try again.");
-        } else {
-            try {
-                const token = await auth.getUserToken();
-
-                await deleteAccount(token, user.id); // NOT WORKING (object is not a function??)
-
-            } catch (error) {
-                console.log(error);
-            }
-            console.log("DELETE"); // DELETE FROM FIREBASE AND SEND API REQUEST
-        }
-    }
-
-    const updateField = (input, id) => {
-        if (id === "firstName") {
-            setEditedUser(prevState => ({...prevState, firstName: input}))
-        }
-        
-        if (id === "lastName") {
-            setEditedUser(prevState => ({...prevState, lastName: input}))
-        }
-
-        if (id === "email") {
-            setEditedUser(prevState => ({...prevState, email: input}))
-        }
-
-        if (id === "dateOfBirth") {
-            setDateOfBirth(input);
-            setEditedUser(prevState => ({...prevState, dateOfBirth: input}))
-        }
-
-        if (id === "zipCode") {
-            setEditedUser(prevState => ({...prevState, zipCode: input}))
-        }
-
-        if (id === "country") {
-            setEditedUser(prevState => ({...prevState, country: JSON.parse(input)}))
-        }
-
-        if (id === "contactNumber") {
-            setEditedUser(prevState => ({...prevState, contactNumber: input}))
-        }
-
-        if (id === "role") {
-            setEditedUser(prevState => ({...prevState, role: input}))
-        }
-        
-    }
-
-    const handleSaveEditedUser = async () => {
-        console.log("SAVED");
-        try {
-            const token = await auth.getUserToken();
-
-            await updateAccount(token, thisUser.id, editedUser);// EDIT FIREBASE USER AND SEND API REQUEST
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setEditedUser([]);
-            setEditUserView(!editUserView);
-        }
-        
-    }
-
-    const handleCancelEditUserView = () => {
-        console.log("CANCELLED");
-        setEditedUser([]);
-        setEditUserView(!editUserView);
+    const handleDeleteClick = (user) => { // Open modal when admin wants to delete an account
+        setDeleteUserView(!deleteUserView);
+        setThisUser(user);
     }
 
     return (
         <>
+        <Toast show={toast} onClose={() => {
+            setToast(false) 
+            setToastMsg("")
+        }} delay={2500} autohide>
+          <Toast.Header>
+            <strong className="mr-auto">Bootstrap</strong>
+            <small>just now</small>
+          </Toast.Header>
+          <Toast.Body>Account {toastMsg && toastMsg}.</Toast.Body>
+        </Toast>
         {!data ? (
             <div>loading...</div>
         ) : (
@@ -163,108 +106,29 @@ const UserDetails = () => {
                                 <td>{user.role}</td>
                                 <td className="shipments">{user.shipments}</td>
                                 <td className="btns">
-                                    <button className="btns" onClick={() => handleEditClick(user)}>Edit </button>
-                                    <button className="btns" onClick={() => handleDeleteClick(user)}> Delete</button>
+                                    <button className="btns btn btn-success" onClick={() => handleEditClick(user)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
+                                            <path fillRule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                        </svg>
+                                    </button>
+                                    <button className="btns btn btn-danger" onClick={() => handleDeleteClick(user)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                            <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                        </svg>
+                                    </button>
                                 </td>
                             </tr>
                     })}
                 </tbody> 
             </Table>
         )}
-        {!editUserView ? "" : <div className="edit-user-view">
-                <h1>{thisUser.firstName} {thisUser.lastName}</h1>
-                <div className="dual-inputs">
-                    <div>
-                        <label>Firstname: </label><br/>
-                        <input 
-                        type="text" 
-                        id="firstName"
-                        defaultValue={thisUser.firstName}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
-                    </div>
-                    <div>
-                        <label>Lastname: </label><br/>
-                        <input 
-                        type="text" 
-                        id="lastName"
-                        defaultValue={thisUser.lastName}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
-                    </div>
-                </div>
-                <div className="dual-inputs">
-                    <div>
-                        <label>Email: </label><br/>
-                        <input 
-                        type="text"
-                        id="email"
-                        defaultValue={thisUser.email}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
-                    </div>
-                    <div>
-                        <label>Date of birth: </label><br/>
-                        
-                        <DatePicker
-                            selected={dateOfBirth}
-                            showYearDropdown
-                            maxDate={new Date()}
-                            placeholderText="MM/DD/YYYY"
-                            onChange={(value) => updateField(value, "dateOfBirth")}
-                            className="date-picker"
-                        />
-                    </div>
-                </div>
-                <div className="dual-inputs">
-                    <div>
-                        <label>Zip Code: </label><br/>
-                        <input 
-                        type="text" 
-                        id="zipCode"
-                        defaultValue={thisUser.zipCode}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
-                    </div>
-                    <div>
-                        <label>Country: </label><br/>
-                        <select
-                            placeholder={thisUser.country}
-                            options={countries}
-                            id="country"
-                            onChange={(event) => {
-                            updateField(event.target.value, event.target.id);
-                            }}
-                        >
-                            {!countries ? "loading..." :
-                            countries.map((country, index) => {
-                                return <option key={index} value={JSON.stringify(country)}>{country.name}</option>
-                            })}
-                        </select>
-                    </div>
-                </div>
-
-                <div className="dual-inputs">
-                    <div>
-                        <label>Contact Number: </label><br/>
-                        <input 
-                        type="text"
-                        id="contactNumber"
-                        defaultValue={thisUser.contactNumber}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
-                    </div>
-                    <div>
-                        <label>Role: </label><br/>
-                        <input 
-                        type="text"
-                        id="role"
-                        defaultValue={thisUser.role}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
-                    </div>
-                </div>
-
-            <button onClick={handleSaveEditedUser}>Save</button>
-            <button onClick={handleCancelEditUserView}>Cancel</button>
-        </div>}
+        <section>
+            {editUserView && <EditUserModal thisUser={thisUser} countries={countries} reRender={renderUserDataWithAdminToken} toggleToast={toggleToast} />}
+            {deleteUserView && <DeleteUserModal thisUser={thisUser} toggleToast={toggleToast} />}
+        </section>
     </>
     )
-
 }
 
 export default UserDetails;
