@@ -35,7 +35,6 @@ const RegisterForm = ({
     handleSubmit,
     watch,
     errors,
-    getValues,
     control,
   } = useForm();
 
@@ -223,7 +222,6 @@ const RegisterForm = ({
           valueName="selected"
           rules={{
             validate: (data) => {
-              console.log(data);
               return data != null;
             },
           }}

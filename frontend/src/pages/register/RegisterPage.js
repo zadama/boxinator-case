@@ -42,7 +42,6 @@ const RegisterPage = ({ history }) => {
     } catch (error) {
       console.log(error);
       const errorHandler = AuthErrorHandling[error.code];
-      console.log(error.code);
 
       if (errorHandler != null) {
         setErrorMessage(errorHandler.response);
@@ -80,8 +79,6 @@ const RegisterPage = ({ history }) => {
     try {
       await createUser({ ...formData.current });
       await reloadUser();
-
-      history.replace("/add-shipment");
     } catch (error) {
       console.log(error);
       // deleteUser();

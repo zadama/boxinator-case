@@ -4,6 +4,7 @@ import "../style.scss";
 
 import Modal from "../../../components/modal";
 import { AuthErrorHandling } from "../../../utils/authErrors";
+import PageLoader from "../../../components/loader";
 
 const Enroll2FA = ({ onClose, initialNumber, firebase, onSuccess }) => {
   const recaptchaWrapperRef = useRef();
@@ -14,6 +15,7 @@ const Enroll2FA = ({ onClose, initialNumber, firebase, onSuccess }) => {
   const [phoneNbr, setPhoneNbr] = useState(initialNumber ? initialNumber : "");
   const [verificationCode, setVerificationCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [showEnterVerificationCode, setEnterVerificationCode] = useState(null);
 
@@ -92,6 +94,7 @@ return user.reauthenticateWithCredential(credential);
   };
 
   const handleVerificationCode = async () => {
+    setIsLoading(true);
     const cred = new firebase.auth.PhoneAuthProvider.credential(
       verificationVerifier.current,
       verificationCode
@@ -117,6 +120,8 @@ return user.reauthenticateWithCredential(credential);
       if (errorHandler != null) {
         setErrorMessage({ code: error.code, response: errorHandler.response });
       }
+
+      setIsLoading(false);
     }
   };
 
@@ -163,94 +168,99 @@ return user.reauthenticateWithCredential(credential);
         <div style={{ display: "none" }} id="recaptcha-container"></div>
       </div>
 
-      {errorMessage && (
+      {isLoading ? (
+        <PageLoader />
+      ) : (
         <>
-          {errorMessage.code === "auth/unverified-email" &&
-            !showEnterVerificationCode && (
-              <section
-                className="resend-code"
-                style={{ width: "100%", padding: "20px" }}
-              >
-                <p className="error-message">{errorMessage.response}</p>
+          {errorMessage && (
+            <>
+              {errorMessage.code === "auth/unverified-email" &&
+                !showEnterVerificationCode && (
+                  <section
+                    className="resend-code"
+                    style={{ width: "100%", padding: "20px" }}
+                  >
+                    <p className="error-message">{errorMessage.response}</p>
 
+                    <button
+                      onClick={() => {
+                        firebase.auth().currentUser.sendEmailVerification();
+                      }}
+                    >
+                      Resend the email
+                    </button>
+                  </section>
+                )}
+
+              {(errorMessage.code === "auth/invalid-phone-number" ||
+                errorMessage.code === "auth/invalid-verification-code") && (
+                <section
+                  className="resend-code"
+                  style={{ width: "100%", padding: "20px" }}
+                >
+                  <p className="error-message">{errorMessage.response}</p>
+                </section>
+              )}
+            </>
+          )}
+          {showEnterVerificationCode ? (
+            <div className="phone-container">
+              <h4>Enter verification code</h4>
+              <input
+                value={verificationCode}
+                onChange={(e) => {
+                  setVerificationCode(e.target.value);
+                }}
+              ></input>
+              <button
+                onClick={() => {
+                  handleVerificationCode();
+                }}
+              >
+                Submit
+              </button>
+
+              <section className="resend-code">
+                <p>Resend verification code</p>
                 <button
                   onClick={() => {
-                    firebase.auth().currentUser.sendEmailVerification();
+                    setEnterVerificationCode(false);
+                    setErrorMessage(null);
                   }}
                 >
-                  Resend the email
+                  Resend
                 </button>
               </section>
-            )}
+            </div>
+          ) : (
+            <div className="phone-container">
+              <h4>Enter your Phone number</h4>
 
-          {(errorMessage.code === "auth/invalid-phone-number" ||
-            errorMessage.code === "auth/invalid-verification-code") && (
-            <section
-              className="resend-code"
-              style={{ width: "100%", padding: "20px" }}
-            >
-              <p className="error-message">{errorMessage.response}</p>
-            </section>
-          )}
-        </>
-      )}
-
-      {showEnterVerificationCode ? (
-        <div className="phone-container">
-          <h4>Enter verification code</h4>
-          <input
-            value={verificationCode}
-            onChange={(e) => {
-              setVerificationCode(e.target.value);
-            }}
-          ></input>
-          <button
-            onClick={() => {
-              handleVerificationCode();
-            }}
-          >
-            Submit
-          </button>
-
-          <section className="resend-code">
-            <p>Resend verification code</p>
-            <button
-              onClick={() => {
-                setEnterVerificationCode(false);
-                setErrorMessage(null);
-              }}
-            >
-              Resend
-            </button>
-          </section>
-        </div>
-      ) : (
-        <div className="phone-container">
-          <h4>Enter your Phone number</h4>
-
-          <section>
-            {/*
+              <section>
+                {/*
              ha dropdown select inuti (position absolute på span och padding-left: 20px något på input) där man kan välja phoneCode
              <span>+46</span>*/}
 
-            <input
-              placeholder="e.g. +46727124185"
-              value={phoneNbr}
-              onChange={(e) => {
-                setPhoneNbr(e.target.value);
-              }}
-            ></input>
-          </section>
+                <input
+                  placeholder="e.g. +46727124185"
+                  value={phoneNbr}
+                  onChange={(e) => {
+                    setPhoneNbr(e.target.value);
+                  }}
+                ></input>
+              </section>
 
-          <button
-            onClick={() => {
-              handleSendPhoneVerification();
-            }}
-            className="btn"
-          >
-            Send verification code
-          </button>
-        </div>
+              <button
+                onClick={() => {
+                  handleSendPhoneVerification();
+                }}
+                className="btn"
+              >
+                Send verification code
+              </button>
+            </div>
+          )}{" "}
+        </>
       )}
     </Modal>
   );
