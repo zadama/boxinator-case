@@ -119,7 +119,7 @@ const AddShipmentPage = ({ history }) => {
         // with latest shipment highlughted by getting shipment id in location state
 
         alert(
-          "Shipment was addded! This will change to something more appropriate, when other pages are done; such as redirect,alerts etc."
+          "Shipment was addded! This will change to a confirmation modal and then redirect after. (BEFORE ADDING)"
         );
       }
     } catch (error) {

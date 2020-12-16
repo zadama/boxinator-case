@@ -8,10 +8,6 @@ const Modal = ({ children, isVisible, onClose }) => {
 
   useClickOuteside(modalRef, onClose);
 
-  if (!isVisible) {
-    return null;
-  }
-
   return (
     <div className="custom-overlay">
       <div ref={modalRef} className="custom-modal">

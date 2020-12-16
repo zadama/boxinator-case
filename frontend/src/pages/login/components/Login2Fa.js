@@ -1,28 +1,21 @@
-import React from "react";
-import { useEffect } from "react";
-import { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
-import "./style.scss";
-import Loader from "../../components/loader";
-import useClickOuteside from "./useClickOutside";
-import { AuthErrorHandling } from "../../utils/authErrors";
-import Alert from "../alert";
+import "../style.scss";
 
-const LoginModal = ({ children, onClose, firebase, resolver }) => {
+import { AuthErrorHandling } from "../../../utils/authErrors";
+
+import Loader from "../../../components/loader";
+import Alert from "../../../components/alert";
+import Modal from "../../../components/modal";
+
+const Login2Fa = ({ children, onClose, firebase, resolver }) => {
   const recaptchaWrapperRef = useRef();
-  const modalRef = useRef();
 
-  useClickOuteside(modalRef, onClose);
-
-  let captchaVerifier = useRef();
   const verificationVerifier = useRef();
-  const [phoneNbr, setPhoneNbr] = useState(0);
   const [verificationCode, setVerificationCode] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
 
   const [isLoading, setIsLoading] = useState(true);
-
-  // sätt captchan som i index.modal
 
   useEffect(() => {
     handleSendPhoneVerification();
@@ -97,46 +90,42 @@ const LoginModal = ({ children, onClose, firebase, resolver }) => {
   // eller notifiera att användaren måste verifiera först innan 2factor
 
   return (
-    <div className="custom-overlay">
-      <div ref={modalRef} className="custom-modal">
-        <div ref={recaptchaWrapperRef}>
-          <div style={{ display: "none" }} id="recaptcha-container"></div>
-        </div>
-
-        {errorMessage && (
-          <Alert
-            message={errorMessage}
-            onClose={() => {
-              setErrorMessage("");
-            }}
-            variant={"danger"}
-          />
-        )}
-
-        {!isLoading ? (
-          <div>
-            <h4>Enter the verification code that was sent to your Phone</h4>
-            <input
-              placeholder="Verification code"
-              value={verificationCode}
-              onChange={(e) => {
-                setVerificationCode(e.target.value);
-              }}
-            ></input>
-            <button
-              onClick={() => {
-                handleVerificationCode();
-              }}
-            >
-              Submit
-            </button>{" "}
-          </div>
-        ) : (
-          <Loader />
-        )}
+    <Modal onClose={onClose}>
+      <div ref={recaptchaWrapperRef}>
+        <div style={{ display: "none" }} id="recaptcha-container"></div>
       </div>
-    </div>
+      {errorMessage && (
+        <Alert
+          message={errorMessage}
+          onClose={() => {
+            setErrorMessage("");
+          }}
+          variant={"danger"}
+        />
+      )}
+      {!isLoading ? (
+        <div className="phone-container">
+          <h4>Enter the verification code that was sent to your Phone</h4>
+          <input
+            placeholder="Verification code"
+            value={verificationCode}
+            onChange={(e) => {
+              setVerificationCode(e.target.value);
+            }}
+          ></input>
+          <button
+            onClick={() => {
+              handleVerificationCode();
+            }}
+          >
+            Submit
+          </button>{" "}
+        </div>
+      ) : (
+        <Loader />
+      )}
+    </Modal>
   );
 };
 
-export default LoginModal;
+export default Login2Fa;
