@@ -1,0 +1,24 @@
+.toast-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  min-height: 200px;
+}
+
+.error-toast {
+  color: green;
+  border: 2px solid red;
+}
+
+.success-toast {
+  color: green;
+  border: 2px solid green;
+}
+
+.success-message {
+  color: green;
+}
+
+.error-message {
+  color: red;
+}
