@@ -124,8 +124,8 @@ const UserDetails = () => {
             </Table>
         )}
         <section>
-            {editUserView && <EditUserModal thisUser={thisUser} countries={countries} reRender={renderUserDataWithAdminToken} toggleToast={toggleToast} />}
-            {deleteUserView && <DeleteUserModal thisUser={thisUser} toggleToast={toggleToast} />}
+            {editUserView && <EditUserModal onClose={() => setEditUserView(!editUserView)} thisUser={thisUser} countries={countries} reRender={renderUserDataWithAdminToken} toggleToast={toggleToast} />}
+            {deleteUserView && <DeleteUserModal onClose={() => setDeleteUserView(!deleteUserView)} thisUser={thisUser} toggleToast={toggleToast} />}
         </section>
     </>
     )
