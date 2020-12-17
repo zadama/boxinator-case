@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { createUser, getUserRole } from "../api/user";
+import Api from "../api/axios";
 import firebase from "./firebase";
 import { USER, ADMIN, GUEST } from "../utils/roles";
 
@@ -37,7 +38,9 @@ const useProvideAuthImpl = () => {
     // if register "stops" at login before redirecting to
     // add-shipment, add setUser(null) here before so the PageLoader starts ..
     let updatedUser = await firebase.auth().currentUser.reload();
+
     updatedUser = await firebase.auth().currentUser;
+
     handleUser(updatedUser);
   };
 
@@ -117,10 +120,27 @@ const useProvideAuthImpl = () => {
     };
   };
 
+  /* Below will add token header for ALL authorized headers
+  const addApiToken = async () => {
+    Api.interceptors.request.use(
+      async (config) => {
+        const token = await getUserToken();
+
+        if (token) config.headers.Authorization = `Bearer ${token}`;
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+  };*/
+
   const handleUser = async (rawUser) => {
     console.log("authstatechanged called...");
     if (rawUser && rawUser.emailVerified) {
       const user = await formatUser(rawUser);
+
+      //await addApiToken();
 
       setUser(user);
       return user;
@@ -144,7 +164,6 @@ const useProvideAuthImpl = () => {
     logout,
     deleteUser,
     register,
-    logout,
     getUserToken,
     reloadUser,
   };

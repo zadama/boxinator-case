@@ -22,7 +22,7 @@ const sourceCountries = [
   },
 ];
 
-const ShipmentForm = ({ state, handleChange, setColorValue }) => {
+const ShipmentForm = ({ state, handleChange, setColorValue, errors }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [savedCountries, setSavedCountries] = useState([]);
 
@@ -66,6 +66,9 @@ const ShipmentForm = ({ state, handleChange, setColorValue }) => {
               value={state.receiver}
               onChange={handleChange}
             ></input>
+            {errors.receiver && (
+              <span className="error-span">{errors.receiver}</span>
+            )}
           </div>
 
           <div className="shipment-form-group">
@@ -76,6 +79,9 @@ const ShipmentForm = ({ state, handleChange, setColorValue }) => {
               options={sourceCountries}
               onChange={handleChange}
             />
+            {errors.sourceCountry && (
+              <span className="error-span">{errors.sourceCountry}</span>
+            )}
           </div>
 
           <div className="shipment-form-group">
@@ -87,10 +93,17 @@ const ShipmentForm = ({ state, handleChange, setColorValue }) => {
               options={savedCountries}
               onChange={handleChange}
             />
+
+            {errors.destinationCountry && (
+              <span className="error-span">{errors.destinationCountry}</span>
+            )}
           </div>
           <div className="shipment-form-group">
             <label className="label">Box Color</label>
             <ColorPicker onHandleColorPicker={onHandleColorPicker} />
+            {errors.colorValue && (
+              <span className="error-span">{errors.colorValue}</span>
+            )}
           </div>
           <div className="shipment-form-group">
             <label className="label">Weight</label>
@@ -100,8 +113,17 @@ const ShipmentForm = ({ state, handleChange, setColorValue }) => {
               placeholder="Box weight"
               className="input"
               value={state.boxWeight}
-              onChange={handleChange}
+              onChange={(e) => {
+                let value = e.target.value;
+
+                if (Number(value) || value === "") {
+                  handleChange(e);
+                }
+              }}
             ></input>
+            {errors.boxWeight && (
+              <span className="error-span">{errors.boxWeight}</span>
+            )}
           </div>
         </>
       )}
