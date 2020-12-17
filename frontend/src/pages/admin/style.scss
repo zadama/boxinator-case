@@ -1,23 +1,35 @@
 .admin-page {
   display: flex;
-  flex-flow: row wrap;
-  border: 1px solid grey;
+  flex-flow: column;
+  justify-content: center;
 
-  max-width: 960px;
-  margin-top: 20px;
-  margin-left: 20px;
+  max-width: 100%;
+  margin: 20px 20px;
 
-  .sidebar {
-    display: flex;
-    flex-flow: column;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-
-  .admin-content {
+  .admin-title {
     flex: 1 0 auto;
     display: flex;
     justify-content: center;
+  }
+
+  .admin-menu {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    width: 60%;
+    margin: 20px auto;
+    text-decoration: underline;
+
+    button {
+      border-radius: 0px;
+      padding: 5px;
+    }
+
+    button:nth-child(1) {
+      border-right: 3px solid black;
+    }
+    button:nth-child(3) {
+      border-left: 3px solid black;
+    }
   }
 
 }
