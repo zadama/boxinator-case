@@ -30,6 +30,7 @@ const DeleteUserModal = (props) => {
 
     const onClose = () => {
         setShowModal(!showModal);
+        props.onClose();
     }
 
     return (
