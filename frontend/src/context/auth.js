@@ -34,8 +34,10 @@ const useProvideAuthImpl = () => {
   };
 
   const reloadUser = async () => {
+    // if register "stops" at login before redirecting to
+    // add-shipment, add setUser(null) here before so the PageLoader starts ..
     let updatedUser = await firebase.auth().currentUser.reload();
-    updatedUser = firebase.auth().currentUser;
+    updatedUser = await firebase.auth().currentUser;
     handleUser(updatedUser);
   };
 
@@ -146,7 +148,6 @@ const useProvideAuthImpl = () => {
     getUserToken,
     reloadUser,
   };
-
 };
 
 const useAuth = () => {

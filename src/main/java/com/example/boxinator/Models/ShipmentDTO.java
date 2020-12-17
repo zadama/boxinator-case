@@ -3,22 +3,13 @@ package com.example.boxinator.Models;
 import com.example.boxinator.Models.Enums.ShipmentStatus;
 
 public class ShipmentDTO {
-    private Long shipmentId;
     private Long weight;
     private String boxColour;
-    private Country destinationCountry;
+    private String destinationCountry;
     private String receiver;
     private String sourceCountry;
     private ShipmentStatus shipmentStatus;
-
-    public Long getShipmentId() {
-        return shipmentId;
-    }
-
-    public void setShipmentId(Long shipmentId) {
-        this.shipmentId = shipmentId;
-    }
-
+    
     public Long getWeight() {
         return weight;
     }
@@ -35,11 +26,9 @@ public class ShipmentDTO {
         this.boxColour = boxColour;
     }
 
-    public Country getDestinationCountry() {
-        return destinationCountry;
-    }
+    public String getDestinationCountry() { return destinationCountry;}
 
-    public void setDestinationCountry(Country destinationCountry) {
+    public void setDestinationCountry(String destinationCountry) {
         this.destinationCountry = destinationCountry;
     }
 
@@ -67,15 +56,7 @@ public class ShipmentDTO {
         this.shipmentStatus = shipmentStatus;
     }
 
-    public Long getAccountId() {
-        return AccountId;
-    }
 
-    public void setAccountId(Long accountId) {
-        AccountId = accountId;
-    }
-
-    private Long AccountId;
 
 
 

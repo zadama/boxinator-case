@@ -24,6 +24,9 @@ public class Shipment {
     private Long weight;
 
     @Column(nullable = false)
+    private Double totalPrice;
+
+    @Column(nullable = false)
     private String boxColour;
 
     @Column(nullable = false)
@@ -64,6 +67,14 @@ public class Shipment {
 
     public void setWeight(Long weight) {
         this.weight = weight;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public String getBoxColour() {
