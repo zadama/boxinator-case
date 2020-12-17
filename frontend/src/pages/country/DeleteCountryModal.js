@@ -34,7 +34,7 @@ const DeleteCountryModal = (props) => {
                 <FontAwesomeIcon icon={faTrashAlt}/>
             </button>
 
-            <Modal isVisible={modal} onClose={onClose}>
+            {modal && (<Modal  onClose={onClose}>
                 <div>
                     <h5>Are you sure?</h5>
                     <p>This entry will be permanently removed from the database.
@@ -48,13 +48,15 @@ const DeleteCountryModal = (props) => {
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div className="row">
-                    <button onClick={onDeleteClicked} className="btn btn-danger btn-sm">Delete</button>
-                    <button onClick={onClose} className="btn btn-light btn-sm"><strong> Oops! Cancel</strong></button>
+                    <div className="text-center">
+                        <button onClick={onDeleteClicked} className="btn btn-danger btn-sm">Delete</button>
+                        <button onClick={onClose} className="btn btn-light btn-sm ml-2">
+                            <strong> Oops! Cancel</strong>
+                        </button>
+                    </div>
                 </div>
 
-            </Modal>
+            </Modal>)}
         </div>
     );
 };

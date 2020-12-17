@@ -39,7 +39,7 @@ const UpdateCountryModal = (props) => {
                 <FontAwesomeIcon icon={faPencilAlt} />
             </button>
 
-            <Modal isVisible={modal} onClose={onClose}>
+            {modal && (<Modal onClose={onClose}>
 
                 <div className="edit-country-form">
                     <form onSubmit={handleSubmit} className="needs-validation" noValidate>
@@ -91,7 +91,7 @@ const UpdateCountryModal = (props) => {
 
                 </div>
 
-            </Modal>
+            </Modal>)}
         </div>
     );
 };
