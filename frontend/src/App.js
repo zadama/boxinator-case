@@ -15,6 +15,7 @@ import {
 
 import PrivateRoute from "./components/hoc/PrivateRoute";
 import { ADMIN, USER, GUEST } from "./utils/roles";
+import CountryPage from "./pages/country/CountryPage";
 import HandleShipmentsPage from "./pages/admin/HandleShipmentsPage";
 
 function App() {
@@ -36,14 +37,21 @@ function App() {
         <PrivateRoute
           exact={true}
           path="/admin-dashboard"
-          requiredRoles={[ADMIN, USER]} 
+          requiredRoles={[ADMIN, USER]}
           component={AdminPage}
         />
-             <PrivateRoute 
-             exact={true} 
-             path="/handleShipments"
-             requiredRoles={[ADMIN]}
-             component={HandleShipmentsPage}/>
+        <Route
+          path="/admin-dashboard/country"
+          exact={true}
+          component={CountryPage}
+        />
+
+        <PrivateRoute
+          exact={true}
+          path="/handleShipments"
+          requiredRoles={[ADMIN]}
+          component={HandleShipmentsPage}
+        />
 
         <Route component={NotFoundPage} />
       </Switch>

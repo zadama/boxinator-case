@@ -50,6 +50,7 @@ build/
 /frontend/.env.development.local
 /frontend/.env.test.local
 /frontend/.env.production.local
+/frontend/.env
 
 /frontend/debug.log
 /frontend/npm-debug.log*

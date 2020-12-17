@@ -26,7 +26,6 @@
   justify-content: center;
   flex-flow: row wrap;
   animation: fadein 0.5s;
-  
 }
 
 .error-message {
@@ -68,5 +67,7 @@ h4 {
     font-size: 13px;
     min-width: 61px !important;
     text-transform: none !important;
+    border-radius: 10px;
+    color: white;
   }
 }
