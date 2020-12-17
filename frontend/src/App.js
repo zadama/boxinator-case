@@ -12,8 +12,11 @@ import {
   NotFoundPage,
   RegisterPage,
 } from "./pages";
+
 import PrivateRoute from "./components/hoc/PrivateRoute";
 import { ADMIN, USER, GUEST } from "./utils/roles";
+import CountryPage from "./pages/country/CountryPage";
+import HandleShipmentsPage from "./pages/admin/HandleShipmentsPage";
 
 function App() {
   return (
@@ -22,7 +25,6 @@ function App() {
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>
-
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/register" component={RegisterPage} />
 
@@ -35,8 +37,20 @@ function App() {
         <PrivateRoute
           exact={true}
           path="/admin-dashboard"
-          requiredRoles={[ADMIN]}
+          requiredRoles={[ADMIN, USER]}
           component={AdminPage}
+        />
+        <Route
+          path="/admin-dashboard/country"
+          exact={true}
+          component={CountryPage}
+        />
+
+        <PrivateRoute
+          exact={true}
+          path="/handleShipments"
+          requiredRoles={[ADMIN]}
+          component={HandleShipmentsPage}
         />
 
         <Route component={NotFoundPage} />
