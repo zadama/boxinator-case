@@ -5,7 +5,7 @@ import { useAuth } from '../../../context/auth';
 
 import { deleteAccount } from '../../../api/user';
 
-const DeleteUserModal = (props) => {
+const DeleteAccountModal = (props) => {
 
     const auth = useAuth();
     const [showModal, setShowModal] = useState(true);
@@ -48,4 +48,4 @@ const DeleteUserModal = (props) => {
     )
 }
 
-export default DeleteUserModal;
+export default DeleteAccountModal;
