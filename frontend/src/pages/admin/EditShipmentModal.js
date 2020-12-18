@@ -1,22 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import {useAuth} from "../../context/auth";
 import { Button, Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import useForm from "../country/useForm";
 import Modal from '../../components/modal/index';
 import { statusValues } from "../../utils/shipmentStatusValues";
 
-const EditShipmentModal = (props) => {
+import {getAllCountries} from "../../api/countries";
 
+const EditShipmentModal = (props) => {
+  
+  const auth = useAuth();
   const [showModal, setShowModal] = useState(true);
+  const [countries, setCountries] = useState([]);
   const [id, setId] = useState(props.thisShipment.id);
   
-  
+  const {values, setValues, setErrors, errors, handleChange, handleSubmit} = useForm("updateShipment", "validate");
+ 
+  /*
   const updateShipment = () => {
     props.updateShipment({id, ...values});
     setShowModal(false);
   }
-  
-  const {values, setValues, setErrors, errors, handleChange, handleSubmit} = useForm(updateShipment, "validate");
+  */
 
+ useEffect( () => {
+   getCountries();
+ }, []); 
+
+  const getCountries = async () => {
+    try {
+      const token = await auth.getUserToken();
+      let response = await getAllCountries(token);
+      let {data: savedCountries} = response.data;
+      savedCountries = savedCountries.map((country) => {
+        return {
+          id: country.id,
+          name: country.name,
+        };
+      });
+      setCountries(savedCountries);
+    } catch(error) {
+      console.log(error, "Unable to get countries.");
+    }
+  };
+
+  const destinationCountries = countries.map((country, id) => {
+  return(
+    <Dropdown.Item key={country.id}>{country.name}</Dropdown.Item>
+  );
+  });
 
   const onClose = () => {
     setValues(props.thisShipment);
@@ -87,10 +119,10 @@ const EditShipmentModal = (props) => {
           <div className="form-group">
           <label htmlFor="shipment-status">
                   <strong>Shipment Status: </strong></label >
-            <DropdownButton id="shipment-status" title={props.thisShipment.shipmentStatus} >
+            <DropdownButton id="shipment-status" title={props.thisShipment.shipmentStatus}>
                 {statusValues.map(function(status) {
                   return (
-                    <Dropdown.Item>{status}</Dropdown.Item>
+                    <Dropdown.Item key={status}>{status}</Dropdown.Item>
                   )
                 })}
             </DropdownButton>
@@ -99,8 +131,8 @@ const EditShipmentModal = (props) => {
           <div className="form-group">
             <label htmlFor="destination-country">
               <strong>Destination Country:</strong></label>
-              <DropdownButton id="shipment-status" title={props.thisShipment.destinationCountry.name}>
-                <Dropdown.Item></Dropdown.Item>
+              <DropdownButton id="destination-country" title={props.thisShipment.destinationCountry.name}>
+                {destinationCountries}
             </DropdownButton>
           </div>
 
