@@ -1,6 +1,5 @@
 package com.example.boxinator.Controllers;
 
-import com.example.boxinator.Models.Account;
 import com.example.boxinator.Models.Country;
 import com.example.boxinator.Models.Enums.AccountRole;
 import com.example.boxinator.Repositories.CountryRepository;
@@ -135,8 +134,8 @@ public class CountryController {
     @DeleteMapping(value="/remove/{country_id}")
     public ResponseEntity<CommonResponse> deleteCountryById (
             @RequestHeader ("Authorization")String token,
-            @PathVariable ("country_id") Long country_id) {
-
+            @PathVariable ("country_id") Long country_id
+    ) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 

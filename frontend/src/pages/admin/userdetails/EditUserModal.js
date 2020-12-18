@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import Modal from '../../../components/modal/index';
 import { parseISO } from 'date-fns';
 
@@ -9,202 +10,172 @@ import { ADMIN, USER } from '../../../utils/roles';
 import { updateAccount } from '../../../api/user';
 import DatePicker from 'react-datepicker';
 
+import "react-datepicker/dist/react-datepicker.css";
+
+
 const EditUserModal = (props) => {
 
     const auth = useAuth();
+    const { register, handleSubmit, errors, control, watch } = useForm();
     const [showModal, setShowModal] = useState(true);
+    const [dob, setDOB] = useState(new Date());
 
-    const [dateOfBirth, setDateOfBirth] = useState(new Date()); 
-    const [editedUser, setEditedUser] = useState({});
-    const [invalidInputs, setInvalidInputs] = useState({});
-    const [invalidInput, setInvalidInput] = useState(false);
+    const { dateOfBirth } = watch(["dateOfBirth"])
+
+    
 
     useEffect(() => {
-        !props.thisUser.dateOfBirth ? setDateOfBirth(new Date()) : setDateOfBirth(parseISO(props.thisUser.dateOfBirth)); // If user does not have a chosen DoB, set a temporary one
+        !props.thisUser.dateOfBirth ? setDOB(new Date()) : setDOB(parseISO(props.thisUser.dateOfBirth)); // If user does not have a chosen DoB, set a temporary one
     }, [])
 
-    const updateField = (input, id) => { // ADD VALIDATION TO EACH INPUT, logic is currently messed up
-        let regex = "";
-        if (id === "firstName") {
-            regex = /^[A-Za-z]+$/;
-            if (input.match(regex)) {
-                setInvalidInputs(prevState =>({...prevState, fNameVal: true}));
-                setEditedUser(prevState => ({...prevState, firstName: input}))
-            } else {
-                setInvalidInputs(prevState =>({...prevState, fNameVal: false}));
-            }
+    const onSubmit = data => {
+        
+        if (props.thisUser.firstName === data.firstName) {
+            delete data.firstName;
         }
         
-        if (id === "lastName") {
-            regex = /^[A-Za-z]+$/;
-            if (input.match(regex)) {
-                setInvalidInputs(prevState =>({...prevState, lNameVal: true}));
-                setEditedUser(prevState => ({...prevState, lastName: input}))
-            } else {
-                setInvalidInputs(prevState =>({...prevState, lNameVal: false}));
-            }
+        if (props.thisUser.lastName === data.lastName) {
+            delete data.lastName;
         }
 
-        if (id === "email") {
-            regex = /\S+@\S+\.\S+/;
-            if (input.match(regex)) {
-                setInvalidInputs(prevState =>({...prevState, emailVal: true}));
-                setEditedUser(prevState => ({...prevState, email: input}))
-            } else {
-                setInvalidInputs(prevState =>({...prevState, emailVal: false}));
-            }
-            
+        if (props.thisUser.email === data.email) {
+            delete data.email;
         }
 
-        if (id === "dateOfBirth") {
-            setDateOfBirth(input);
-            setEditedUser(prevState => ({...prevState, dateOfBirth: input}))
+        if (props.thisUser.zipCode === parseInt(data.zipCode)) {
+            delete data.zipCode;
         }
 
-        if (id === "zipCode") {
-            regex = /^[0-9]/;
-            if (input.match(regex)) {
-                setInvalidInputs(prevState =>({...prevState, zipVal: true}));
-                setEditedUser(prevState => ({...prevState, zipCode: input}))
-            } else {
-                setInvalidInputs(prevState =>({...prevState, zipVal: false}));
-            }
+        if (props.thisUser.contactNumber === parseInt(data.contactNumber)) {
+            delete data.contactNumber;
         }
 
-        if (id === "country") {
-            setEditedUser(prevState => ({...prevState, country: JSON.parse(input)}))
+        if (props.thisUser.country === JSON.parse(data.country).name) {
+            delete data.country;
         }
 
-        if (id === "contactNumber") {
-            regex = /^[0-9]/;
-            if (input.match(regex)) {
-                setInvalidInputs(prevState =>({...prevState, cNumVal: true}));
-                setEditedUser(prevState => ({...prevState, contactNumber: input}))
-            } else {
-                setInvalidInputs(prevState =>({...prevState, cNumVal: true}));
-            }
-        }
-        if (id === "role") {
-            console.log(input);
-            setEditedUser(prevState => ({...prevState, role: input}))
+        if (parseISO(props.thisUser.dateOfBirth) === data.dateOfBirth) {
+            delete data.dateOfBirth;
         }
 
-        if (Object.values(invalidInputs).indexOf(false) > -1) {
-            setInvalidInput(true);
-            console.log("has false")
-        } else {
-            setInvalidInput(false);
+        if (props.thisUser.role === data.role) {
+            delete data.role;
         }
 
-    }
+        handleSaveEditedUser(data);
+        
+    };
 
-    const handleSaveEditedUser = async () => { // Called when an admin saves changes to an account
+
+    const handleSaveEditedUser = async (user) => { // Called when an admin saves changes to an account
         try {
             const token = await auth.getUserToken(); // Get sessiontoken
 
-            await updateAccount(token, props.thisUser.id, editedUser); // Pass token, pathvariable and body with request
+            await updateAccount(token, props.thisUser.id, user); // Pass token, pathvariable and body with request
             props.reRender(); // Rerender page
             props.toggleToast("saved");
         } catch (error) {
             console.log(error);
-        } finally {
-            setEditedUser([]); // No matter what, editedUser object is reset and popup closed
+        } finally { // popup closed
             setShowModal(!showModal);
         }
-        
     }
 
     const onClose = () => {
         setShowModal(!showModal);
+        props.onClose();
     }
 
     return (
         <>
             <Modal isVisible={showModal} onClose={onClose}>
                 <h1>{props.thisUser.firstName} {props.thisUser.lastName}</h1>
-                
-                    <div>
-                        <label>Firstname: </label>
-                        <input 
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <input
+                        name="firstName"
+                        defaultValue={props.thisUser.firstName} 
+                        ref={register({
+                            pattern: {
+                                value: /^[A-Za-z]+$/,
+                                message: "invalid format"
+                            }
+                        })}>
+                    </input>
+                    {errors.firstName?.message && <p>{errors.firstName.message}</p>}
+                    <input 
                         type="text" 
-                        id="firstName"
-                        defaultValue={props.thisUser.firstName}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
-                    </div>
-                    <div>
-                        <label>Lastname: </label>
-                        <input 
+                        name="lastName" 
+                        defaultValue={props.thisUser.lastName} 
+                        ref={register({
+                            pattern: {
+                                value: /^[A-Za-z]+$/,
+                                message: "invalid format"
+                            }
+                        })}>
+                    </input>
+                    <input 
                         type="text" 
-                        id="lastName"
-                        defaultValue={props.thisUser.lastName}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
-                    </div>
-                    <div>
-                        <label>Email: </label>
-                        <input 
-                        type="text"
-                        id="email"
-                        defaultValue={props.thisUser.email}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
-                    </div>
-                    <div>
-                        <label>Date of birth: </label>
-                        <DatePicker
-                            selected={dateOfBirth}
-                            showYearDropdown
-                            maxDate={new Date()}
-                            placeholderText="MM/DD/YYYY"
-                            onChange={(value) => updateField(value, "dateOfBirth")}
-                            className="date-picker"
-                        />
-                    </div>
-                    <div>
-                        <label>Zip Code: </label>
-                        <input 
+                        name="email" 
+                        defaultValue={props.thisUser.email} 
+                        ref={register({
+                            pattern: {
+                                value: /\S+@\S+\.\S+/,
+                                name: "invalid format"
+                            }
+                        })}>
+                    </input>
+                    <Controller as={
+                            <DatePicker
+                                id="dateOfBirth"
+                                showYearDropdown
+                                dateFormat="dd/MM/yyyy"
+                                maxDate={new Date()}
+                                placeholderText="MM/DD/YYYY"
+                                onChange={(date) => setDOB(date)}
+                                selected={dateOfBirth}
+                                autoComplete="off"
+                            />
+                    }
+                        name="dateOfBirth"
+                        control={control}
+                        valueName="selected"
+                        defaultValue={dob}
+                    />
+                    <input 
                         type="text" 
-                        id="zipCode"
-                        maxLength="6"
+                        name="zipCode"
                         defaultValue={props.thisUser.zipCode}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
-                    </div>
-                    <div>
-                        <label>Country: </label>
-                        <select
-                            placeholder={props.thisUser.country}
-                            options={props.countries}
-                            id="country"
-                            onChange={(event) => {
-                            updateField(event.target.value, event.target.id);
-                            }}
-                        >
-                            {!props.countries ? "loading..." :
-                            props.countries.map((country, index) => {
-                                return <option key={index} value={JSON.stringify(country)}>{country.name}</option>
-                            })}
-                        </select>
-                    </div>
-                    <div>
-                        <label>Contact Number: </label>
-                        <input 
+                        ref={register}>
+                    </input>
+                    <select
+                        placeholder={props.thisUser.country}
+                        options={props.countries}
+                        ref={register}
+                        name="country"
+                    >
+                        {!props.thisUser.country && <option value={props.thisUser.country}>Select country...</option>}
+                        {!props.countries ? "loading..." :
+                        props.countries.map((country, index) => {
+                            return <option key={index} value={JSON.stringify(country)}>{country.name}</option>
+                        })}
+                    </select>
+                    <input 
                         type="text"
-                        id="contactNumber"
-                        maxLength="20"
+                        name="contactNumber"
                         defaultValue={props.thisUser.contactNumber}
-                        onChange={(event) => updateField(event.target.value, event.target.id)}></input>
-                    </div>
-                    <div>
-                        <label>Role: </label>
-                        <select
+                        ref={register}>
+                    </input>
+                    <select
                         placeholder={props.thisUser.role}
-                        id="role"
-                        onChange={(event) => updateField(event.target.value, event.target.id)}>
+                        name="role"
+                        ref={register}>
                             <option value={USER}>USER</option>
                             <option value={ADMIN}>ADMIN</option>
-                        </select>
-                    </div>
-
-                <button className="btn btn-primary" disabled={invalidInput ? true : false} onClick={handleSaveEditedUser}>Save</button>
-                <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
+                    </select>
+                
+                    <input type="submit" className="btn btn-primary" value="Save" />
+                    <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
+                </form>
             </Modal>
         </>
     )
