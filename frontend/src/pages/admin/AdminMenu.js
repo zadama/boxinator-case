@@ -1,3 +1,4 @@
+import { Button } from "react-bootstrap";
 import React from "react";
 import { useState } from "react";
 
@@ -24,9 +25,9 @@ const AdminMenu = props => {
 
   return (
     <>
-      <button type="button" className="btn btn-link" onClick={getAccountList}>Customer Accounts</button>
-      <button type="button" className="btn btn-link" onClick={getShipmentList}>Shipments</button>
-      <button type="button" className="btn btn-link" onClick={getCountryList}>Shipping Countries</button>
+      <Button variant="link" onClick={getAccountList}>Customer Accounts</Button>
+      <Button variant="link" onClick={getShipmentList}>Shipments</Button>
+      <Button variant="link" onClick={getCountryList}>Shipping Countries</Button>
     </>
   );
 };
