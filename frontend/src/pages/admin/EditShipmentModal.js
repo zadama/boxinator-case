@@ -1,21 +1,33 @@
 import React, { useState } from 'react';
 import { Button, Dropdown, DropdownButton, Form } from 'react-bootstrap';
-
+import useForm from "../country/useForm";
 import Modal from '../../components/modal/index';
+import { statusValues } from "../../utils/shipmentStatusValues";
 
 const EditShipmentModal = (props) => {
 
   const [showModal, setShowModal] = useState(true);
+  const [id, setId] = useState(props.thisShipment.id);
+  
+  
+  const updateShipment = () => {
+    props.updateShipment({id, ...values});
+    setShowModal(false);
+  }
+  
+  const {values, setValues, setErrors, errors, handleChange, handleSubmit} = useForm(updateShipment, "validate");
+
 
   const onClose = () => {
+    setValues(props.thisShipment);
+    setErrors({});
     setShowModal(false);
     props.onClose();
   }
 
   return (
-    <Modal isVisible={showModal} onClose={onClose}>
-
-      <div className="container">
+    <div className="container">
+    {showModal && (<Modal onClose={onClose}>
         <Form>
           <div className="form-group">
             <label htmlFor="shipment-id">
@@ -75,23 +87,21 @@ const EditShipmentModal = (props) => {
           <div className="form-group">
           <label htmlFor="shipment-status">
                   <strong>Shipment Status: </strong></label >
-            <DropdownButton id="shipment-status" title={props.thisShipment.shipmentStatus}>
-                <Dropdown.Item>CREATED</Dropdown.Item>
-                <Dropdown.Item>RECIEVED</Dropdown.Item>
-                <Dropdown.Item>INTRANSIT</Dropdown.Item>
-                <Dropdown.Item>COMPLETED</Dropdown.Item>
-                <Dropdown.Item>CANCELLED</Dropdown.Item>
+            <DropdownButton id="shipment-status" title={props.thisShipment.shipmentStatus} >
+                {statusValues.map(function(status) {
+                  return (
+                    <Dropdown.Item>{status}</Dropdown.Item>
+                  )
+                })}
             </DropdownButton>
           </div>
 
           <div className="form-group">
             <label htmlFor="destination-country">
               <strong>Destination Country:</strong></label>
-            <input
-              className="form-control"
-              id="destination-country"
-              defaultValue={props.thisShipment.destinationCountry}
-              required/>
+              <DropdownButton id="shipment-status" title={props.thisShipment.destinationCountry.name}>
+                <Dropdown.Item></Dropdown.Item>
+            </DropdownButton>
           </div>
 
           <div className="form-group">
@@ -104,14 +114,13 @@ const EditShipmentModal = (props) => {
                 </DropdownButton>
           </div>
 
-          <button type="submit" className="btn btn-info">Save</button>
-          <button onClick={onClose} className="btn btn-danger">Cancel</button>
+          <Button type="submit" className="btn btn-info">Save</Button>
+          <Button onClick={onClose} className="btn btn-danger">Cancel</Button>
         </Form>
-      </div>
-    </Modal>
-
+    </Modal>)}
+    </div>
   );
 
-}
+};
 
 export default EditShipmentModal;

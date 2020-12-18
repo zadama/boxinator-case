@@ -23,7 +23,7 @@ const HandleShipmentsPage = () => {
       const token = await getUserToken();
       const response =  await getAllShipments(token);
       const {data} = response.data;
-      console.log(response.data);
+      console.log(data);
       setResult(data);
     }
   
