@@ -44,7 +44,7 @@ public class Account {
     private int zipCode;
 
     @Column
-    private long contactNumber;
+    private Long contactNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -125,11 +125,11 @@ public class Account {
         this.zipCode = zipCode;
     }
 
-    public long getContactNumber() {
+    public Long getContactNumber() {
         return contactNumber;
     }
 
-    public void setContactNumber(long contactNumber) {
+    public void setContactNumber(Long contactNumber) {
         this.contactNumber = contactNumber;
     }
 

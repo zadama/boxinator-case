@@ -67,7 +67,6 @@ public class CountryController {
     }
 
     @GetMapping("/all")
-
     public ResponseEntity<CommonResponse> getAllCountries(){
         CommonResponse cr = new CommonResponse();
 
@@ -127,6 +126,41 @@ public class CountryController {
         } else {
             cr.data = authResponse.getBody().msg;
             cr.msg = "Your role does not have permission to do this.";
+            cr.status = HttpStatus.UNAUTHORIZED;
+        }
+        return new ResponseEntity<>(cr, cr.status);
+    }
+
+    @DeleteMapping(value="/remove/{country_id}")
+    public ResponseEntity<CommonResponse> deleteCountryById (
+            @RequestHeader ("Authorization")String token,
+            @PathVariable ("country_id") Long country_id
+    ) {
+        CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
+
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
+            if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
+                try {
+                    Optional<Country> countryRepo = countryRepository.findById(country_id);
+                    Country country = countryRepo.orElse(null);
+
+                    cr.data = country;
+                    countryRepository.deleteById(country_id);
+                    cr.msg = "The country with id: " + country_id + " has been deleted";
+                    cr.status = HttpStatus.CREATED;
+                } catch (Exception e) {
+                    cr.msg = "Unable to delete country with id: " + country_id;
+                    cr.status = HttpStatus.BAD_REQUEST;
+                }
+            } else {
+                cr.data = authResponse.getBody().msg;
+                cr.msg = "Unauthorized: Your role does not have permission to do this.";
+                cr.status = HttpStatus.UNAUTHORIZED;
+            }
+        } else {
+            cr.data = authResponse.getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
             cr.status = HttpStatus.UNAUTHORIZED;
         }
         return new ResponseEntity<>(cr, cr.status);

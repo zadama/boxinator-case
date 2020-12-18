@@ -2,7 +2,7 @@ import React from "react";
 import "./style.scss";
 import { useAuth } from "../../context/auth";
 import PrivateLayout from "../../layouts/PrivateLayout";
-import Sidebar from "./Sidebar";
+import AdminMenu from "./AdminMenu";
 import { useState, useEffect } from "react";
 import Navbar from "../../components/navbar";
 import Table from "react-bootstrap/Table";
@@ -20,7 +20,7 @@ const HandleShipmentsPage = () => {
       const token = await getUserToken();
       const response =  await getAllShipments(token);
       const {data} = response.data;
-      console.log(data);
+      console.log(response.data);
       setResult(data);
     }
   
@@ -76,7 +76,7 @@ const HandleShipmentsPage = () => {
               <td>{item.weight}</td>
               <td>{item.boxColour}</td>
               <td>{item.shipmentStatus}</td>
-              <td>{item.destinationCountry}</td>
+              <td>{item.destinationCountry.name}</td>
               <td>{item.sourceCountry}</td>
               <td><Button variant="primary"
               onClick={()=> handleEditClick(item)}

@@ -20,7 +20,7 @@ const deleteAccount = (token, account_id) => {
 };
 
 const updateAccount = (token, account_id, newUser) => {
-  return Api.patch("/account/"+account_id, { newUser }, {
+  return Api.patch("/account/"+account_id, { ...newUser }, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -45,25 +45,9 @@ const getUserRole = (token) => {
 
 //{...body, role:USER} instead
 
-const createUser = (
-  email,
-  password,
-  firstName,
-  lastName,
-  dateOfBirth,
-  country,
-  zipCode,
-  contactNumber
-) => {
+const createUser = (body) => {
   return Api.post("/account/register", {
-    email,
-    password,
-    firstName,
-    lastName,
-    dateOfBirth,
-    country,
-    zipCode,
-    contactNumber,
+    ...body,
     role: USER,
   });
 };

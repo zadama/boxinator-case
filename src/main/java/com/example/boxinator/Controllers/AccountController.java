@@ -103,7 +103,7 @@ public class AccountController {
     @GetMapping("/{account_id}")
     public ResponseEntity<CommonResponse> getAccount(
             @RequestHeader(value = "Authorization") String token,
-            @PathVariable long account_id
+            @PathVariable Long account_id
     ) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
@@ -137,7 +137,7 @@ public class AccountController {
     @PatchMapping("/{account_id}")
     public ResponseEntity<CommonResponse> changeAccountDetails(
             @RequestHeader(value = "Authorization") String token,
-            @PathVariable long account_id,
+            @PathVariable Long account_id,
             @RequestBody Account changedAccount
     ) {
         CommonResponse cr = new CommonResponse();
@@ -197,7 +197,7 @@ public class AccountController {
     @DeleteMapping("/{account_id}")
     public ResponseEntity<CommonResponse> deleteAccount(
             @RequestHeader(value = "Authorization") String token,
-            @PathVariable long account_id
+            @PathVariable Long account_id
     ) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
