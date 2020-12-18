@@ -13,7 +13,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
 
-const EditUserModal = (props) => {
+const EditAccountModal = (props) => {
 
     const auth = useAuth();
     const { register, handleSubmit, errors, control, watch } = useForm();
@@ -181,4 +181,4 @@ const EditUserModal = (props) => {
     )
 } 
 
-export default EditUserModal;
+export default EditAccountModal;

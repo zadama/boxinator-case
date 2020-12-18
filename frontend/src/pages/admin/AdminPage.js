@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { checkToken } from "../../api/user";
 
-import UserDetails from "./UserDetails";
+import AccountPage from "./AccountPage";
 import CountryPage from "../country/CountryPage";
 import HandleShipmentsPage from "./HandleShipmentsPage";
 
@@ -51,17 +51,16 @@ const AdminPage = () => {
       setShowShipments(false);
       setShowAccounts(!showAccounts);
     } else if(value === "countries") {
-      setTitle("Shipments")
+      setTitle("Countries")
       setShowShipments(false);
       setShowAccounts(false);
       setShowCountries(!showCountries);
     } else if(value === "shipments") {
-      setTitle("Countries")
+      setTitle("Shipments")
       setShowCountries(false);
       setShowAccounts(false);
       setShowShipments(!showShipments);
     }
-    
   }
 
   return (
@@ -80,7 +79,7 @@ const AdminPage = () => {
           <AdminMenu getDetails={(event, value) => handleUserDetailsClick(event, value)}/>
         </section>
         <section>
-          {!showAccounts ?  "" : <UserDetails />}
+          {!showAccounts ?  "" : <AccountPage />}
           {!showCountries ? "" : <CountryPage />}
           {!showShipments ? "" : <HandleShipmentsPage />}
         </section>
