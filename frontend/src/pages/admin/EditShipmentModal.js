@@ -97,11 +97,11 @@ const EditShipmentModal = (props) => {
           <div className="form-group">
             <label htmlFor="source-country">
               <strong>Source Country:</strong></label>
-            <input
-              className="form-control"
-              id="source-country"
-              defaultValue={props.thisShipment.sourceCountry}
-              required/>
+              <DropdownButton id="source-country" title={props.thisShipment.sourceCountry}>
+                <Dropdown.Item>Denmark</Dropdown.Item>
+                <Dropdown.Item>Norway</Dropdown.Item>
+                <Dropdown.Item>Sweden</Dropdown.Item>
+                </DropdownButton>
           </div>
 
           <button type="submit" className="btn btn-info">Save</button>

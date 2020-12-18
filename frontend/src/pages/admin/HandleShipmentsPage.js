@@ -10,6 +10,9 @@ import {getAllShipments} from "../../api/shipments";
 import { Button } from "react-bootstrap";
 import EditShipmentModal from "./EditShipmentModal";
 
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPencilAlt, faTrashAlt} from "@fortawesome/free-solid-svg-icons";
+
 const HandleShipmentsPage = () => {
   const {getUserToken} = useAuth();
   const [editShipmentView, setEditShipmentView] = useState(false);
@@ -62,7 +65,7 @@ const HandleShipmentsPage = () => {
           <th>Weight</th>
           <th>Box Colour</th>
           <th>Shipment Status</th>
-          <th>Destination Country</th>
+         {/*  <th>Destination Country</th> */}
           <th>Source Country</th>
           <th>Edit/Delete</th>
           </tr>
@@ -76,11 +79,15 @@ const HandleShipmentsPage = () => {
               <td>{item.weight}</td>
               <td>{item.boxColour}</td>
               <td>{item.shipmentStatus}</td>
-              <td>{item.destinationCountry.name}</td>
+             {/*} <td>{item.destinationCountry.name}</td> */}
               <td>{item.sourceCountry}</td>
-              <td><Button variant="primary"
-              onClick={()=> handleEditClick(item)}
-              >Edit</Button> <button>Delete</button></td>
+              <td>
+                <Button variant="primary"
+                  onClick={()=> handleEditClick(item)}>
+                    <FontAwesomeIcon icon={faPencilAlt}/>
+                </Button> 
+              <Button variant="danger ml-2"><FontAwesomeIcon icon={faTrashAlt}/></Button>
+              </td>
               </tr>)
             })}
               </tbody>            
