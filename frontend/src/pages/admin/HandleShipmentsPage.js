@@ -12,7 +12,7 @@ import EditShipmentModal from "./EditShipmentModal";
 
 const HandleShipmentsPage = () => {
   const {getUserToken} = useAuth();
-  const [editShipmentModal, setEditShipmentModal] = useState(false);
+  const [editShipmentView, setEditShipmentView] = useState(false);
   const [result, setResult] = useState(null);
   const [thisShipment, setThisShipment] = useState(null);
   const renderShipmentData = async () => {
@@ -30,7 +30,7 @@ const HandleShipmentsPage = () => {
   }
 
   const handleEditClick = (item) => {
-    setEditShipmentModal(!editShipmentModal);
+    setEditShipmentView(!editShipmentView);
     setThisShipment(item);
   }
   
@@ -42,14 +42,13 @@ const HandleShipmentsPage = () => {
       <>
       <Navbar></Navbar>
       {result == null ? <div>
-        loading...
+        No shipments found! 
       </div>
     :  
     <>
     <h3>Shipments</h3>
     <div className="searchShipment-Container">
-     <h3>Search Shipments</h3>
-     <input placeholder="Search by shipment id..."></input>
+     
      </div>
 
       <div className="displayAllShipment-Container">
@@ -58,21 +57,21 @@ const HandleShipmentsPage = () => {
           <thead>
           <tr>
           <th>Shipment Id</th>
-       {/*   <th>Account Id</th> */}
+         <th>Account</th> 
           <th>Receiver</th>
           <th>Weight</th>
           <th>Box Colour</th>
           <th>Shipment Status</th>
           <th>Destination Country</th>
           <th>Source Country</th>
-          <th>Edit</th>
+          <th>Edit/Delete</th>
           </tr>
           </thead>
           <tbody>
             {result.map(function(item){
               return (<tr key={item.id}>
                 <td>{item.id}</td>
-         {/*       <td>{item.account.id}</td> */}
+              <td><a href="#">{item.account.firstName} {item.account.lastName}</a></td> 
               <td>{item.receiver}</td>
               <td>{item.weight}</td>
               <td>{item.boxColour}</td>
@@ -86,7 +85,7 @@ const HandleShipmentsPage = () => {
             })}
               </tbody>            
       </Table>
-      {editShipmentModal && <EditShipmentModal thisShipment={thisShipment}></EditShipmentModal>}
+      {editShipmentView && <EditShipmentModal thisShipment={thisShipment} onClose={() => setEditShipmentView(!editShipmentView)}></EditShipmentModal>}
       </div>  
       </>
     }
