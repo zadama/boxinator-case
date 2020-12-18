@@ -37,6 +37,8 @@ const UserDetails = () => {
                 };
             });
 
+            console.log(data);
+
             setCountries(savedCountries);
             setData(data);
         } catch (error) {

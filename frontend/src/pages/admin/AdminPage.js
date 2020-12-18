@@ -2,12 +2,14 @@ import React from "react";
 import "./style.scss";
 import { useAuth } from "../../context/auth";
 import PrivateLayout from "../../layouts/PrivateLayout";
-import Sidebar from "./Sidebar";
+import AdminMenu from "./AdminMenu";
 import { useEffect } from "react";
 import { useState } from "react";
-import { getAllCountries } from "../../api/countries";
 import { checkToken } from "../../api/user";
+
 import UserDetails from "./UserDetails";
+import CountryPage from "../country/CountryPage";
+import HandleShipmentsPage from "./HandleShipmentsPage";
 
 /**
  * hämta alla shipments från backend, skicka med firebase token
@@ -20,7 +22,10 @@ import UserDetails from "./UserDetails";
 const AdminPage = () => {
   const auth = useAuth();
   const [data, setData] = useState(null);
-  const [showUsers, setShowUsers] = useState(false);
+  const [title, setTitle] = useState("");
+  const [showAccounts, setShowAccounts] = useState(false);
+  const [showCountries, setShowCountries] = useState(false);
+  const [showShipments, setShowShipments] = useState(false);
 
   const renderExampleDataWithToken = async () => {
     try {
@@ -39,28 +44,45 @@ const AdminPage = () => {
     renderExampleDataWithToken();
   }, []);
 
-  const handleUserDetailsClick = (event) => {
-    setShowUsers(!showUsers);
+  const handleUserDetailsClick = (event, value) => {
+    if(value === "accounts") {
+      setTitle("Accounts");
+      setShowCountries(false);
+      setShowShipments(false);
+      setShowAccounts(!showAccounts);
+    } else if(value === "countries") {
+      setTitle("Shipments")
+      setShowShipments(false);
+      setShowAccounts(false);
+      setShowCountries(!showCountries);
+    } else if(value === "shipments") {
+      setTitle("Countries")
+      setShowCountries(false);
+      setShowAccounts(false);
+      setShowShipments(!showShipments);
+    }
+    
   }
 
   return (
     <PrivateLayout>
       <div className="admin-page">
-        <section className="sidebar">
-          <Sidebar getDetails={event => handleUserDetailsClick(event)}/>
-        </section>
-
-        <section className="admin-content">
+        <section className="admin-title">
           {!data ? (
             <div>loading....</div>
           ) : (
             <div>
-              Logged in user's email(verified from server via token): {data}
+              {!title ? <h3>Welcome back, "{data}"</h3> : <h3>{title}</h3>}
             </div>
           )}
         </section>
+        <section className="admin-menu">
+          <AdminMenu getDetails={(event, value) => handleUserDetailsClick(event, value)}/>
+        </section>
         <section>
-          {!showUsers ?  "" : <UserDetails />}
+          {!showAccounts ?  "" : <UserDetails />}
+          {!showCountries ? "" : <CountryPage />}
+          {!showShipments ? "" : <HandleShipmentsPage />}
         </section>
       </div>
     </PrivateLayout>
