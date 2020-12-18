@@ -77,7 +77,7 @@ const HandleShipmentsPage = () => {
               <td>{item.weight}</td>
               <td>{item.boxColour}</td>
               <td>{item.shipmentStatus}</td>
-              <td>{item.destinationCountry}</td>
+              <td>{item.destinationCountry.name}</td>
               <td>{item.sourceCountry}</td>
               <td><Button variant="primary"
               onClick={()=> handleEditClick(item)}
