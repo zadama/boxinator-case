@@ -6,7 +6,7 @@ import "./style.scss";
 
 import { useAuth } from "../../context/auth";
 import { getAllCountries } from '../../api/countries';
-import { getAllAccounts } from '../../api/user';
+import { getAllAccounts, getAccount } from '../../api/user';
 import DeleteAccountModal from './AccountPageModals/DeleteAccountModal';
 import EditAccountModal from './AccountPageModals/EditAccountModal';
 
@@ -37,8 +37,6 @@ const AccountPage = () => {
                 };
             });
 
-            console.log(data);
-
             setCountries(savedCountries);
             setData(data);
         } catch (error) {
@@ -54,6 +52,25 @@ const AccountPage = () => {
     useEffect(() => {
         renderUserDataWithAdminToken();
     }, [])
+
+
+    const logAccount = async (user) => {
+
+        console.log("All", user);
+
+        try {
+
+            const token = await auth.getUserToken();
+
+            const { data } = await getAccount(token, user.id);
+
+            console.log("Specific", data.data)
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
 
     const handleEditClick = (user) => { // Open modal when admin wants to edit an account
         setEditAccountView(!editAccountView);
@@ -98,7 +115,7 @@ const AccountPage = () => {
                 <tbody>
                     {data.data.map(function(user){
                             return <tr key={user.id}>
-                                <td>{user.id}</td>
+                                <td onClick={() => logAccount(user)}>{user.id}</td>
                                 <td>{user.firstName} {user.lastName}</td>
                                 <td>{user.email}</td>
                                 <td>{!user.dateOfBirth ? "Not defined" : user.dateOfBirth}</td>
