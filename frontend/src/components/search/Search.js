@@ -1,7 +1,14 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
+import "./search.scss";
+import {faSearch} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+
 
 const Search = ({keyword, setKeyword}) => {
 
+const handleChange = event => {
+    setKeyword(event.target.value)
+}
 
     return (
         <div className="search-container">
@@ -9,9 +16,13 @@ const Search = ({keyword, setKeyword}) => {
             <div>
                 <input
                     className="search-bar"
+                    type="text"
+                    placeholder="Search..."
                     value={keyword}
-                    placeholder="Search..."/>
-
+                    onChange={handleChange}/>
+                    <button className="btn btn-info ml-2 search-icon">
+                        <FontAwesomeIcon icon={faSearch} size="lg"/>
+                    </button>
             </div>
         </div>
     );

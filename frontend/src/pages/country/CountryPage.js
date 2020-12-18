@@ -8,6 +8,7 @@ import EditModal from "./UpdateCountryModal";
 import AddCountryModal from "./AddCountryModal";
 import DeleteCountryModal from "./DeleteCountryModal";
 import Toaster from "../../components/toast/Toaster";
+import Search from "../../components/search/Search";
 
 
 
@@ -124,7 +125,8 @@ const CountryPage = () => {
             {toast && <Toaster toastHeaderMsg={toastHeader} toastMsg={toastMsg} onClose={() => {
                 setToast(false);
             }}/>}
-            <div className="search-container">
+            <div>
+                <Search/>
                 <button onClick={fetchCountries} className="btn btn-info" type="button">Get all countries</button>
             </div>
 
