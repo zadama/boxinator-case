@@ -61,7 +61,7 @@ public class ReceiptController {
     public ResponseEntity<CommonResponse> createShipmentReceipt(@RequestBody ReceiptDTO receiptDTO) {
         CommonResponse cr = new CommonResponse();
 
-        sendgridService.sendReceipt(receiptDTO.getRecipient(), receiptDTO.getReceiver(), receiptDTO.getDestinationCountry(), receiptDTO.getBoxColour(), receiptDTO.getWeight());
+        sendgridService.sendReceipt(receiptDTO.getRecipient(), receiptDTO.getReceiver(), receiptDTO.getDestinationCountry(), receiptDTO.getSourceCountry(), receiptDTO.getBoxColour(), receiptDTO.getWeight());
 
         return new ResponseEntity<>(cr, HttpStatus.OK);
     }

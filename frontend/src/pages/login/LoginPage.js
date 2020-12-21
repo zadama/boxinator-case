@@ -24,6 +24,14 @@ const LoginPage = ({ history }) => {
   const [showAnonModal, setShowAnonModal] = useState(false);
   const resolverRef = useRef();
 
+  const handleErrorMessage = (message) => {
+    setErrorMessage(message);
+    // After 3 seconds, remove the error message
+    setTimeout(() => {
+      setErrorMessage("");
+    }, 3000);
+  };
+
   const handleLogin = async (data) => {
     // setIsLoading(true);
 
@@ -37,11 +45,7 @@ const LoginPage = ({ history }) => {
       const errorHandler = AuthErrorHandling[error.code];
 
       if (errorHandler != null) {
-        setErrorMessage(errorHandler.response);
-        // After 3 seconds, remove the error message
-        setTimeout(() => {
-          setErrorMessage("");
-        }, 3000);
+        handleErrorMessage(errorHandler.response);
       }
 
       if (error.code === "auth/multi-factor-auth-required") {
@@ -52,8 +56,15 @@ const LoginPage = ({ history }) => {
     }
   };
 
-  const handleAnonLogin = async (email) => {
-    await loginAnonymously(email);
+  const handleAnonLogin = async (data) => {
+    try {
+      await loginAnonymously(data.email);
+    } catch (error) {
+      if (error.response.status === 409) {
+        // After 3 seconds, remove the error message
+        handleErrorMessage("Email already in use. ");
+      }
+    }
   };
 
   if (user === null || isLoading) {
@@ -99,15 +110,18 @@ const LoginPage = ({ history }) => {
           />
         )}
 
-        <button
-          onClick={() => {
-            setShowAnonModal(true);
-          }}
-        >
-          Use Anonoumsly
-        </button>
-
         <LoginForm handleLogin={handleLogin} />
+
+        <div className="anon-sign-in">
+          <p>Don't want to sign up right away?</p>
+          <button
+            onClick={() => {
+              setShowAnonModal(true);
+            }}
+          >
+            Sign in as a Guest
+          </button>
+        </div>
       </div>
     </PublicLayout>
   );

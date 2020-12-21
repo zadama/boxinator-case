@@ -43,8 +43,8 @@ const useProvideAuthImpl = () => {
       const user = { email: data.email, role: data.role };
       setUser(user);
     } catch (error) {
-      console.log("could not sign in anon");
       setUser(false);
+      throw error;
     }
   };
 

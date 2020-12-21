@@ -7,17 +7,17 @@ import "./style.scss";
 import { useAuth } from "../../context/auth";
 import { getAllCountries } from '../../api/countries';
 import { getAllAccounts } from '../../api/user';
-import EditUserModal from './userdetails/EditUserModal';
-import DeleteUserModal from './userdetails/DeleteUserModal';
+import DeleteAccountModal from './AccountPageModals/DeleteAccountModal';
+import EditAccountModal from './AccountPageModals/EditAccountModal';
 
 
-const UserDetails = () => {
+const AccountPage = () => {
     const auth = useAuth();
     const [data, setData] = useState(null);
     const [countries, setCountries] = useState([]);
-    const [editUserView, setEditUserView] = useState(false);
-    const [deleteUserView, setDeleteUserView] = useState(false);
-    const [thisUser, setThisUser] = useState(null);
+    const [editAccountView, setEditAccountView] = useState(false);
+    const [deleteAccountView, setDeleteAccountView] = useState(false);
+    const [thisAccount, setThisAccount] = useState(null);
     const [toast, setToast] = useState(false);
     const [toastMsg, setToastMsg] = useState("");
 
@@ -37,6 +37,8 @@ const UserDetails = () => {
                 };
             });
 
+            console.log(data);
+
             setCountries(savedCountries);
             setData(data);
         } catch (error) {
@@ -54,13 +56,13 @@ const UserDetails = () => {
     }, [])
 
     const handleEditClick = (user) => { // Open modal when admin wants to edit an account
-        setEditUserView(!editUserView);
-        setThisUser(user);
+        setEditAccountView(!editAccountView);
+        setThisAccount(user);
     }
 
     const handleDeleteClick = (user) => { // Open modal when admin wants to delete an account
-        setDeleteUserView(!deleteUserView);
-        setThisUser(user);
+        setDeleteAccountView(!deleteAccountView);
+        setThisAccount(user);
     }
 
     return (
@@ -104,7 +106,7 @@ const UserDetails = () => {
                                 <td>{!user.country ? "Not defined" : user.country}</td>
                                 <td>{!user.contactNumber ? "Not defined" : user.contactNumber}</td>
                                 <td>{user.role}</td>
-                                <td className="shipments">{user.shipments}</td>
+                                <td className="shipments">{user.shipments.length}</td>
                                 <td className="btns">
                                     <button className="btns btn btn-success" onClick={() => handleEditClick(user)}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
@@ -124,11 +126,11 @@ const UserDetails = () => {
             </Table>
         )}
         <section>
-            {editUserView && <EditUserModal thisUser={thisUser} countries={countries} reRender={renderUserDataWithAdminToken} toggleToast={toggleToast} />}
-            {deleteUserView && <DeleteUserModal thisUser={thisUser} toggleToast={toggleToast} />}
+            {editAccountView && <EditAccountModal onClose={() => setEditAccountView(!editAccountView)} thisAccount={thisAccount} countries={countries} reRender={renderUserDataWithAdminToken} toggleToast={toggleToast} />}
+            {deleteAccountView && <DeleteAccountModal onClose={() => setDeleteAccountView(!deleteAccountView)} thisAccount={thisAccount} toggleToast={toggleToast} />}
         </section>
     </>
     )
 }
 
-export default UserDetails;
+export default AccountPage;

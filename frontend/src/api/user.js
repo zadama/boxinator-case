@@ -46,7 +46,6 @@ const getUserRole = (token) => {
 };
 
 const createAnonUser = (email) => {
-  console.log(email);
   return Api.post("/receipt/account", {
     email: email,
     role: GUEST,

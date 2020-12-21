@@ -119,10 +119,19 @@ const RegisterPage = ({ history, location }) => {
       await reloadUser();
     } catch (error) {
       // deleteUser();
+      if (error.response.status === 404) {
+        console.log(
+          "User already exits? handle! means the provided accountid is wrong..."
+        );
+      }
     }
   };
 
   const addShipment = async () => {
+    if (showModal === false) {
+      setIsLoading(true);
+    }
+
     try {
       const token = await getUserToken();
       const newShipment = {
@@ -130,14 +139,18 @@ const RegisterPage = ({ history, location }) => {
         weight: claimShipment.current.weight,
         boxColour: claimShipment.current.box_color,
         destinationCountry: claimShipment.current.des_country,
-        sourceCountry: "Sweden",
+        sourceCountry: claimShipment.current.src_country,
         shipmentStatus: "IN_TRANSIT",
       };
       const shipment = await createShipment(newShipment, token);
-      setIsLoading(false);
+      alert(
+        "Shipment claimed! This should now redirect the handleShipments page(when its done) and highlight the created shipment through state.claimShipment"
+      );
 
       const { data } = shipment.data;
       console.log(data);
+
+      // redirect to appropriate route and have a toast here "your shipment was successfully added!" with highlighting the shipment
 
       history.push({
         pathname: "/admin-dashboard/country", // CHANGE THIS! redirect to users shipment page and also add the claimShipment in that page.
@@ -149,6 +162,7 @@ const RegisterPage = ({ history, location }) => {
   };
 
   const handleRouting = async () => {
+    console.log(user);
     if (user === false) {
       fetchCountries();
       return;
@@ -156,11 +170,9 @@ const RegisterPage = ({ history, location }) => {
 
     if (user && user.role === USER && claimShipment.current) {
       if (user.email === claimShipment.current.email) {
-        setIsLoading(true);
         await addShipment();
 
         return;
-        // redirect to appropriate route and have a toast here "your shipment was successfully added!" with highlighting the shipment
       } else {
         history.push("/add-shipment");
         return;
@@ -183,7 +195,6 @@ const RegisterPage = ({ history, location }) => {
   };
 
   useEffect(() => {
-    console.log(user);
     // Not logged in at all
     handleRouting();
   }, [user, history]);

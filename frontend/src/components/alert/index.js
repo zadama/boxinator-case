@@ -8,6 +8,7 @@ const AlertNotification = ({ onClose, message, variant }) => {
         position: "fixed",
         top: "20px",
         left: "40%",
+        zIndex: "1000",
       }}
       variant={variant}
       onClose={onClose}

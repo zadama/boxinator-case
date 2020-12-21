@@ -34,14 +34,15 @@ public class SendgridService {
     }
 
 
-    public void sendReceipt (String recipient,String receiver,String desCountry,String boxColor,Long weight){
+    public void sendReceipt (String recipient,String receiver,String desCountry,String srcCountry,String boxColor,Long weight){
         Account account = accountRepository.findByEmail(recipient).orElse(null);
         // replaces whitespace with %20 which is identical in browser URL.
         receiver = receiver.replaceAll("\\s+","%20");
         boxColor = boxColor.replaceAll("\\s+","%20");
         desCountry = desCountry.replaceAll("\\s+","%20");
+        srcCountry = srcCountry.replaceAll("\\s+","%20");
 
-        String queryParams = "receiver=" + receiver + "&des_country="+ desCountry + "&box_color=" + boxColor + "&weight=" + weight + "&id="+ account.getId() + "&email=" + recipient;
+        String queryParams = "receiver=" + receiver + "&des_country="+ desCountry +"&src_country="+ srcCountry  +  "&box_color=" + boxColor + "&weight=" + weight + "&id="+ account.getId() + "&email=" + recipient;
         System.out.println(queryParams);
         String verificationLink = enviromentMode.equals("dev") ? "http://localhost:3000/register?" + queryParams : "https://boxinator-application.herokuapp.com/register?" + queryParams;
         Email from = new Email("paria.karim@se.experis.com"); // Should be changed to our "company" email

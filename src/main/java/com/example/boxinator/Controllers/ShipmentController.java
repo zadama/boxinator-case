@@ -42,7 +42,10 @@ public class ShipmentController {
 
     // * POST/ (create new shipment)
     @PostMapping("/create")
-    public ResponseEntity<CommonResponse> createShipment(@RequestHeader(value = "Authorization") String token, @RequestBody ShipmentDTO shipmentDTO) {
+    public ResponseEntity<CommonResponse> createShipment(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestBody ShipmentDTO shipmentDTO
+    ) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
@@ -84,7 +87,10 @@ public class ShipmentController {
 
     // * GET/:shipment_id (get details about specific shipment),
     @GetMapping("/{shipment_id}")
-    public ResponseEntity<CommonResponse> getShipment(@RequestHeader(value = "Authorization") String token, @PathVariable long shipment_id) {
+    public ResponseEntity<CommonResponse> getShipment(
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable Long shipment_id
+    ) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
@@ -120,7 +126,7 @@ public class ShipmentController {
     public ResponseEntity<CommonResponse> updateShipment(
             @RequestHeader(value = "Authorization") String token,
             @RequestBody Shipment newShipment,
-            @PathVariable long shipment_id) {
+            @PathVariable Long shipment_id) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
@@ -182,7 +188,7 @@ public class ShipmentController {
     @DeleteMapping("/{shipment_id}")
     public ResponseEntity<CommonResponse> deleteShipment(
             @RequestHeader(value = "Authorization") String token,
-            @PathVariable long shipment_id) {
+            @PathVariable Long shipment_id) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
@@ -239,7 +245,10 @@ public class ShipmentController {
 
     //    * GET/:customer_id (get all shipments by a customer) Redundant? Due to the endpoint above having the functionality
     @GetMapping("/all/{account_id}")
-    public ResponseEntity<CommonResponse> getAllShipmentsByAccount(@RequestHeader(value = "Authorization") String token, @PathVariable Long account_id) {
+    public ResponseEntity<CommonResponse> getAllShipmentsByAccount(
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable Long account_id
+    ) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
@@ -253,7 +262,7 @@ public class ShipmentController {
                 cr.msg = "All shipments found for customer";
                 cr.status = HttpStatus.OK;
             } catch (Exception e) {
-                cr.msg = "Unable to find all shipments with this id: " + account_id;
+                cr.msg = "Unable to find all shipments from account with id: " + account_id;
                 cr.status = HttpStatus.BAD_REQUEST;
             }
         } else {
@@ -266,7 +275,10 @@ public class ShipmentController {
 
     //* GET/shipments by shipmentStatus
     @GetMapping("/status/{shipmentStatus}")
-    public ResponseEntity<CommonResponse> getAllShipmentsByShipmentStatus(@RequestHeader(value = "Authorization") String token, @PathVariable("shipmentStatus") Long shipmentStatus) {
+    public ResponseEntity<CommonResponse> getAllShipmentsByShipmentStatus(
+            @RequestHeader(value = "Authorization") String token,
+            @PathVariable("shipmentStatus") Long shipmentStatus
+    ) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
@@ -287,64 +299,4 @@ public class ShipmentController {
         }
         return new ResponseEntity<>(cr, cr.status);
     }
-
-  /*  Redundant?
-      * GET/:customer_id/:shipment_id (get a specific shipment by a customer)
-
-    @GetMapping("/{account_id}/{shipment_id}")
-    public ResponseEntity<CommonResponse> getSpecificShipmentByCustomer(@PathVariable Long account_id, @PathVariable Long shipment_id) {
-        CommonResponse cr = new CommonResponse();
-        ShipmentDTO shipmentDTO = new ShipmentDTO();
-
-        if (accountRepository.existsById(account_id)) {
-            if (shipmentRepository.existsById(shipment_id)) {
-                Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
-                Shipment shipment = shipmentRepo.orElse(null);
-
-                //   shipmentDTO.setAccountId(shipment.getAccount().getId());
-                shipmentDTO.setBoxColour(shipment.getBoxColour());
-                shipmentDTO.setDestinationCountry(shipment.getDestinationCountry().getName());
-                shipmentDTO.setWeight(shipment.getWeight());
-                shipmentDTO.setReceiver(shipment.getReceiver());
-                shipmentDTO.setShipmentId(shipment.getId());
-                shipmentDTO.setSourceCountry(shipment.getSourceCountry());
-                shipmentDTO.setShipmentStatus(shipment.getShipmentStatus());
-
-                cr.status = HttpStatus.OK;
-                cr.msg = "Specific shipment " + shipment_id + " for account " + account_id + " found";
-                cr.data = shipmentDTO;
-            } else {
-                cr.status = HttpStatus.NOT_FOUND;
-                cr.msg = "The specific shipment " + shipment_id + " could not be found.";
-            }
-
-        } else {
-            cr.status = HttpStatus.NOT_FOUND;
-            cr.msg = "The Specific account " + account_id + " could not be found.";
-        }
-
-        return new ResponseEntity<>(cr, cr.status);
-    }
-
-    //* GET/complete/:shipment_id (get details about specific completed shipment) NOT FINISHED
-    @GetMapping("/{shipmentStatus}/{shipment_id}")
-    public ResponseEntity<CommonResponse> getSpecificCompletedShipment(@PathVariable Long shipment_id, @PathVariable("shipmentStatus") Long shipmentStatus) {
-        CommonResponse cr = new CommonResponse();
-        List<Shipment> completedShipments;
-        ShipmentDTO shipmentDTO = new ShipmentDTO();
-
-        try {
-            ShipmentStatus statusType = ShipmentStatus.values()[shipmentStatus.intValue() - 1];
-            completedShipments = shipmentRepository.findAllByShipmentStatus(statusType);
-            cr.data = "";
-            cr.msg = "";
-            cr.status = HttpStatus.OK;
-        } catch (Exception e) {
-            cr.msg = "Unable to find any shipments with status code: " + shipmentStatus;
-            cr.status = HttpStatus.BAD_REQUEST;
-        }
-
-        return new ResponseEntity<>(cr, cr.status);
-    }
-    */
 }

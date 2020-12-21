@@ -105,6 +105,7 @@ const AddShipmentPage = ({ history }) => {
         weight: state.boxWeight,
         boxColour: colorName,
         destinationCountry: state.destinationCountry.value,
+        sourceCountry: state.sourceCountry.value,
         receiver: state.receiver,
         recipient: user.email,
       });
