@@ -29,6 +29,7 @@ const RegisterForm = ({
   countries,
   errorMessage,
   closeAlert,
+  guestEmail,
 }) => {
   const {
     register: registerForm,
@@ -98,20 +99,32 @@ const RegisterForm = ({
 
       <div className="register-form-group full-width">
         <label className="label">Email</label>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          className="input"
-          ref={registerForm({
-            required: "Enter your e-mail",
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-              message: "Enter a valid e-mail address",
-            },
-          })}
-          style={{ borderColor: errors.email && "red" }}
-        ></input>
+
+        {guestEmail ? (
+          <input
+            value={guestEmail}
+            type="email"
+            name="email"
+            placeholder="Email"
+            className="input"
+            readOnly
+          />
+        ) : (
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            className="input"
+            ref={registerForm({
+              required: "Enter your e-mail",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                message: "Enter a valid e-mail address",
+              },
+            })}
+            style={{ borderColor: errors.email && "red" }}
+          ></input>
+        )}
 
         {errors.email && (
           <span className="error-span">{errors.email.message}</span>

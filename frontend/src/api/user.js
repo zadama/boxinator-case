@@ -1,4 +1,4 @@
-import { USER, ADMIN } from "../utils/roles";
+import { USER, ADMIN, GUEST } from "../utils/roles";
 import Api from "./axios";
 
 // Only for testing purposes...
@@ -10,9 +10,8 @@ const getAllAccounts = (token) => {
   });
 };
 
-
 const deleteAccount = (token, account_id) => {
-  return Api.delete("/account/"+account_id, {
+  return Api.delete("/account/" + account_id, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -20,13 +19,16 @@ const deleteAccount = (token, account_id) => {
 };
 
 const updateAccount = (token, account_id, newUser) => {
-  return Api.patch("/account/"+account_id, { ...newUser }, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-}
-
+  return Api.patch(
+    "/account/" + account_id,
+    { ...newUser },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
 
 const checkToken = (token) => {
   return Api.get("/accounttest/checktoken", {
@@ -43,7 +45,26 @@ const getUserRole = (token) => {
   });
 };
 
+const createAnonUser = (email) => {
+  return Api.post("/receipt/account", {
+    email: email,
+    role: GUEST,
+  });
+};
+
 //{...body, role:USER} instead
+
+const updateUser = (body, id, token) => {
+  return Api.patch(
+    "/account/" + id,
+    {
+      ...body,
+    },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+};
 
 const createUser = (body) => {
   return Api.post("/account/register", {
@@ -52,4 +73,13 @@ const createUser = (body) => {
   });
 };
 
-export { getAllAccounts, updateAccount, deleteAccount, createUser, checkToken, getUserRole };
+export {
+  getAllAccounts,
+  updateAccount,
+  deleteAccount,
+  createUser,
+  createAnonUser,
+  checkToken,
+  getUserRole,
+  updateUser,
+};
