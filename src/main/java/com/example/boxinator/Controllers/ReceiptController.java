@@ -25,6 +25,7 @@ public class ReceiptController {
     @Autowired
     private AccountRepository accountRepository;
 
+    // Should be moved to account controller.
     @PostMapping("/account")
     public ResponseEntity<CommonResponse> createAnonAccount(@RequestBody Account account) {
         CommonResponse cr = new CommonResponse();
@@ -56,7 +57,7 @@ public class ReceiptController {
 
     }
 
-    // send receipt guest and addshipment?
+
     @PostMapping()
     public ResponseEntity<CommonResponse> createShipmentReceipt(@RequestBody ReceiptDTO receiptDTO) {
         CommonResponse cr = new CommonResponse();
