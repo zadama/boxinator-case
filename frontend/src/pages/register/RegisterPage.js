@@ -74,8 +74,6 @@ const RegisterPage = ({ history }) => {
   }, []);
 
   const onSuccess = async () => {
-    console.log({ ...formData.current });
-
     try {
       await createUser({ ...formData.current });
       await reloadUser();

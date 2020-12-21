@@ -53,25 +53,6 @@ const AccountPage = () => {
         renderUserDataWithAdminToken();
     }, [])
 
-
-    const logAccount = async (user) => {
-
-        console.log("All", user);
-
-        try {
-
-            const token = await auth.getUserToken();
-
-            const { data } = await getAccount(token, user.id);
-
-            console.log("Specific", data.data)
-
-        } catch (error) {
-            console.log(error);
-        }
-
-    }
-
     const handleEditClick = (user) => { // Open modal when admin wants to edit an account
         setEditAccountView(!editAccountView);
         setThisAccount(user);
@@ -115,7 +96,7 @@ const AccountPage = () => {
                 <tbody>
                     {data.data.map(function(user){
                             return <tr key={user.id}>
-                                <td onClick={() => logAccount(user)}>{user.id}</td>
+                                <td>{user.id}</td>
                                 <td>{user.firstName} {user.lastName}</td>
                                 <td>{user.email}</td>
                                 <td>{!user.dateOfBirth ? "Not defined" : user.dateOfBirth}</td>
