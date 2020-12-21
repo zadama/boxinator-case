@@ -25,40 +25,40 @@ const EditAccountModal = (props) => {
     
 
     useEffect(() => {
-        !props.thisUser.dateOfBirth ? setDOB(new Date()) : setDOB(parseISO(props.thisUser.dateOfBirth)); // If user does not have a chosen DoB, set a temporary one
+        !props.thisAccount.dateOfBirth ? setDOB(new Date()) : setDOB(parseISO(props.thisAccount.dateOfBirth)); // If user does not have a chosen DoB, set a temporary one
     }, [])
 
     const onSubmit = data => {
         
-        if (props.thisUser.firstName === data.firstName) {
+        if (props.thisAccount.firstName === data.firstName) {
             delete data.firstName;
         }
         
-        if (props.thisUser.lastName === data.lastName) {
+        if (props.thisAccount.lastName === data.lastName) {
             delete data.lastName;
         }
 
-        if (props.thisUser.email === data.email) {
+        if (props.thisAccount.email === data.email) {
             delete data.email;
         }
 
-        if (props.thisUser.zipCode === parseInt(data.zipCode)) {
+        if (props.thisAccount.zipCode === parseInt(data.zipCode)) {
             delete data.zipCode;
         }
 
-        if (props.thisUser.contactNumber === parseInt(data.contactNumber)) {
+        if (props.thisAccount.contactNumber === parseInt(data.contactNumber)) {
             delete data.contactNumber;
         }
 
-        if (props.thisUser.country === JSON.parse(data.country).name) {
+        if (props.thisAccount.country === JSON.parse(data.country).name) {
             delete data.country;
         }
 
-        if (parseISO(props.thisUser.dateOfBirth) === data.dateOfBirth) {
+        if (parseISO(props.thisAccount.dateOfBirth) === data.dateOfBirth) {
             delete data.dateOfBirth;
         }
 
-        if (props.thisUser.role === data.role) {
+        if (props.thisAccount.role === data.role) {
             delete data.role;
         }
 
@@ -71,7 +71,7 @@ const EditAccountModal = (props) => {
         try {
             const token = await auth.getUserToken(); // Get sessiontoken
 
-            await updateAccount(token, props.thisUser.id, user); // Pass token, pathvariable and body with request
+            await updateAccount(token, props.thisAccount.id, user); // Pass token, pathvariable and body with request
             props.reRender(); // Rerender page
             props.toggleToast("saved");
         } catch (error) {
@@ -89,11 +89,11 @@ const EditAccountModal = (props) => {
     return (
         <>
             <Modal isVisible={showModal} onClose={onClose}>
-                <h1>{props.thisUser.firstName} {props.thisUser.lastName}</h1>
+                <h1>{props.thisAccount.firstName} {props.thisAccount.lastName}</h1>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <input
                         name="firstName"
-                        defaultValue={props.thisUser.firstName} 
+                        defaultValue={props.thisAccount.firstName} 
                         ref={register({
                             pattern: {
                                 value: /^[A-Za-z]+$/,
@@ -105,7 +105,7 @@ const EditAccountModal = (props) => {
                     <input 
                         type="text" 
                         name="lastName" 
-                        defaultValue={props.thisUser.lastName} 
+                        defaultValue={props.thisAccount.lastName} 
                         ref={register({
                             pattern: {
                                 value: /^[A-Za-z]+$/,
@@ -116,7 +116,7 @@ const EditAccountModal = (props) => {
                     <input 
                         type="text" 
                         name="email" 
-                        defaultValue={props.thisUser.email} 
+                        defaultValue={props.thisAccount.email} 
                         ref={register({
                             pattern: {
                                 value: /\S+@\S+\.\S+/,
@@ -144,16 +144,16 @@ const EditAccountModal = (props) => {
                     <input 
                         type="text" 
                         name="zipCode"
-                        defaultValue={props.thisUser.zipCode}
+                        defaultValue={props.thisAccount.zipCode}
                         ref={register}>
                     </input>
                     <select
-                        placeholder={props.thisUser.country}
+                        placeholder={props.thisAccount.country}
                         options={props.countries}
                         ref={register}
                         name="country"
                     >
-                        {!props.thisUser.country && <option value={props.thisUser.country}>Select country...</option>}
+                        {!props.thisAccount.country && <option value={props.thisAccount.country}>Select country...</option>}
                         {!props.countries ? "loading..." :
                         props.countries.map((country, index) => {
                             return <option key={index} value={JSON.stringify(country)}>{country.name}</option>
@@ -162,11 +162,11 @@ const EditAccountModal = (props) => {
                     <input 
                         type="text"
                         name="contactNumber"
-                        defaultValue={props.thisUser.contactNumber}
+                        defaultValue={props.thisAccount.contactNumber}
                         ref={register}>
                     </input>
                     <select
-                        placeholder={props.thisUser.role}
+                        placeholder={props.thisAccount.role}
                         name="role"
                         ref={register}>
                             <option value={USER}>USER</option>

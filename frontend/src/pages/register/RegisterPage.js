@@ -92,7 +92,6 @@ const RegisterPage = ({ history, location }) => {
   };
 
   const onSuccess = async () => {
-    console.log({ ...formData.current });
     console.log(guestEmail, claimShipment.current);
 
     try {
@@ -113,6 +112,7 @@ const RegisterPage = ({ history, location }) => {
         console.log("User not found, proceed to create user instead.");
       }
     }
+
 
     try {
       await createUser({ ...formData.current });

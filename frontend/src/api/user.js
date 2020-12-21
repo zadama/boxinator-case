@@ -10,6 +10,15 @@ const getAllAccounts = (token) => {
   });
 };
 
+
+const getAccount = (token, account_id) => {
+  return Api.get("/account/"+account_id, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 const deleteAccount = (token, account_id) => {
   return Api.delete("/account/" + account_id, {
     headers: {
@@ -75,6 +84,7 @@ const createUser = (body) => {
 
 export {
   getAllAccounts,
+  getAccount,
   updateAccount,
   deleteAccount,
   createUser,
