@@ -1,12 +1,12 @@
 import React from "react";
-import "./style.scss";
-import { useAuth } from "../../context/auth";
-import PrivateLayout from "../../layouts/PrivateLayout";
-import AdminMenu from "./AdminMenu";
+import "../style.scss";
+import { useAuth } from "../../../context/auth";
+import PrivateLayout from "../../../layouts/PrivateLayout";
+import AdminMenu from "../AdminMenu";
 import { useState, useEffect } from "react";
-import Navbar from "../../components/navbar";
+import Navbar from "../../../components/navbar";
 import Table from "react-bootstrap/Table";
-import {getAllShipments} from "../../api/shipments";
+import {getAllShipments} from "../../../api/shipments";
 import { Button } from "react-bootstrap";
 import EditShipmentModal from "./EditShipmentModal";
 
@@ -65,7 +65,7 @@ const HandleShipmentsPage = () => {
           <th>Weight</th>
           <th>Box Colour</th>
           <th>Shipment Status</th>
-         {/*  <th>Destination Country</th> */}
+           <th>Destination Country</th> 
           <th>Source Country</th>
           <th>Edit/Delete</th>
           </tr>
@@ -79,7 +79,7 @@ const HandleShipmentsPage = () => {
               <td>{item.weight}</td>
               <td>{item.boxColour}</td>
               <td>{item.shipmentStatus}</td>
-             {/*} <td>{item.destinationCountry.name}</td> */}
+              <td>{item.destinationCountry.name}</td> 
               <td>{item.sourceCountry}</td>
               <td>
                 <Button variant="primary"

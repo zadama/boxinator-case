@@ -16,7 +16,7 @@ import {
 import PrivateRoute from "./components/hoc/PrivateRoute";
 import { ADMIN, USER, GUEST } from "./utils/roles";
 import CountryPage from "./pages/country/CountryPage";
-import HandleShipmentsPage from "./pages/admin/HandleShipmentsPage";
+import HandleShipmentsPage from "./pages/admin/manageShipments/HandleShipmentsPage";
 
 function App() {
   return (

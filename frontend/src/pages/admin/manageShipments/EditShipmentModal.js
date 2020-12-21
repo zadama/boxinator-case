@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import {useAuth} from "../../context/auth";
+import {useAuth} from "../../../context/auth";
 import { Button, Dropdown, DropdownButton, Form } from 'react-bootstrap';
-import useForm from "../country/useForm";
-import Modal from '../../components/modal/index';
-import { statusValues } from "../../utils/shipmentStatusValues";
-
-import {getAllCountries} from "../../api/countries";
+import useForm from "../../country/useForm";
+import Modal from '../../../components/modal/index';
+import { statusValues } from "../../../utils/shipmentStatusValues";
+import validate from "./ShipmentValidations";
+import {getAllCountries} from "../../../api/countries";
 
 const EditShipmentModal = (props) => {
   
   const auth = useAuth();
   const [showModal, setShowModal] = useState(true);
   const [countries, setCountries] = useState([]);
-  const [id, setId] = useState(props.thisShipment.id);
-  
-  const {values, setValues, setErrors, errors, handleChange, handleSubmit} = useForm("updateShipment", "validate");
- 
-  /*
+  const [id, setId] = useState(props.thisShipment.id); 
+
+  //put functionFromParent here for update logic
   const updateShipment = () => {
     props.updateShipment({id, ...values});
     setShowModal(false);
   }
-  */
+  
+  const {values, setValues, setErrors, errors, handleChange, handleSubmit} = useForm("functionfromParent", validate);
+
 
  useEffect( () => {
    getCountries();
@@ -60,7 +60,7 @@ const EditShipmentModal = (props) => {
   return (
     <div className="container">
     {showModal && (<Modal onClose={onClose}>
-        <Form>
+        <Form onSubmit={handleSubmit} className="needs-validation" noValidate>
           <div className="form-group">
             <label htmlFor="shipment-id">
               <strong>Shipment ID:</strong>
@@ -89,10 +89,13 @@ const EditShipmentModal = (props) => {
             </label>
             <input
               type="text"
-              className="form-control"
+              className={`form-control ${errors.receiver && "is-invalid"}`}
               id="receiver"
-              defaultValue={props.thisShipment.receiver}
+              name="receiver"
+              defaultValue={props.thisShipment.receiver || ""}
+              onChange={handleChange}
               required/>
+              {errors.receiver && (<p className="is-invalid invalid-feedback">{errors.receiver}</p>)}
           </div>
 
           <div className="form-group">
