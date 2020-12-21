@@ -165,7 +165,11 @@ public class AccountController {
 
                     if (changedAccount.getContactNumber() != 0) { account.setContactNumber(changedAccount.getContactNumber()); }
 
-                    if (changedAccount.getRole() != null && authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
+                    // removed && authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)
+                    if (changedAccount.getRole() != null) {
+                        // Do a check before here: if authResp role is not ADMIN and the
+                        // changedAccount role is ADMIN, meaning a USER/GUEST wants to change
+                        // its role to ADMIN, don't allow that! everything else is okay.
                         account.setRole(changedAccount.getRole());
                     } else {
                         cr.msg += "Role ";

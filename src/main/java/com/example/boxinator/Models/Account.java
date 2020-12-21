@@ -143,5 +143,12 @@ public class Account {
         this.role = role;
     }
 
+    public void insertGuestValues (){
+        this.firstName="";
+        this.lastName="";
+        this.password="";
+
+    }
+
 }
 

@@ -5,11 +5,13 @@ import Button from "react-bootstrap/Button";
 import { useAuth } from "../../context/auth";
 import ShipmentForm from "./components/ShipmentForm";
 import CompleteOrder from "./components/CompleteOrder";
-import { createShipment } from "../../api/shipments";
+import { createShipment, addShipmentReceipt } from "../../api/shipments";
 import { ntc as convertHex } from "../../utils/ntc";
+import { GUEST } from "../../utils/roles";
 
 const AddShipmentPage = ({ history }) => {
   const isFirstSubmission = useRef(true);
+  const { user } = useAuth();
 
   const { logout, getUserToken } = useAuth();
   const [state, setState] = useState({
@@ -97,6 +99,19 @@ const AddShipmentPage = ({ history }) => {
 
     const match = convertHex.name(state.colorValue);
     const colorName = match[1];
+
+    if (user.role === GUEST) {
+      await addShipmentReceipt({
+        weight: state.boxWeight,
+        boxColour: colorName,
+        destinationCountry: state.destinationCountry.value,
+        sourceCountry: state.sourceCountry.value,
+        receiver: state.receiver,
+        recipient: user.email,
+      });
+      return;
+    }
+
     try {
       const token = await getUserToken();
       // set shipmentstatus in backend instead? (IN_TRANSIT part)

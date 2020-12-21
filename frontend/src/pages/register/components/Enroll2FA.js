@@ -110,6 +110,8 @@ return user.reauthenticateWithCredential(credential);
 
       hasEnrolled2Fa.current = true;
 
+      console.log("hasenrolled2fa to true", hasEnrolled2Fa);
+
       alert("enrolled in MFA");
 
       onSuccess();
@@ -145,6 +147,7 @@ return user.reauthenticateWithCredential(credential);
     return () => {
       // if user closes the modal without completing the 2FA, we delete the account.
       if (!hasEnrolled2Fa.current) {
+        console.log("DELETING user", hasEnrolled2Fa);
         onDeleteUser();
       }
 
@@ -162,8 +165,10 @@ return user.reauthenticateWithCredential(credential);
       )}
    */
 
+  // This modal should not be closeable. This to avoid deleting the user if he/she
+  // by mistake clicks outside the modal.
   return (
-    <Modal onClose={onClose}>
+    <Modal onClose={() => {}}>
       <div ref={recaptchaWrapperRef}>
         <div style={{ display: "none" }} id="recaptcha-container"></div>
       </div>

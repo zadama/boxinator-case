@@ -30,6 +30,12 @@
       display: flex;
       background: #fff;
       color: #111f2c;
+
+      &:read-only {
+        background-color: wheat;
+        border: none;
+        outline: none;
+      }
     }
 
     .react-datepicker-wrapper {
