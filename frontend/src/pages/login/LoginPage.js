@@ -5,7 +5,7 @@ import "./style.scss";
 import PublicLayout from "../../layouts/PublicLayout";
 
 import { useAuth } from "../../context/auth";
-import { ADMIN, USER } from "../../utils/roles";
+import { ADMIN, GUEST, USER } from "../../utils/roles";
 import firebase from "../../context/firebase";
 import { AuthErrorHandling } from "../../utils/authErrors";
 
@@ -13,14 +13,15 @@ import LoginForm from "./components/LoginForm";
 import Login2fa from "./components/Login2Fa";
 import PageLoader from "../../components/loader";
 import Alert from "../../components/alert";
+import LoginAnon from "./components/LoginAnon";
 
 const LoginPage = ({ history }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { user, login } = useAuth();
+  const { user, login, loginAnonymously } = useAuth();
 
   const [errorMessage, setErrorMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
-
+  const [showAnonModal, setShowAnonModal] = useState(false);
   const resolverRef = useRef();
 
   const handleLogin = async (data) => {
@@ -51,6 +52,10 @@ const LoginPage = ({ history }) => {
     }
   };
 
+  const handleAnonLogin = async (email) => {
+    await loginAnonymously(email);
+  };
+
   if (user === null || isLoading) {
     return <PageLoader />;
   }
@@ -58,7 +63,7 @@ const LoginPage = ({ history }) => {
   if (user && user.role === ADMIN) {
     return <Redirect to="/admin-dashboard" />;
   }
-  if (user && user.role === USER) {
+  if (user && (user.role === USER || user.role === GUEST)) {
     return <Redirect to="/add-shipment" />;
   }
 
@@ -74,6 +79,15 @@ const LoginPage = ({ history }) => {
         />
       )}
 
+      {showAnonModal && (
+        <LoginAnon
+          handleLogin={handleAnonLogin}
+          onClose={() => {
+            setShowAnonModal(false);
+          }}
+        />
+      )}
+
       <div className="login">
         {errorMessage && (
           <Alert
@@ -84,6 +98,14 @@ const LoginPage = ({ history }) => {
             variant={"danger"}
           />
         )}
+
+        <button
+          onClick={() => {
+            setShowAnonModal(true);
+          }}
+        >
+          Use Anonoumsly
+        </button>
 
         <LoginForm handleLogin={handleLogin} />
       </div>
