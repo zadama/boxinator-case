@@ -26,10 +26,6 @@ const LoginPage = ({ history }) => {
 
   const handleErrorMessage = (message) => {
     setErrorMessage(message);
-    // After 3 seconds, remove the error message
-    setTimeout(() => {
-      setErrorMessage("");
-    }, 3000);
   };
 
   const handleLogin = async (data) => {
@@ -107,6 +103,7 @@ const LoginPage = ({ history }) => {
               setErrorMessage("");
             }}
             variant={"danger"}
+            expire={3000}
           />
         )}
 

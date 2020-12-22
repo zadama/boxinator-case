@@ -1,5 +1,6 @@
 .add-shipment-container {
   display: flex;
+  flex-flow: row wrap;
   align-items: stretch;
 
   .shipment-form-container {

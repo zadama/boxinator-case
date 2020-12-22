@@ -20,11 +20,16 @@ const LoginForm = ({ handleLogin }) => {
           name="email"
           ref={register({
             required: true,
-            pattern: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
+            pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
           })}
         ></input>
 
-        {errors.email && <span className="error-span">Invalid Email</span>}
+        {errors.email?.type === "required" && (
+          <span className="error-span">Please enter your email.</span>
+        )}
+        {errors.email?.type === "pattern" && (
+          <span className="error-span">Invalid email format.</span>
+        )}
 
         <Form.Text className="text-muted">
           We'll never share your email with anyone else.
@@ -40,18 +45,10 @@ const LoginForm = ({ handleLogin }) => {
           name="password"
           ref={register({
             required: true,
-            minLength: {
-              value: 6,
-              message: "Password should be at-least 6 characters.",
-            },
           })}
         ></input>
-        {errors.password && (
-          <span className="error-span">
-            {errors.password.message
-              ? errors.password.message
-              : "Invalid Password"}
-          </span>
+        {errors.password?.type === "required" && (
+          <span className="error-span">Please enter your password.</span>
         )}
       </div>
       <Button className="btn" variant="primary" type="submit">
