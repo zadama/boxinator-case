@@ -5,6 +5,7 @@ import "../style.scss";
 import Modal from "../../../components/modal";
 import { AuthErrorHandling } from "../../../utils/authErrors";
 import PageLoader from "../../../components/loader";
+import Alert from "../../../components/alert";
 
 const Enroll2FA = ({ onClose, initialNumber, firebase, onSuccess }) => {
   const recaptchaWrapperRef = useRef();
@@ -147,7 +148,6 @@ return user.reauthenticateWithCredential(credential);
     return () => {
       // if user closes the modal without completing the 2FA, we delete the account.
       if (!hasEnrolled2Fa.current) {
-        console.log("DELETING user", hasEnrolled2Fa);
         onDeleteUser();
       }
 
@@ -179,32 +179,16 @@ return user.reauthenticateWithCredential(credential);
         <>
           {errorMessage && (
             <>
-              {errorMessage.code === "auth/unverified-email" &&
-                !showEnterVerificationCode && (
-                  <section
-                    className="resend-code"
-                    style={{ width: "100%", padding: "20px" }}
-                  >
-                    <p className="error-message">{errorMessage.response}</p>
-
-                    <button
-                      onClick={() => {
-                        firebase.auth().currentUser.sendEmailVerification();
-                      }}
-                    >
-                      Resend the email
-                    </button>
-                  </section>
-                )}
-
               {(errorMessage.code === "auth/invalid-phone-number" ||
                 errorMessage.code === "auth/invalid-verification-code") && (
-                <section
-                  className="resend-code"
-                  style={{ width: "100%", padding: "20px" }}
-                >
-                  <p className="error-message">{errorMessage.response}</p>
-                </section>
+                <Alert
+                  message={errorMessage.response}
+                  onClose={() => {
+                    setErrorMessage("");
+                  }}
+                  expire={3000}
+                  variant={"danger"}
+                />
               )}
             </>
           )}
@@ -226,8 +210,9 @@ return user.reauthenticateWithCredential(credential);
               </button>
 
               <section className="resend-code">
-                <p>Resend verification code</p>
+                <p>Didn't receive the verification code? </p>
                 <button
+                  style={{ width: "auto" }}
                   onClick={() => {
                     setEnterVerificationCode(false);
                     setErrorMessage(null);
@@ -239,20 +224,41 @@ return user.reauthenticateWithCredential(credential);
             </div>
           ) : (
             <div className="phone-container">
-              <h4>Enter your Phone number</h4>
-
+              <p>
+                You must enable two-factor authentication to complete the
+                registration. Press the button and we will send a verification
+                code to your number.
+              </p>
+              <p>
+                NOTE: you have to confirm your email <strong>first</strong>,
+                before we can enroll you with two-factor authentication.
+              </p>
               <section>
                 {/*
              ha dropdown select inuti (position absolute på span och padding-left: 20px något på input) där man kan välja phoneCode
              <span>+46</span>*/}
 
-                <input
-                  placeholder="e.g. +46727124185"
-                  value={phoneNbr}
-                  onChange={(e) => {
-                    setPhoneNbr(e.target.value);
-                  }}
-                ></input>
+                {initialNumber != null ? (
+                  <input
+                    placeholder="e.g. +46727124185"
+                    value={phoneNbr}
+                    readOnly
+                  ></input>
+                ) : (
+                  <input
+                    placeholder="e.g. +46727124185"
+                    value={phoneNbr}
+                    onChange={(e) => {
+                      // This can be removed completely. Only useful
+                      // if we have some kind of "send code to different number" and by
+                      // that we toggle from readOnly to alterable.
+                      let value = e.target.value;
+                      if (Number(value)) {
+                        setPhoneNbr(value);
+                      }
+                    }}
+                  ></input>
+                )}
               </section>
 
               <button
@@ -263,6 +269,26 @@ return user.reauthenticateWithCredential(credential);
               >
                 Send verification code
               </button>
+
+              {errorMessage &&
+                errorMessage.code === "auth/unverified-email" &&
+                !showEnterVerificationCode && (
+                  <section
+                    className="resend-code"
+                    style={{ width: "100%", paddingBottom: "20px" }}
+                  >
+                    <p className="error-message">{errorMessage.response}</p>
+
+                    <button
+                      style={{ width: "auto", marginLeft: "8px" }}
+                      onClick={() => {
+                        firebase.auth().currentUser.sendEmailVerification();
+                      }}
+                    >
+                      Resend
+                    </button>
+                  </section>
+                )}
             </div>
           )}{" "}
         </>

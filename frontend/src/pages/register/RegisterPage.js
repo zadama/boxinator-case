@@ -67,10 +67,6 @@ const RegisterPage = ({ history, location }) => {
 
       if (errorHandler != null) {
         setErrorMessage(errorHandler.response);
-
-        setTimeout(() => {
-          setErrorMessage("");
-        }, 3000);
       }
     }
   };
@@ -112,7 +108,6 @@ const RegisterPage = ({ history, location }) => {
         console.log("User not found, proceed to create user instead.");
       }
     }
-
 
     try {
       await createUser({ ...formData.current });
@@ -217,6 +212,14 @@ const RegisterPage = ({ history, location }) => {
           }}
         />
       )}
+
+      <button
+        onClick={() => {
+          setShowModal(true);
+        }}
+      >
+        Show modal
+      </button>
 
       <RegisterForm
         guestEmail={guestEmail}
