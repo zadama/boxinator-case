@@ -8,6 +8,8 @@ import com.example.boxinator.Utils.AuthService.AuthResponse;
 import com.example.boxinator.Utils.AuthService.AuthenticationService;
 import com.example.boxinator.Utils.CommonResponse;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -163,7 +165,7 @@ public class AccountController {
 
                     if (changedAccount.getZipCode() != 0) { account.setZipCode(changedAccount.getZipCode()); }
 
-                    if (changedAccount.getContactNumber() != 0) { account.setContactNumber(changedAccount.getContactNumber()); }
+                    if (changedAccount.getContactNumber() != null) { account.setContactNumber(changedAccount.getContactNumber()); }
 
                     // removed && authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)
                     if (changedAccount.getRole() != null) {

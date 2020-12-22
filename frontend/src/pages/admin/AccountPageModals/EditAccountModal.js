@@ -16,17 +16,18 @@ import "react-datepicker/dist/react-datepicker.css";
 const EditAccountModal = (props) => {
 
     const auth = useAuth();
-    const { register, handleSubmit, errors, control, watch } = useForm();
+    const { register, handleSubmit, errors, control, watch, reset } = useForm();
     const [showModal, setShowModal] = useState(true);
     const [dob, setDOB] = useState(new Date());
 
-    const { dateOfBirth } = watch(["dateOfBirth"])
+    const { dateOfBirth } = watch(["dateOfBirth"]);
 
     
 
     useEffect(() => {
         !props.thisAccount.dateOfBirth ? setDOB(new Date()) : setDOB(parseISO(props.thisAccount.dateOfBirth)); // If user does not have a chosen DoB, set a temporary one
-    }, [])
+        reset({...props.thisAccount})
+    }, [reset])
 
     const onSubmit = data => {
         
@@ -52,7 +53,7 @@ const EditAccountModal = (props) => {
 
         if (props.thisAccount.country === JSON.parse(data.country).name) {
             delete data.country;
-        }
+        } 
 
         if (parseISO(props.thisAccount.dateOfBirth) === data.dateOfBirth) {
             delete data.dateOfBirth;
@@ -132,7 +133,7 @@ const EditAccountModal = (props) => {
                                 maxDate={new Date()}
                                 placeholderText="MM/DD/YYYY"
                                 onChange={(date) => setDOB(date)}
-                                selected={dateOfBirth}
+                                selected={dob}
                                 autoComplete="off"
                             />
                     }
@@ -148,8 +149,6 @@ const EditAccountModal = (props) => {
                         ref={register}>
                     </input>
                     <select
-                        placeholder={props.thisAccount.country}
-                        options={props.countries}
                         ref={register}
                         name="country"
                     >

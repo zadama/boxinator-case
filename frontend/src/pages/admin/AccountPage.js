@@ -101,7 +101,7 @@ const AccountPage = () => {
                                 <td>{user.email}</td>
                                 <td>{!user.dateOfBirth ? "Not defined" : user.dateOfBirth}</td>
                                 <td>{!user.zipCode ? "Not defined" : user.zipCode}</td>
-                                <td>{!user.country ? "Not defined" : user.country}</td>
+                                <td>{!user.country ? "Not defined" : JSON.parse(user.country).name}</td>
                                 <td>{!user.contactNumber ? "Not defined" : user.contactNumber}</td>
                                 <td>{user.role}</td>
                                 <td className="shipments">{user.shipments.length}</td>
