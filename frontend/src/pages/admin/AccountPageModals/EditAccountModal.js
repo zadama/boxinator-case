@@ -90,90 +90,114 @@ const EditAccountModal = (props) => {
     return (
         <>
             <Modal isVisible={showModal} onClose={onClose}>
-                <h1>{props.thisAccount.firstName} {props.thisAccount.lastName}</h1>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <input
-                        name="firstName"
-                        defaultValue={props.thisAccount.firstName} 
-                        ref={register({
-                            pattern: {
-                                value: /^[A-Za-z]+$/,
-                                message: "invalid format"
-                            }
-                        })}>
-                    </input>
-                    {errors.firstName?.message && <p>{errors.firstName.message}</p>}
-                    <input 
-                        type="text" 
-                        name="lastName" 
-                        defaultValue={props.thisAccount.lastName} 
-                        ref={register({
-                            pattern: {
-                                value: /^[A-Za-z]+$/,
-                                message: "invalid format"
-                            }
-                        })}>
-                    </input>
-                    <input 
-                        type="text" 
-                        name="email" 
-                        defaultValue={props.thisAccount.email} 
-                        ref={register({
-                            pattern: {
-                                value: /\S+@\S+\.\S+/,
-                                name: "invalid format"
-                            }
-                        })}>
-                    </input>
-                    <Controller as={
-                            <DatePicker
-                                id="dateOfBirth"
-                                showYearDropdown
-                                dateFormat="dd/MM/yyyy"
-                                maxDate={new Date()}
-                                placeholderText="MM/DD/YYYY"
-                                onChange={(date) => setDOB(date)}
-                                selected={dob}
-                                autoComplete="off"
-                            />
-                    }
-                        name="dateOfBirth"
-                        control={control}
-                        valueName="selected"
-                        defaultValue={dob}
-                    />
-                    <input 
-                        type="text" 
-                        name="zipCode"
-                        defaultValue={props.thisAccount.zipCode}
-                        ref={register}>
-                    </input>
-                    <select
-                        ref={register}
-                        name="country"
-                    >
-                        {!props.thisAccount.country && <option value={props.thisAccount.country}>Select country...</option>}
-                        {!props.countries ? "loading..." :
-                        props.countries.map((country, index) => {
-                            return <option key={index} value={JSON.stringify(country)}>{country.name}</option>
-                        })}
-                    </select>
-                    <input 
-                        type="text"
-                        name="contactNumber"
-                        defaultValue={props.thisAccount.contactNumber}
-                        ref={register}>
-                    </input>
-                    <select
-                        placeholder={props.thisAccount.role}
-                        name="role"
-                        ref={register}>
-                            <option value={USER}>USER</option>
-                            <option value={ADMIN}>ADMIN</option>
-                    </select>
-                
-                    <input type="submit" className="btn btn-primary" value="Save" />
-                    <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
+                <h3>Editing {props.thisAccount.firstName} {props.thisAccount.lastName}</h3>
+                <form onSubmit={handleSubmit(onSubmit)} className="edit-account-form">
+                    <div className="input-row">
+                        <label htmlFor="firstName">Firstname: </label>
+                        <input
+                            name="firstName"
+                            defaultValue={props.thisAccount.firstName} 
+                            ref={register({
+                                pattern: {
+                                    value: /^[A-Za-z]+$/,
+                                    message: "invalid format"
+                                }
+                            })}>
+                        </input>
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="lastName">Lastname: </label>
+                        <input 
+                            type="text" 
+                            name="lastName" 
+                            defaultValue={props.thisAccount.lastName} 
+                            ref={register({
+                                pattern: {
+                                    value: /^[A-Za-z]+$/,
+                                    message: "invalid format"
+                                }
+                            })}>
+                        </input>
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="email">Email: </label>
+                        <input 
+                            type="text" 
+                            name="email" 
+                            defaultValue={props.thisAccount.email} 
+                            ref={register({
+                                pattern: {
+                                    value: /\S+@\S+\.\S+/,
+                                    name: "invalid format"
+                                }
+                            })}>
+                        </input>
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="dateOfBirth">Date of birth: </label>
+                        <Controller as={
+                                <DatePicker
+                                    id="dateOfBirth"
+                                    showYearDropdown
+                                    dateFormat="dd/MM/yyyy"
+                                    maxDate={new Date()}
+                                    placeholderText="MM/DD/YYYY"
+                                    onChange={(date) => setDOB(date)}
+                                    selected={dob}
+                                    autoComplete="off"
+                                />
+                        }
+                            name="dateOfBirth"
+                            control={control}
+                            valueName="selected"
+                            defaultValue={dob}
+                        />
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="zipCode">Zip code: </label>
+                        <input 
+                            type="text" 
+                            name="zipCode"
+                            defaultValue={props.thisAccount.zipCode}
+                            ref={register}>
+                        </input>
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="country">Country: </label>
+                        <select
+                            ref={register}
+                            name="country"
+                        >
+                            {!props.thisAccount.country && <option value={props.thisAccount.country}>Select country...</option>}
+                            {!props.countries ? "loading..." :
+                            props.countries.map((country, index) => {
+                                return <option key={index} value={JSON.stringify(country)}>{country.name}</option>
+                            })}
+                        </select>
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="contactNumber">Contact number: </label>
+                        <input 
+                            type="text"
+                            name="contactNumber"
+                            defaultValue={props.thisAccount.contactNumber}
+                            ref={register}>
+                        </input>
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="role">Role: </label>
+                        <select
+                            placeholder={props.thisAccount.role}
+                            name="role"
+                            ref={register}>
+                                <option value={USER}>USER</option>
+                                <option value={ADMIN}>ADMIN</option>
+                        </select>
+                    </div>
+                    <div className="form-buttons">
+                        <input type="submit" className="btn btn-primary" value="Save" />
+                        <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
+                    </div>
                 </form>
             </Modal>
         </>

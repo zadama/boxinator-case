@@ -33,3 +33,19 @@
   }
 
 }
+
+
+  .edit-account-form {
+    display: grid;
+    margin: 20px;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: repeat(5, 20px);
+    row-gap: 25px;
+    column-gap: 25px;
+
+    .form-buttons {
+      display: grid;
+      grid-template-columns: 50% 50%;
+      column-gap: 5px;
+    }
+  }

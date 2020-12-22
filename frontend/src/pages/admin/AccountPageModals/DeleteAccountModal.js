@@ -25,7 +25,7 @@ const DeleteAccountModal = (props) => {
     }
 
     const validateInput = (input) => { // Check if input matches the requested string, if not disable button
-        if(input === props.thisUser.email) setDeleteBtn(!deleteBtn);
+        if(input === props.thisAccount.email) setDeleteBtn(!deleteBtn);
     }
 
     const onClose = () => {
@@ -36,11 +36,11 @@ const DeleteAccountModal = (props) => {
     return (
         <>
             <Modal isVisible={showModal} onClose={onClose}>
-                <p>Are you sure you want to delete the account with id: {props.thisUser.id}?
-                    Provide this phrase to confirm delete: <strong>{props.thisUser.email}</strong></p>
+                <p>Are you sure you want to delete the account with id: {props.thisAccount.id}?
+                    Provide this phrase to confirm delete: <strong>{props.thisAccount.email}</strong></p>
                 <form>
                     <input type="text" onChange={(event) => validateInput(event.target.value)}/>
-                    <button className="btn btn-primary" disabled={!deleteBtn} type="button" onClick={() => deleteUser(props.thisUser)}>Delete User</button>
+                    <button className="btn btn-primary" disabled={!deleteBtn} type="button" onClick={() => deleteUser(props.thisAccount)}>Delete User</button>
                     <button className="btn btn-secondary" type="button" onClick={onClose}>Cancel</button>
                 </form>
             </Modal>
