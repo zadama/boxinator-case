@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {useAuth} from "../../../context/auth";
 import { Button, Dropdown, DropdownButton, Form } from 'react-bootstrap';
-import useForm from "../../country/useForm";
 import Modal from '../../../components/modal/index';
 import { statusValues } from "../../../utils/shipmentStatusValues";
 import validate from "./ShipmentValidations";
 import {getAllCountries} from "../../../api/countries";
+import {updateShipment} from "../../../api/shipments";
+import { useForm, Controller } from 'react-hook-form';
 
 const EditShipmentModal = (props) => {
   
@@ -15,12 +16,12 @@ const EditShipmentModal = (props) => {
   const [id, setId] = useState(props.thisShipment.id); 
 
   //put functionFromParent here for update logic
-  const updateShipment = () => {
-    props.updateShipment({id, ...values});
-    setShowModal(false);
-  }
+ // const updateShipment = () => {
+  //  props.updateShipment({id, ...values});
+   // setShowModal(false);
+ // }
   
-  const {values, setValues, setErrors, errors, handleChange, handleSubmit} = useForm("functionfromParent", validate);
+  const { register, handleSubmit, errors, control, watch } = useForm();
 
 
  useEffect( () => {
@@ -46,21 +47,23 @@ const EditShipmentModal = (props) => {
 
   const destinationCountries = countries.map((country, id) => {
   return(
-    <Dropdown.Item key={country.id}>{country.name}</Dropdown.Item>
+    <option key={country.id}>{country.name}</option>
   );
   });
 
   const onClose = () => {
-    setValues(props.thisShipment);
-    setErrors({});
     setShowModal(false);
     props.onClose();
+  }
+
+  const saveShipment = (data) => {
+    console.log(data);
   }
 
   return (
     <div className="container">
     {showModal && (<Modal onClose={onClose}>
-        <Form onSubmit={handleSubmit} className="needs-validation" noValidate>
+        <form onSubmit={handleSubmit(saveShipment)} className="needs-validation">
           <div className="form-group">
             <label htmlFor="shipment-id">
               <strong>Shipment ID:</strong>
@@ -68,8 +71,12 @@ const EditShipmentModal = (props) => {
             <input
               className="form-control"
               id="shipment-id"
+              name = "shipment-id"
               defaultValue={props.thisShipment.id}
-              required/>
+              ref={register(
+                {required: true}
+            )}
+              readOnly/>
           </div>
 
           <div className="form-group">
@@ -79,8 +86,12 @@ const EditShipmentModal = (props) => {
             <input
               className="form-control"
               id="account-id"
+              name = "account-id"
               defaultValue={props.thisShipment.account.id}
-              required/>
+              ref={register(
+                {required: true}
+                )}
+              readOnly/>
           </div>
 
           <div className="form-group">
@@ -93,50 +104,71 @@ const EditShipmentModal = (props) => {
               id="receiver"
               name="receiver"
               defaultValue={props.thisShipment.receiver || ""}
-              onChange={handleChange}
-              required/>
-              {errors.receiver && (<p className="is-invalid invalid-feedback">{errors.receiver}</p>)}
-          </div>
-
+              ref={register({
+                required: true,
+                pattern: {
+                    value: /^[A-Za-z]+$/,
+                    message: "invalid format"
+                }
+            })}
+              />
+          {errors.receiver?.message && <p>{errors.receiver.message}</p>}          </div>
           <div className="form-group">
             <label htmlFor="weight">
               <strong>Weight:</strong></label>
+              {/*TODO FIX REGEX */}
             <input
               className="form-control"
               id="weight"
+              name ="weight"
               defaultValue={props.thisShipment.weight}
-              required/>
+              ref={register({
+                required: true,
+               
+            })}
+              />
           </div>
-
+            
+            {/*TODO - fix validation */}
           <div className="form-group">
             <label htmlFor="box-colour">
               <strong>Box Colour:</strong></label>
             <input
               className="form-control"
               id="box-colour"
+              name="box-colour"
               defaultValue={props.thisShipment.boxColour}
-              required/>
+              ref={register(
+                {required: true}
+            )}
+              />
           </div>
 
           
           <div className="form-group">
           <label htmlFor="shipment-status">
                   <strong>Shipment Status: </strong></label >
-            <DropdownButton id="shipment-status" title={props.thisShipment.shipmentStatus}>
+            <select id="shipment-status" 
+            title={props.thisShipment.shipmentStatus}
+            name="shipment-status"
+            ref={register(
+              {required: true}
+          )}
+            >
                 {statusValues.map(function(status) {
                   return (
-                    <Dropdown.Item key={status}>{status}</Dropdown.Item>
+                    <option key={status}>{status}</option >
                   )
                 })}
-            </DropdownButton>
+            </select>
           </div>
 
           <div className="form-group">
             <label htmlFor="destination-country">
               <strong>Destination Country:</strong></label>
-              <DropdownButton id="destination-country" title={props.thisShipment.destinationCountry.name}>
+              <select id="destination-country" title={props.thisShipment.destinationCountry.name}>
                 {destinationCountries}
-            </DropdownButton>
+            </select>
           </div>
 
           <div className="form-group">
@@ -151,7 +183,7 @@ const EditShipmentModal = (props) => {
 
           <Button type="submit" className="btn btn-info">Save</Button>
           <Button onClick={onClose} className="btn btn-danger">Cancel</Button>
-        </Form>
+        </form>
     </Modal>)}
     </div>
   );
