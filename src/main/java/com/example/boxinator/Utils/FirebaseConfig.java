@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.stream.Collectors;
 
 @Configuration
 public class FirebaseConfig {
@@ -30,24 +31,25 @@ public class FirebaseConfig {
 
         System.out.println(firebasePath);
 
-        try{
-            InputStream is = getClass().getClassLoader().getResourceAsStream("service-account-file.json");
-
-            try (InputStreamReader streamReader =
-                         new InputStreamReader(is, StandardCharsets.UTF_8);
-                 BufferedReader reader = new BufferedReader(streamReader)) {
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }catch(Exception e){
+        try (InputStream inputStream = getClass().getResourceAsStream("./service-account-file.json");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String contents = reader.lines()
+                    .collect(Collectors.joining(System.lineSeparator()));
+            System.out.println(contents);
+        } catch(Exception e){
 
         }
+
+        try (InputStream inputStream = getClass().getResourceAsStream("/service-account-file.json");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String contents = reader.lines()
+                    .collect(Collectors.joining(System.lineSeparator()));
+            System.out.println(contents);
+        } catch(Exception e){
+
+        }
+
+
         /**
          * the .json file MUST be stored more securely.
          */
