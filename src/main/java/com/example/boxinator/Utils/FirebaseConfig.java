@@ -28,10 +28,10 @@ public class FirebaseConfig {
     public void init() {
 
         try{
-
-        } catch(Exception e){
             File file = new File("service-account-file-json");
             System.out.println(file.getAbsoluteFile());
+
+        } catch(Exception e){
         }
 
 
@@ -44,7 +44,7 @@ public class FirebaseConfig {
         try {
 
 
-            serviceAccount = new ClassPathResource("/service-account-file.json").getInputStream();
+            serviceAccount = new ClassPathResource("service-account-file.json").getInputStream();
             System.out.println("after 40");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
