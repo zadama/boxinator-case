@@ -30,8 +30,7 @@ public class FirebaseConfig {
         try {
             File[] filesList = curDir.listFiles();
             for(File f : filesList){
-                if(f.isDirectory())
-                    getAllFiles(f);
+              
                 if(f.isFile()){
                     System.out.println(f.getName());
                 }
