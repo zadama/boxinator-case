@@ -1,11 +1,9 @@
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {addCountry, deleteCountryById, updateCountryById} from "../../api/countries";
 import {getAllCountries} from "../../api/countries";
 import {useAuth} from "../../context/auth";
 
-import UpdateCountryModal from "./UpdateCountryModal";
 import AddCountryModal from "./AddCountryModal";
-import DeleteCountryModal from "./DeleteCountryModal";
 import Toaster from "../../components/toast/Toaster";
 import Search from "../../components/search/Search";
 import CountryList from "./CountryList";
