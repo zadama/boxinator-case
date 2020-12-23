@@ -6,11 +6,13 @@ import com.google.firebase.FirebaseOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 
 @Configuration
 public class FirebaseConfig {
@@ -20,14 +22,31 @@ public class FirebaseConfig {
 
     @PostConstruct
     public void init() {
+
+        File file = null;
+        try {
+            file = ResourceUtils.getFile("classpath:service.account.file.json");
+            String content = new String(Files.readAllBytes(file.toPath()));
+            System.out.println(content);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//Read File Content
+
+
         System.out.println(firebasePath);
         /**
          * the .json file MUST be stored more securely.
          */
-        FileInputStream serviceAccount =
+        InputStream serviceAccount =
                 null;
         try {
-            serviceAccount = new FileInputStream(firebasePath);
+            Resource resource = new ClassPathResource("classpath:service.account.file.json");
+            serviceAccount = resource.getInputStream();
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
