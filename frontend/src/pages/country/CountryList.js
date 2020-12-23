@@ -5,32 +5,23 @@ import DeleteCountryModal from "./DeleteCountryModal";
 
 import "./styles.scss";
 
-const CountryList = ({countryList=[]}) => {
+const CountryList = ({countryList=[], updateCountry, deleteCountry}) => {
 
     const countryObjects = countryList.map((country, index) => {
-            if (country) {
-                return (
-                    <tr key={country.id}>
-                        <td>{country.id}</td>
-                        <td>{country.name}</td>
-                        <td>{country.countryCode}</td>
-                        <td>{country.feeMultiplier}</td>
-                        <td>
-                            <div className="row">
-                                <UpdateCountryModal country={country}/>
-                                <DeleteCountryModal country={country}/>
-                            </div>
-
-                        </td>
-                    </tr>
-                )
-            }else {
-                return (
-                    <tr>
-                        <p>No record was found.</p>
-                    </tr>
-                )
-            }
+        return (
+            <tr key={country.id}>
+                <td>{country.id}</td>
+                <td>{country.name}</td>
+                <td>{country.countryCode}</td>
+                <td>{country.feeMultiplier}</td>
+                <td>
+                    <div className="row">
+                        <UpdateCountryModal country={country} updateCountry={updateCountry}/>
+                        <DeleteCountryModal country={country} deleteCountry={deleteCountry}/>
+                    </div>
+                </td>
+            </tr>
+        )
     });
 
     return (

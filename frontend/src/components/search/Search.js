@@ -23,15 +23,15 @@ const Search = ({setSearchValue}) => {
 
     return (
         <div className="search-container">
-            <h3>Search</h3>
             <div className="elements">
-                <input
-                    className="search-bar"
-                    type="text"
-                    placeholder=" Search..."
-                    value={keyword}
-                    onChange={handleChange}/>
+                <div className="search-bar">
+                    <input
+                        type="text"
+                        placeholder=" Search..."
+                        value={keyword}
+                        onChange={handleChange}/>
                     <i><FontAwesomeIcon icon={faSearch} size="lg"/></i>
+                </div>
             </div>
         </div>
     );

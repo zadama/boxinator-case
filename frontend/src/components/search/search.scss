@@ -22,6 +22,7 @@ h3 {
 
 }
 .search-bar {
+  padding: 1.5% 0 0 2%;
   height: 45px;
   width: 60%;
   margin-top: 3%;
@@ -29,8 +30,7 @@ h3 {
   display: block;
   font-size: 1em;
   border-radius: 20px;
-  position: center;
-  outline: none;
+  background-color: white;
 }
 
 .search-icon {
@@ -41,7 +41,20 @@ h3 {
   font-size: 16px;
   text-align: center;
   display:block;
-  margin-top: 3%;
-  margin-bottom: 2%;
+  margin-left: 50px;
+}
+
+input {
+  border:none;
+  background-image:none;
+  background-color:transparent;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  width: 90%;
+
+  &:focus{
+    outline: none;
+  }
 }
 

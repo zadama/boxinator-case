@@ -62,7 +62,7 @@ const CountryPage = () => {
             await fetchCountries();
         }
     };
-   
+
     useEffect( () => {
         if (firstUpdate.current) {
             firstUpdate.current = false;
@@ -126,31 +126,14 @@ const CountryPage = () => {
         }
     }
 
-    const countryObjects = countries.map((country) =>
-        <tr key={country.id}>
-            <td>{country.id}</td>
-            <td>{country.name}</td>
-            <td>{country.countryCode}</td>
-            <td>{country.feeMultiplier}</td>
-            <td>
-                <div className="row">
-                    <UpdateCountryModal country={country} updateCountry={onUpdateCountryClicked}/>
-                    <DeleteCountryModal country={country} deleteCountry={onDeleteCountryClicked}/>
-                </div>
-
-            </td>
-        </tr>
-    );
-
     return(
         <div>
-            <h1>Shipping Countries</h1>
             {toast && <Toaster toastHeaderMsg={toastHeader} toastMsg={toastMsg} onClose={() => {
                 setToast(false);
             }}/>}
             <div>
                 <Search setSearchValue={setSearchValue}/>
-                <CountryList countryList={countryList}/>
+
             </div>
 
             <div className="all-countries-container">
@@ -159,20 +142,10 @@ const CountryPage = () => {
                     <AddCountryModal addCountry={onAddCountryClicked}/>
                 </div>
 
-                <table className="table table-bordered">
-                    <thead className="thead-light">
-                    <tr>
-                        <th scope="col">Country Id</th>
-                        <th scope="col">Country Name</th>
-                        <th scope="col">Country Abbreviation</th>
-                        <th scope="col">Fee Multiplier</th>
-                        <th scope="col">Edit Details</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {countryObjects}
-                    </tbody>
-                </table>
+                <CountryList countryList={countryList}
+                             updateCountry={onUpdateCountryClicked}
+                             deleteCountry={onDeleteCountryClicked}
+                />
 
             </div>
         </div>
