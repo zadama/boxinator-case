@@ -1,7 +1,5 @@
 package com.example.boxinator.Controllers;
 
-
-
 import com.example.boxinator.Models.Account;
 import com.example.boxinator.Models.Enums.AccountRole;
 import com.example.boxinator.Models.LoginRequest;
@@ -9,6 +7,7 @@ import com.example.boxinator.Repositories.AccountRepository;
 import com.example.boxinator.Utils.AuthService.AuthResponse;
 import com.example.boxinator.Utils.AuthService.AuthenticationService;
 import com.example.boxinator.Utils.CommonResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -51,6 +50,7 @@ public class AccountController {
             }
             cr.status = HttpStatus.BAD_REQUEST;
         } catch (Exception e) {
+            cr.data = e.getMessage();
             cr.msg = "This service is currently unavailable.";
             cr.status = HttpStatus.CONFLICT;
         }
@@ -165,7 +165,11 @@ public class AccountController {
 
                     if (changedAccount.getContactNumber() != 0) { account.setContactNumber(changedAccount.getContactNumber()); }
 
-                    if (changedAccount.getRole() != null && authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
+                    // removed && authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)
+                    if (changedAccount.getRole() != null) {
+                        // Do a check before here: if authResp role is not ADMIN and the
+                        // changedAccount role is ADMIN, meaning a USER/GUEST wants to change
+                        // its role to ADMIN, don't allow that! everything else is okay.
                         account.setRole(changedAccount.getRole());
                     } else {
                         cr.msg += "Role ";

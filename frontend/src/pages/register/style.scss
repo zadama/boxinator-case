@@ -30,6 +30,12 @@
       display: flex;
       background: #fff;
       color: #111f2c;
+
+      &:read-only {
+        background-color: wheat;
+        border: none;
+        outline: none;
+      }
     }
 
     .react-datepicker-wrapper {
@@ -43,6 +49,16 @@
     .select-picker {
       div {
         cursor: pointer;
+      }
+    }
+
+    .phoneNbrContainer {
+      display: flex;
+      align-items: center;
+
+      .country-code {
+        flex: 0 0 30%;
+        margin-right: 10px;
       }
     }
   }
@@ -67,15 +83,22 @@
 }
 
 .phone-container {
+  width: 100%;
+  flex: 1 1 100%;
+
+  padding: 20px;
+  margin: 0 auto;
   display: flex;
   flex-flow: column;
-  flex: 0 0 65%;
-  padding: 1rem;
+
+  align-items: center;
+  max-width: 500px;
+  position: relative;
 
   input {
     margin-bottom: 10px;
     width: 100%;
-    height: 35px;
+    height: 50px;
     border: 2px solid #dadcde;
     padding: 10px;
     font-size: 14px;
@@ -86,14 +109,24 @@
     border-radius: 2px;
   }
 
+  p:nth-of-type(1) {
+    font-weight: 500;
+  }
+
+  p:nth-of-type(2) {
+    font-size: 11px;
+  }
+
+  section {
+    width: 100%;
+  }
+
   button {
-    background-color: #b85fc6;
-    color: white;
-    text-transform: uppercase;
-    font-weight: 600;
-    height: 45px;
-    border-radius: 10px;
+    background: #314252;
+    width: 100%;
     border: none;
+    height: 50px;
+    color: white;
 
     &:hover {
       color: white;

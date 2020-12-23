@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { createUser, getUserRole } from "../api/user";
+import { createUser, getUserRole, createAnonUser } from "../api/user";
 import Api from "../api/axios";
 import firebase from "./firebase";
 import { USER, ADMIN, GUEST } from "../utils/roles";
@@ -34,14 +34,26 @@ const useProvideAuthImpl = () => {
       .catch((err) => console.log(err));
   };
 
+  const loginAnonymously = async (email) => {
+    // save user in database backend.
+
+    try {
+      const response = await createAnonUser(email);
+      const { data } = response.data;
+      const user = { email: data.email, role: data.role };
+      setUser(user);
+    } catch (error) {
+      setUser(false);
+      throw error;
+    }
+  };
+
   const reloadUser = async () => {
-    // if register "stops" at login before redirecting to
-    // add-shipment, add setUser(null) here before so the PageLoader starts ..
     let updatedUser = await firebase.auth().currentUser.reload();
 
     updatedUser = await firebase.auth().currentUser;
 
-    handleUser(updatedUser);
+    await handleUser(updatedUser);
   };
 
   const register = async (email, password, ...rest) => {
@@ -101,25 +113,6 @@ const useProvideAuthImpl = () => {
     return firebase.auth().currentUser.getIdToken(true);
   };
 
-  const addUserRole = async (user) => {
-    if (user) {
-      const token = await getUserToken();
-
-      const role = await getUserRole(token);
-
-      return role.data;
-    }
-  };
-
-  const formatUser = async (user) => {
-    const role = await addUserRole(user);
-    return {
-      userId: user.uid,
-      email: user.email,
-      role: role,
-    };
-  };
-
   /* Below will add token header for ALL authorized headers
   const addApiToken = async () => {
     Api.interceptors.request.use(
@@ -137,6 +130,7 @@ const useProvideAuthImpl = () => {
 
   const handleUser = async (rawUser) => {
     console.log("authstatechanged called...");
+
     if (rawUser && rawUser.emailVerified) {
       const user = await formatUser(rawUser);
 
@@ -161,6 +155,7 @@ const useProvideAuthImpl = () => {
   return {
     user,
     login,
+    loginAnonymously,
     logout,
     deleteUser,
     register,
@@ -171,6 +166,26 @@ const useProvideAuthImpl = () => {
 
 const useAuth = () => {
   return useContext(authContext);
+};
+
+const addUserRole = async (user) => {
+  if (user) {
+    const token = await firebase.auth().currentUser.getIdToken(true);
+
+    const role = await getUserRole(token);
+
+    return role.data;
+  }
+};
+
+const formatUser = async (user) => {
+  const role = await addUserRole(user);
+
+  return {
+    userId: user.uid,
+    email: user.email,
+    role: role,
+  };
 };
 
 export { AuthProvider, useAuth };

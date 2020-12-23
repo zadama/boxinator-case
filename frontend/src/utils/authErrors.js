@@ -33,7 +33,8 @@ const AuthErrorHandling = {
     response: "Phone number not found.",
   },
   "auth/unverified-email": {
-    response: "Make sure your email is verified before continuing!",
+    response:
+      "Your email needs to be verified! Please check your email for confirmation link, or resend to get a new one. ",
   },
   "auth/captcha-check-failed": {
     response: "Something went wrong, please try again or refresh the page!",

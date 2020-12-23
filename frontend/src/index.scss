@@ -44,3 +44,9 @@ button {
   font-size: 12px;
   color: red;
 }
+
+input:read-only {
+  background-color: wheat !important;
+  border: none !important;
+  outline: none;
+}
