@@ -37,6 +37,7 @@ public class FirebaseConfig {
 
         catch (FileNotFoundException e) {
             e.printStackTrace();
+            System.out.println("FILE NOT FOUnd" + firebasePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
