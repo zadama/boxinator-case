@@ -13,6 +13,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,13 +23,29 @@ import java.io.InputStream;
 public class FirebaseConfig {
 
 
-
     @Value("${firebase_path}")
     private String firebasePath;
+
+    private void getAllFiles(File curDir){
+        try {
+            File[] filesList = curDir.listFiles();
+            for(File f : filesList){
+                if(f.isDirectory())
+                    getAllFiles(f);
+                if(f.isFile()){
+                    System.out.println(f.getName());
+                }
+            }
+        } catch (Exception e) {
+
+        }
+    }
 
     @PostConstruct
     public void init() {
 
+        getAllFiles(new File("."));
+        getAllFiles(new File(".."));
 
 
         /**
@@ -38,7 +55,7 @@ public class FirebaseConfig {
                 null;
         try {
 
-           serviceAccount  = this.getClass().getResourceAsStream("/service-account-file.json");
+            serviceAccount = this.getClass().getResourceAsStream(this.getClass().getPackageName() + "/service-account-file.json");
 
             System.out.println("after 40");
 
@@ -52,12 +69,10 @@ public class FirebaseConfig {
             System.out.println("after 48");
 
 
-        }
-
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.out.println("FILE NOT FOUnd" + firebasePath);
-        }  catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
