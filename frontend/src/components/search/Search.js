@@ -1,28 +1,37 @@
-import React from "react";
+import React, {useCallback, useState} from "react";
+import debounce from "lodash/debounce";
+
 import "./search.scss";
 import {faSearch} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
+//place fontawesome icon inside input element
 
-const Search = ({keyword, setKeyword}) => {
+const Search = ({setSearchValue}) => {
 
-const handleChange = event => {
-    setKeyword(event.target.value)
-}
+    const [keyword, setKeyword] = useState("");
+
+    const delayedQuery = useCallback(debounce(keyword => {
+        setSearchValue(keyword);
+    }, 1000), []);
+
+    const handleChange = event => {
+        event.persist();
+        setKeyword(event.target.value);
+        delayedQuery(event.target.value);
+    };
 
     return (
         <div className="search-container">
             <h3>Search</h3>
-            <div>
+            <div className="elements">
                 <input
                     className="search-bar"
                     type="text"
-                    placeholder="Search..."
+                    placeholder=" Search..."
                     value={keyword}
                     onChange={handleChange}/>
-                    <button className="btn btn-info ml-2 search-icon">
-                        <FontAwesomeIcon icon={faSearch} size="lg"/>
-                    </button>
+                    <i><FontAwesomeIcon icon={faSearch} size="lg"/></i>
             </div>
         </div>
     );
