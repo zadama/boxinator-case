@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 frontend/node_modules
 frontend/build
-/src/main/resources/service-account-file.json
+
 
 ### STS ###
 .apt_generated
