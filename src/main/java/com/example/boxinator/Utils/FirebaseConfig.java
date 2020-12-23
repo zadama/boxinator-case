@@ -13,10 +13,10 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.stream.Collectors;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 
 @Configuration
 public class FirebaseConfig {
@@ -29,25 +29,6 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
 
-        System.out.println(firebasePath);
-
-        try (InputStream inputStream = getClass().getResourceAsStream("./service-account-file.json");
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            String contents = reader.lines()
-                    .collect(Collectors.joining(System.lineSeparator()));
-            System.out.println(contents);
-        } catch(Exception e){
-
-        }
-
-        try (InputStream inputStream = getClass().getResourceAsStream("/service-account-file.json");
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            String contents = reader.lines()
-                    .collect(Collectors.joining(System.lineSeparator()));
-            System.out.println(contents);
-        } catch(Exception e){
-
-        }
 
 
         /**
@@ -57,7 +38,8 @@ public class FirebaseConfig {
                 null;
         try {
 
-           serviceAccount =  this.getClass().getResourceAsStream("./service-account-file.json");
+           serviceAccount  = this.getClass().getResourceAsStream("/service-account-file.json");
+
             System.out.println("after 40");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
@@ -75,7 +57,7 @@ public class FirebaseConfig {
         catch (FileNotFoundException e) {
             e.printStackTrace();
             System.out.println("FILE NOT FOUnd" + firebasePath);
-        } catch (IOException e) {
+        }  catch (IOException e) {
             e.printStackTrace();
         }
 
