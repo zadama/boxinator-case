@@ -3,6 +3,7 @@ package com.example.boxinator.Utils;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,16 +15,18 @@ import java.io.IOException;
 @Configuration
 public class FirebaseConfig {
 
+    @Value("${firebase_path}")
+    private String firebasePath;
+
     @PostConstruct
     public void init() {
-
         /**
          * the .json file MUST be stored more securely.
          */
         FileInputStream serviceAccount =
                 null;
         try {
-            serviceAccount = new FileInputStream("src/service-account-file.json");
+            serviceAccount = new FileInputStream(firebasePath);
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
