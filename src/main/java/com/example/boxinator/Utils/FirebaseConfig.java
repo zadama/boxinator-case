@@ -28,6 +28,16 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
 
+        try{
+            ClassLoader classLoader = this.getClass().getClassLoader();
+            // Getting resource(File) from class loader
+            File configFile=new File(classLoader.getResource("service-account-file.json").getFile());
+            System.out.println(configFile.getAbsoluteFile() + " - " + configFile.getAbsolutePath());
+            FileInputStream fileInputStream = new FileInputStream(configFile);
+            System.out.println("FIRST DONE!!!!!!!!");
+        } catch(Exception e){
+
+        }
 
 
         System.out.println(firebasePath);
@@ -37,8 +47,10 @@ public class FirebaseConfig {
         InputStream serviceAccount =
                 null;
         try {
-            ClassPathResource resource = new ClassPathResource("service-account-file.json");
-            serviceAccount= resource.getInputStream();
+
+
+            serviceAccount =  Thread.currentThread().getContextClassLoader().getResourceAsStream("service-account-file.json");
+
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
