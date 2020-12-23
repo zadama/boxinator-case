@@ -45,6 +45,27 @@ public class FirebaseConfig {
         try {
 
             serviceAccount = this.getClass().getResourceAsStream( "./src/main/resources/service-account-file.json");
+            if(serviceAccount == null){
+                System.out.println("first was null");
+
+                serviceAccount = this.getClass().getResourceAsStream( "src/main/resources/service-account-file.json");
+            }
+            if(serviceAccount == null){
+                System.out.println("second was null was null");
+
+                serviceAccount = this.getClass().getResourceAsStream( "./src/main/resources/service-account-file.json");
+            }
+
+            if(serviceAccount == null){
+                System.out.println("third was null was null");
+
+                serviceAccount = this.getClass().getResourceAsStream( "/src/main/resources/service-account-file.json");
+            }
+            if(serviceAccount == null){
+                System.out.println("fourth was null was null");
+
+                serviceAccount = this.getClass().getResourceAsStream( "../../resources/service-account-file.json");
+            }
 
             System.out.println("after 40");
 
