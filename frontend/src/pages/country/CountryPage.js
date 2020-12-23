@@ -1,15 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {addCountry, deleteCountryById, updateCountryById} from "../../api/countries";
 import {getAllCountries} from "../../api/countries";
 import {useAuth} from "../../context/auth";
 
-import "./styles.scss";
-import EditModal from "./UpdateCountryModal";
+import UpdateCountryModal from "./UpdateCountryModal";
 import AddCountryModal from "./AddCountryModal";
 import DeleteCountryModal from "./DeleteCountryModal";
 import Toaster from "../../components/toast/Toaster";
+import Search from "../../components/search/Search";
+import CountryList from "./CountryList";
 
-
+import "./styles.scss";
 
 const CountryPage = () => {
     const auth = useAuth();
@@ -19,6 +20,10 @@ const CountryPage = () => {
     const [toastHeader, setToastHeader] = useState("");
     const [toastMsg, setToastMsg] = useState("");
     const [toast, setToast] = useState(false);
+
+    const firstUpdate = useRef(true);
+    const [searchValue, setSearchValue] = useState("");
+    const [countryList, setCountryList] = useState([]);
 
     const onAddCountryClicked = async (country) => {
         setIsLoading(true);
@@ -40,7 +45,6 @@ const CountryPage = () => {
     };
 
    const onUpdateCountryClicked = async (country) => {
-       console.log(country);
         setIsLoading(true);
         try {
             const token = await auth.getUserToken();
@@ -59,28 +63,48 @@ const CountryPage = () => {
         }
     };
 
-    useEffect(() => {
-        fetchCountries();
-    }, []);
+    useEffect( () => {
+        if (firstUpdate.current) {
+            firstUpdate.current = false;
+            fetchCountries();
+            return;
+        } else {
+            const filtered = countries.filter(country => {
+                return (
+                    country.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+                    (country.id + "") === searchValue ||
+                    country.countryCode.toLowerCase().includes(searchValue.toLowerCase())
+                );
+            });
+            setCountryList(filtered);
+        }
+    }, [searchValue]);
+
 
     const fetchCountries = async () => {
         setIsLoading(true);
-        let response = await getAllCountries();
-        let {data: savedCountries} = response.data;
-        savedCountries = savedCountries
-            .sort(function(a,b){
-                return a.id - b.id
-        }).map((country) => {
-
-            return {
-                id: country.id,
-                name: country.name,
-                countryCode: country.countryCode,
-                feeMultiplier: country.feeMultiplier,
-            };
-        });
-        setCountries(savedCountries);
-        setIsLoading(false);
+        try {
+            const token = await auth.getUserToken();
+            let response = await getAllCountries(token);
+            let {data: savedCountries} = response.data;
+            savedCountries = savedCountries
+                .sort(function (a, b) {
+                    return a.id - b.id
+                }).map((country) => {
+                    return {
+                        id: country.id,
+                        name: country.name,
+                        countryCode: country.countryCode,
+                        feeMultiplier: country.feeMultiplier,
+                    };
+                });
+            setCountries(savedCountries);
+            setCountryList(savedCountries);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const onDeleteCountryClicked = async (id) => {
@@ -102,30 +126,14 @@ const CountryPage = () => {
         }
     }
 
-    const countryObjects = countries.map((country) =>
-        <tr key={country.id}>
-            <td>{country.id}</td>
-            <td>{country.name}</td>
-            <td>{country.countryCode}</td>
-            <td>{country.feeMultiplier}</td>
-            <td>
-                <div className="row">
-                    <EditModal country={country} updateCountry={onUpdateCountryClicked}/>
-                    <DeleteCountryModal country={country} deleteCountry={onDeleteCountryClicked}/>
-                </div>
-
-            </td>
-        </tr>
-    );
-
     return(
         <div>
-            <h1>Shipping Countries</h1>
             {toast && <Toaster toastHeaderMsg={toastHeader} toastMsg={toastMsg} onClose={() => {
                 setToast(false);
             }}/>}
-            <div className="search-container">
-                <button onClick={fetchCountries} className="btn btn-info" type="button">Get all countries</button>
+            <div>
+                <Search setSearchValue={setSearchValue}/>
+
             </div>
 
             <div className="all-countries-container">
@@ -134,20 +142,10 @@ const CountryPage = () => {
                     <AddCountryModal addCountry={onAddCountryClicked}/>
                 </div>
 
-                <table className="table table-bordered">
-                    <thead className="thead-light">
-                    <tr>
-                        <th scope="col">Country Id</th>
-                        <th scope="col">Country Name</th>
-                        <th scope="col">Country Abbreviation</th>
-                        <th scope="col">Fee Multiplier</th>
-                        <th scope="col">Edit Details</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {countryObjects}
-                    </tbody>
-                </table>
+                <CountryList countryList={countryList}
+                             updateCountry={onUpdateCountryClicked}
+                             deleteCountry={onDeleteCountryClicked}
+                />
 
             </div>
         </div>
