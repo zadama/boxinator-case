@@ -20,6 +20,7 @@ public class FirebaseConfig {
 
     @PostConstruct
     public void init() {
+        System.out.println(firebasePath);
         /**
          * the .json file MUST be stored more securely.
          */

@@ -62,7 +62,11 @@ public class AccountTest {
         String [] authToken = token.split(" ");
         String bearerToken = authToken[1];
 
+        System.out.println(bearerToken);
+
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(bearerToken);
+        System.out.println("After decoded...");
+
         String email = decodedToken.getEmail();
 
         Optional<Account> account = accountRepository.findByEmail(email);
