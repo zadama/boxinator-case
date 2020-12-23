@@ -36,7 +36,7 @@ public class FirebaseConfig {
         try {
 
             File file = new File("service-account-file-json");
-            serviceAccount = new FileInputStream(file);
+            serviceAccount = new FileInputStream(file.getAbsolutePath());
             System.out.println("after 40");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
