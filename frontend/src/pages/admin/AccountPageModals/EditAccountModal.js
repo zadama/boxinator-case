@@ -16,20 +16,16 @@ import "react-datepicker/dist/react-datepicker.css";
 const EditAccountModal = (props) => {
 
     const auth = useAuth();
-    const { register, handleSubmit, errors, control, watch, reset } = useForm();
+    const { register, handleSubmit, errors, watch, reset } = useForm();
     const [showModal, setShowModal] = useState(true);
     const [dob, setDOB] = useState(new Date());
-
-    const { dateOfBirth } = watch(["dateOfBirth"]);
-
-    
 
     useEffect(() => {
         !props.thisAccount.dateOfBirth ? setDOB(new Date()) : setDOB(parseISO(props.thisAccount.dateOfBirth)); // If user does not have a chosen DoB, set a temporary one
         reset({...props.thisAccount})
     }, [reset])
 
-    const onSubmit = data => {
+    const onSubmit = (data) => {
         
         if (props.thisAccount.firstName === data.firstName) {
             delete data.firstName;
@@ -55,15 +51,19 @@ const EditAccountModal = (props) => {
             delete data.country;
         } 
 
-        if (parseISO(props.thisAccount.dateOfBirth) === data.dateOfBirth) {
-            delete data.dateOfBirth;
-        }
-
         if (props.thisAccount.role === data.role) {
             delete data.role;
         }
 
-        handleSaveEditedUser(data);
+        let formData = data;
+
+        if (parseISO(props.thisAccount.dateOfBirth) === formData.dateOfBirth) {
+            delete formData.dateOfBirth;
+        } else {
+            formData.dateOfBirth = dob;
+        }
+
+        handleSaveEditedUser(formData);
         
     };
 
@@ -79,6 +79,7 @@ const EditAccountModal = (props) => {
             console.log(error);
         } finally { // popup closed
             setShowModal(!showModal);
+            props.onClose();
         }
     }
 
@@ -135,23 +136,17 @@ const EditAccountModal = (props) => {
                     </div>
                     <div className="input-row">
                         <label htmlFor="dateOfBirth">Date of birth: </label>
-                        <Controller as={
-                                <DatePicker
-                                    id="dateOfBirth"
-                                    showYearDropdown
-                                    dateFormat="dd/MM/yyyy"
-                                    maxDate={new Date()}
-                                    placeholderText="MM/DD/YYYY"
-                                    onChange={(date) => setDOB(date)}
-                                    selected={dob}
-                                    autoComplete="off"
-                                />
-                        }
-                            name="dateOfBirth"
-                            control={control}
-                            valueName="selected"
-                            defaultValue={dob}
+                        <DatePicker
+                            id="dateOfBirth"
+                            showYearDropdown
+                            selected={dob}
+                            dateFormat="dd/MM/yyyy"
+                            maxDate={new Date()}
+                            onChange={(date) => setDOB(date)}
+                            placeholderText="DD/MM/YYYY"
+                            autoComplete="off"
                         />
+                        
                     </div>
                     <div className="input-row">
                         <label htmlFor="zipCode">Zip code: </label>
