@@ -30,7 +30,7 @@ public class FirebaseConfig {
         try {
             File[] filesList = curDir.listFiles();
             for(File f : filesList){
-              
+
                 if(f.isFile()){
                     System.out.println(f.getName());
                 }
@@ -43,7 +43,7 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
 
-        getAllFiles(new File("."));
+        getAllFiles(new File("./src/main/resources"));
 
 
 
@@ -54,7 +54,7 @@ public class FirebaseConfig {
                 null;
         try {
 
-            serviceAccount = this.getClass().getResourceAsStream( "/service-account-file.json");
+            serviceAccount = this.getClass().getResourceAsStream( "./src/main/resources/service-account-file.json");
 
             System.out.println("after 40");
 
