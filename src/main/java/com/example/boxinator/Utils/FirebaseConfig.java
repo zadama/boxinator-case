@@ -26,55 +26,18 @@ public class FirebaseConfig {
     @Value("${firebase_path}")
     private String firebasePath;
 
-    private void getAllFiles(File curDir){
-        System.out.println(curDir.getName());
-    }
+  
 
     @PostConstruct
     public void init() {
 
-        getAllFiles(new File("./src/main/resources/service-account-file.json"));
 
 
 
         /**
          * the .json file MUST be stored more securely.
          */
-        InputStream serviceAccount =
-                null;
-        try {
 
-            serviceAccount = this.getClass().getResourceAsStream( "/service-account-file.json");
-            if(serviceAccount == null){
-                System.out.println("first was null");
-
-                serviceAccount = this.getClass().getResourceAsStream( "./service-account-file.json");
-            }
-            if(serviceAccount == null){
-                System.out.println("second was null was null");
-
-                serviceAccount = this.getClass().getResourceAsStream( "./src/main/resources/service-account-file.json");
-            }
-
-        
-            System.out.println("after 40");
-
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
-            System.out.println("after 45");
-
-            FirebaseApp.initializeApp(options);
-
-            System.out.println("after 48");
-
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("FILE NOT FOUnd" + firebasePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
     }
 }
