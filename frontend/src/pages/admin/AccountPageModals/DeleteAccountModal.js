@@ -16,6 +16,7 @@ const DeleteAccountModal = (props) => {
             const token = await auth.getUserToken(); // Get sessiontoken
 
             await deleteAccount(token, user.id); // Pass token and pathvariable
+            props.reRender();
             props.toggleToast("deleted");
         } catch (error) {
             console.log(error);

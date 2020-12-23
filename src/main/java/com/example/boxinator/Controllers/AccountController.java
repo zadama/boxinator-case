@@ -147,8 +147,6 @@ public class AccountController {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-
-
         if (authResponse.getStatusCode() == HttpStatus.OK) {
             if(accountRepository.existsById(account_id)) {
                 Optional<Account> accountRepo = accountRepository.findById(account_id);
@@ -160,11 +158,11 @@ public class AccountController {
                     if (changedAccount.getLastName() != null) { account.setLastName(changedAccount.getLastName()); }
 
                     if (changedAccount.getEmail() != null) {
-                        account.setEmail(changedAccount.getEmail());
                         UserRecord.UpdateRequest req = new UserRecord.UpdateRequest(
                                 FirebaseAuth.getInstance().getUserByEmail(account.getEmail()).getUid())
                                 .setEmail(changedAccount.getEmail());
                         FirebaseAuth.getInstance().updateUser(req);
+                        account.setEmail(changedAccount.getEmail());
                     }
 
                     if (changedAccount.getPassword() != null) { account.setPassword(changedAccount.getPassword()); }
@@ -177,8 +175,8 @@ public class AccountController {
 
                     if (changedAccount.getContactNumber() != null) { account.setContactNumber(changedAccount.getContactNumber()); }
 
-                    // removed && authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)
-                    if (changedAccount.getRole() != null) {
+                    if (changedAccount.getRole() != null && authResponse.getBody().account.getRole().equals(AccountRole.USER)) {
+
                         // Do a check before here: if authResp role is not ADMIN and the
                         // changedAccount role is ADMIN, meaning a USER/GUEST wants to change
                         // its role to ADMIN, don't allow that! everything else is okay.
@@ -224,8 +222,8 @@ public class AccountController {
                 Account account = accountRepo.orElse(null);
 
                 if (account != null) {
-                    accountRepository.deleteById(account_id);
                     FirebaseAuth.getInstance().deleteUser(FirebaseAuth.getInstance().getUserByEmail(account.getEmail()).getUid());
+                    accountRepository.deleteById(account_id);
                     cr.data = account;
                     cr.msg = "Account with id: "+account_id+" deleted.";
                     cr.status = HttpStatus.OK;

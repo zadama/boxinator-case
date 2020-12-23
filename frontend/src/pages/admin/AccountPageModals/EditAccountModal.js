@@ -47,7 +47,7 @@ const EditAccountModal = (props) => {
             delete data.contactNumber;
         }
 
-        if (props.thisAccount.country === JSON.parse(data.country).name) {
+        if (props.thisAccount.country === data.country) {
             delete data.country;
         } 
 
@@ -62,6 +62,8 @@ const EditAccountModal = (props) => {
         } else {
             formData.dateOfBirth = dob;
         }
+
+        console.log(formData);
 
         handleSaveEditedUser(formData);
         
@@ -163,10 +165,9 @@ const EditAccountModal = (props) => {
                             ref={register}
                             name="country"
                         >
-                            {!props.thisAccount.country && <option value={props.thisAccount.country}>Select country...</option>}
                             {!props.countries ? "loading..." :
                             props.countries.map((country, index) => {
-                                return <option key={index} value={JSON.stringify(country)}>{country.name}</option>
+                                return <option key={index} value={country}>{country}</option>
                             })}
                         </select>
                     </div>

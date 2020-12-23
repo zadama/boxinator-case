@@ -30,11 +30,7 @@ const AccountPage = () => {
             let { data: savedCountries } = await getAllCountries();
 
             savedCountries = savedCountries.data.map((country) => {
-                return {
-                    name: country.name, 
-                    code: country.countryCode,
-                    feeMulti: country.feeMultiplier
-                };
+                return [country.name];
             });
 
             setCountries(savedCountries);
@@ -101,7 +97,7 @@ const AccountPage = () => {
                                 <td>{user.email}</td>
                                 <td>{!user.dateOfBirth ? "Not defined" : user.dateOfBirth}</td>
                                 <td>{!user.zipCode ? "Not defined" : user.zipCode}</td>
-                                <td>{!user.country ? "Not defined" : JSON.parse(user.country).name}</td>
+                                <td>{!user.country ? "Not defined" : user.country}</td>
                                 <td>{!user.contactNumber ? "Not defined" : user.contactNumber}</td>
                                 <td>{user.role}</td>
                                 <td className="shipments">{user.shipments.length}</td>
@@ -124,8 +120,8 @@ const AccountPage = () => {
             </Table>
         )}
         <section>
-            {editAccountView && <EditAccountModal onClose={() => setEditAccountView(!editAccountView)} thisAccount={thisAccount} countries={countries} reRender={renderUserDataWithAdminToken} toggleToast={toggleToast} />}
-            {deleteAccountView && <DeleteAccountModal onClose={() => setDeleteAccountView(!deleteAccountView)} thisAccount={thisAccount} toggleToast={toggleToast} />}
+            {editAccountView && <EditAccountModal onClose={() => setEditAccountView(!editAccountView)} countries={countries} thisAccount={thisAccount} reRender={renderUserDataWithAdminToken} toggleToast={toggleToast} />}
+            {deleteAccountView && <DeleteAccountModal onClose={() => setDeleteAccountView(!deleteAccountView)} thisAccount={thisAccount} reRender={renderUserDataWithAdminToken} toggleToast={toggleToast} />}
         </section>
     </>
     )
