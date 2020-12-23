@@ -27,24 +27,16 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
 
-        try{
-            File file = new File("service-account-file-json");
-            System.out.println(file.getAbsoluteFile());
-
-        } catch(Exception e){
-        }
-
-
         System.out.println(firebasePath);
         /**
          * the .json file MUST be stored more securely.
          */
-        InputStream serviceAccount =
+        FileInputStream serviceAccount =
                 null;
         try {
 
-
-            serviceAccount = new ClassPathResource("service-account-file.json").getInputStream();
+            File file = new File("service-account-file-json");
+            serviceAccount = new FileInputStream(file);
             System.out.println("after 40");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
