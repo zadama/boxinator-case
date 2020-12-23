@@ -29,14 +29,8 @@ public class BoxinatorApplication {
         System.out.println(firebasePath);
 
         try {
-            InputStream serviceAccount = this.getClass().getResourceAsStream("src/main/resources/service-account-file.json");
+            InputStream serviceAccount = this.getClass().getResourceAsStream(firebasePath);
 
-            if(serviceAccount == null){
-                serviceAccount = getClass().getResourceAsStream("/service-account-file.json");
-            }
-            if(serviceAccount == null){
-                serviceAccount = getClass().getResourceAsStream("service-account-file.json");
-            }
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
