@@ -25,7 +25,7 @@ public class FirebaseConfig {
 
         File file = null;
         try {
-            file = ResourceUtils.getFile("classpath:service.account.file.json");
+            file = ResourceUtils.getFile("classpath:service-account-file.json");
             String content = new String(Files.readAllBytes(file.toPath()));
             System.out.println(content);
 
@@ -45,7 +45,7 @@ public class FirebaseConfig {
         InputStream serviceAccount =
                 null;
         try {
-            Resource resource = new ClassPathResource("classpath:service.account.file.json");
+            Resource resource = new ClassPathResource("classpath:service-account-file.json");
             serviceAccount = resource.getInputStream();
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
