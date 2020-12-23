@@ -54,7 +54,7 @@ public class FirebaseConfig {
                 null;
         try {
 
-            serviceAccount = this.getClass().getResourceAsStream( "./src/main/resources/service-account-file.json");
+            serviceAccount = this.getClass().getResourceAsStream( "./service-account-file.json");
 
             System.out.println("after 40");
 
