@@ -14,6 +14,7 @@ import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 @Configuration
@@ -28,15 +29,33 @@ public class FirebaseConfig {
     public void init() {
 
         System.out.println(firebasePath);
+
+        try{
+            InputStream is = getClass().getClassLoader().getResourceAsStream("service-account-file.json");
+
+            try (InputStreamReader streamReader =
+                         new InputStreamReader(is, StandardCharsets.UTF_8);
+                 BufferedReader reader = new BufferedReader(streamReader)) {
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }catch(Exception e){
+
+        }
         /**
          * the .json file MUST be stored more securely.
          */
-        FileInputStream serviceAccount =
+        InputStream serviceAccount =
                 null;
         try {
 
-            File file = new File("service-account-file-json");
-            serviceAccount = new FileInputStream(file.getAbsolutePath());
+           serviceAccount =  this.getClass().getResourceAsStream("./service-account-file.json");
             System.out.println("after 40");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
