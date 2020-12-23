@@ -3,6 +3,7 @@ package com.example.boxinator;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -11,9 +12,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+
 @SpringBootApplication
 public class BoxinatorApplication {
 
+    @Value("${firebase_path}")
+    private String firebasePath;
 
     public static void main(String[] args) {
         SpringApplication.run(BoxinatorApplication.class, args);
@@ -21,6 +25,8 @@ public class BoxinatorApplication {
 
     @Bean
     public void firebaseAuth() throws IOException {
+
+        System.out.println(firebasePath);
 
         try {
             InputStream serviceAccount = this.getClass().getResourceAsStream("src/main/resources/service-account-file.json");
