@@ -19,25 +19,13 @@ import java.nio.file.Files;
 @Configuration
 public class FirebaseConfig {
 
-    @Autowired
-    ResourceLoader resourceLoader;
+
 
     @Value("${firebase_path}")
     private String firebasePath;
 
     @PostConstruct
     public void init() {
-
-        try{
-            ClassLoader classLoader = this.getClass().getClassLoader();
-            // Getting resource(File) from class loader
-            File configFile=new File(classLoader.getResource("service-account-file.json").getFile());
-            System.out.println(configFile.getAbsoluteFile() + " - " + configFile.getAbsolutePath());
-            FileInputStream fileInputStream = new FileInputStream(configFile);
-            System.out.println("FIRST DONE!!!!!!!!");
-        } catch(Exception e){
-
-        }
 
 
         System.out.println(firebasePath);
@@ -50,11 +38,17 @@ public class FirebaseConfig {
 
 
             serviceAccount =  Thread.currentThread().getContextClassLoader().getResourceAsStream("service-account-file.json");
+            System.out.println("after 40");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
+            System.out.println("after 45");
+
             FirebaseApp.initializeApp(options);
+
+            System.out.println("after 48");
+
 
         }
 
