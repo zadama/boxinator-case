@@ -10,6 +10,8 @@ import com.example.boxinator.Utils.CommonResponse;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -141,9 +143,11 @@ public class AccountController {
             @RequestHeader(value = "Authorization") String token,
             @PathVariable Long account_id,
             @RequestBody Account changedAccount
-    ) {
+    ) throws FirebaseAuthException {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
+
+
 
         if (authResponse.getStatusCode() == HttpStatus.OK) {
             if(accountRepository.existsById(account_id)) {
@@ -155,7 +159,13 @@ public class AccountController {
 
                     if (changedAccount.getLastName() != null) { account.setLastName(changedAccount.getLastName()); }
 
-                    if (changedAccount.getEmail() != null) { account.setEmail(changedAccount.getEmail()); }
+                    if (changedAccount.getEmail() != null) {
+                        account.setEmail(changedAccount.getEmail());
+                        UserRecord.UpdateRequest req = new UserRecord.UpdateRequest(
+                                FirebaseAuth.getInstance().getUserByEmail(account.getEmail()).getUid())
+                                .setEmail(changedAccount.getEmail());
+                        FirebaseAuth.getInstance().updateUser(req);
+                    }
 
                     if (changedAccount.getPassword() != null) { account.setPassword(changedAccount.getPassword()); }
 
@@ -204,7 +214,7 @@ public class AccountController {
     public ResponseEntity<CommonResponse> deleteAccount(
             @RequestHeader(value = "Authorization") String token,
             @PathVariable Long account_id
-    ) {
+    ) throws FirebaseAuthException {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
@@ -215,6 +225,7 @@ public class AccountController {
 
                 if (account != null) {
                     accountRepository.deleteById(account_id);
+                    FirebaseAuth.getInstance().deleteUser(FirebaseAuth.getInstance().getUserByEmail(account.getEmail()).getUid());
                     cr.data = account;
                     cr.msg = "Account with id: "+account_id+" deleted.";
                     cr.status = HttpStatus.OK;
