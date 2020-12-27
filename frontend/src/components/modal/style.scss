@@ -1,0 +1,73 @@
+.custom-overlay {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  transition: opacity 400ms ease-in;
+}
+
+.custom-modal {
+  min-height: 200px;
+  position: absolute;
+  min-width: 540px;
+  border-radius: 5px;
+  border: none;
+  background-color: #fff;
+  max-width: 740px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row wrap;
+  animation: fadein 0.5s;
+}
+
+.error-message {
+  color: red;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+h4 {
+  font-weight: 700;
+}
+
+.resend-code {
+  display: flex;
+  margin-top: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 65%;
+
+  p {
+    padding: 0;
+    margin: 0;
+    color: black;
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  button {
+    min-height: 30px !important;
+    margin-left: auto;
+    background-color: firebrick !important;
+    font-size: 13px;
+    min-width: 61px !important;
+    text-transform: none !important;
+    border-radius: 10px;
+    color: white;
+  }
+}

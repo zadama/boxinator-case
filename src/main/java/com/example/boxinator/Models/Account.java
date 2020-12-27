@@ -1,10 +1,14 @@
 package com.example.boxinator.Models;
 
+import com.example.boxinator.Models.Enums.AccountRole;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @JsonIdentityInfo(
@@ -28,8 +32,9 @@ public class Account {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false)
-    private String password; // CHANGE THIS // MUCH TEMPORARY
+    private String password;
 
     @Column
     private Date dateOfBirth;
@@ -41,11 +46,22 @@ public class Account {
     private int zipCode;
 
     @Column
-    private long contactNumber;
+    private Long contactNumber;
 
-    @Column
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccountRole role;
 
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    private Set<Shipment> shipments = new HashSet<>();
+
+    public Set<Shipment> getShipments() {
+        return shipments;
+    }
+
+    public void setShipments(Set<Shipment> shipments) {
+        this.shipments = shipments;
+    }
 
     public Long getId() {
         return id;
@@ -111,20 +127,27 @@ public class Account {
         this.zipCode = zipCode;
     }
 
-    public long getContactNumber() {
+    public Long getContactNumber() {
         return contactNumber;
     }
 
-    public void setContactNumber(long contactNumber) {
+    public void setContactNumber(Long contactNumber) {
         this.contactNumber = contactNumber;
     }
 
-    public String getRole() {
+    public AccountRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(AccountRole role) {
         this.role = role;
+    }
+
+    public void insertGuestValues (){
+        this.firstName="";
+        this.lastName="";
+        this.password="";
+
     }
 
 }

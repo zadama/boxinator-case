@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @JsonIdentityInfo(
@@ -19,10 +21,44 @@ public class Country {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false, unique = true)
+    private String countryCode;
+
+    @OneToMany(mappedBy = "destinationCountry", fetch = FetchType.LAZY)
+    private Set<Shipment> shipments = new HashSet<>();
+
     @Column
-    private Double feeMultiplier;
+    private double feeMultiplier;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public double getFeeMultiplier() {
+        return feeMultiplier;
+    }
+
+    public void setFeeMultiplier(double feeMultiplier) {
+        this.feeMultiplier = feeMultiplier;
+    }
 
 }
