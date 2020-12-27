@@ -160,15 +160,6 @@ const AddShipmentPage = ({ history }) => {
           </div>
         </div>
       </div>
-
-      <Button
-        onClick={async () => {
-          await logout();
-          history.replace("/login");
-        }}
-      >
-        Logout
-      </Button>
     </PrivateLayout>
   );
 };

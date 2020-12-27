@@ -213,13 +213,7 @@ const RegisterPage = ({ history, location }) => {
         />
       )}
 
-      <button
-        onClick={() => {
-          setShowModal(true);
-        }}
-      >
-        Show modal
-      </button>
+     
 
       <RegisterForm
         guestEmail={guestEmail}
