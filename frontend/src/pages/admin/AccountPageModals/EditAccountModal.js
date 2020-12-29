@@ -180,16 +180,18 @@ const EditAccountModal = (props) => {
                             ref={register}>
                         </input>
                     </div>
-                    <div className="input-row">
-                        <label htmlFor="role">Role: </label>
-                        <select
-                            placeholder={props.thisAccount.role}
-                            name="role"
-                            ref={register}>
-                                <option value={USER}>USER</option>
-                                <option value={ADMIN}>ADMIN</option>
-                        </select>
-                    </div>
+                    {props.thisAccount.role === ADMIN && 
+                        <div className="input-row">
+                            <label htmlFor="role">Role: </label>
+                            <select
+                                placeholder={props.thisAccount.role}
+                                name="role"
+                                ref={register}>
+                                    <option value={USER}>USER</option>
+                                    <option value={ADMIN}>ADMIN</option>
+                            </select>
+                        </div>
+                    }
                     <div className="form-buttons">
                         <input type="submit" className="btn btn-primary" value="Save" />
                         <button className="btn btn-secondary" onClick={onClose}>Cancel</button>

@@ -154,10 +154,10 @@ const EditShipmentModal = (props) => {
                 message: "invalid format"
                }
             })}
-            {errors.weight?.type === "required" && (
+              />
+              {errors.weight?.type === "required" && (
               <span className="error-span">Please enter your desired weight. </span>
             )}
-              />
           </div>
             
             {/*TODO - fix validation */}

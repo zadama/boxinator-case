@@ -10,6 +10,7 @@ import {
   AdminPage,
   LoginPage,
   NotFoundPage,
+  ProfilePage,
   RegisterPage,
 } from "./pages";
 
@@ -33,6 +34,12 @@ function App() {
           path="/add-shipment"
           requiredRoles={[ADMIN, USER, GUEST]}
           component={AddShipmentPage}
+        />
+        <PrivateRoute
+          exact={true}
+          path="/profile-dashboard"
+          requiredRoles={[ADMIN, USER]}
+          component={ProfilePage}
         />
         <PrivateRoute
           exact={true}
