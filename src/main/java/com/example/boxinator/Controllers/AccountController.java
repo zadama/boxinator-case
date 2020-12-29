@@ -8,6 +8,10 @@ import com.example.boxinator.Utils.AuthService.AuthResponse;
 import com.example.boxinator.Utils.AuthService.AuthenticationService;
 import com.example.boxinator.Utils.CommonResponse;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -139,7 +143,7 @@ public class AccountController {
             @RequestHeader(value = "Authorization") String token,
             @PathVariable Long account_id,
             @RequestBody Account changedAccount
-    ) {
+    ) throws FirebaseAuthException {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
@@ -153,7 +157,13 @@ public class AccountController {
 
                     if (changedAccount.getLastName() != null) { account.setLastName(changedAccount.getLastName()); }
 
-                    if (changedAccount.getEmail() != null) { account.setEmail(changedAccount.getEmail()); }
+                    if (changedAccount.getEmail() != null) {
+                        UserRecord.UpdateRequest req = new UserRecord.UpdateRequest(
+                                FirebaseAuth.getInstance().getUserByEmail(account.getEmail()).getUid())
+                                .setEmail(changedAccount.getEmail());
+                        FirebaseAuth.getInstance().updateUser(req);
+                        account.setEmail(changedAccount.getEmail());
+                    }
 
                     if (changedAccount.getPassword() != null) { account.setPassword(changedAccount.getPassword()); }
 
@@ -163,10 +173,10 @@ public class AccountController {
 
                     if (changedAccount.getZipCode() != 0) { account.setZipCode(changedAccount.getZipCode()); }
 
-                    if (changedAccount.getContactNumber() != 0) { account.setContactNumber(changedAccount.getContactNumber()); }
+                    if (changedAccount.getContactNumber() != null) { account.setContactNumber(changedAccount.getContactNumber()); }
 
-                    // removed && authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)
-                    if (changedAccount.getRole() != null) {
+                    if (changedAccount.getRole() != null && authResponse.getBody().account.getRole().equals(AccountRole.USER)) {
+
                         // Do a check before here: if authResp role is not ADMIN and the
                         // changedAccount role is ADMIN, meaning a USER/GUEST wants to change
                         // its role to ADMIN, don't allow that! everything else is okay.
@@ -202,7 +212,7 @@ public class AccountController {
     public ResponseEntity<CommonResponse> deleteAccount(
             @RequestHeader(value = "Authorization") String token,
             @PathVariable Long account_id
-    ) {
+    ) throws FirebaseAuthException {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
@@ -212,6 +222,7 @@ public class AccountController {
                 Account account = accountRepo.orElse(null);
 
                 if (account != null) {
+                    FirebaseAuth.getInstance().deleteUser(FirebaseAuth.getInstance().getUserByEmail(account.getEmail()).getUid());
                     accountRepository.deleteById(account_id);
                     cr.data = account;
                     cr.msg = "Account with id: "+account_id+" deleted.";

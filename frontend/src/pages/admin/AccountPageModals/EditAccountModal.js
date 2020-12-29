@@ -16,19 +16,16 @@ import "react-datepicker/dist/react-datepicker.css";
 const EditAccountModal = (props) => {
 
     const auth = useAuth();
-    const { register, handleSubmit, errors, control, watch } = useForm();
+    const { register, handleSubmit, errors, watch, reset } = useForm();
     const [showModal, setShowModal] = useState(true);
     const [dob, setDOB] = useState(new Date());
 
-    const { dateOfBirth } = watch(["dateOfBirth"])
-
-    
-
     useEffect(() => {
         !props.thisAccount.dateOfBirth ? setDOB(new Date()) : setDOB(parseISO(props.thisAccount.dateOfBirth)); // If user does not have a chosen DoB, set a temporary one
-    }, [])
+        reset({...props.thisAccount})
+    }, [reset])
 
-    const onSubmit = data => {
+    const onSubmit = (data) => {
         
         if (props.thisAccount.firstName === data.firstName) {
             delete data.firstName;
@@ -50,19 +47,25 @@ const EditAccountModal = (props) => {
             delete data.contactNumber;
         }
 
-        if (props.thisAccount.country === JSON.parse(data.country).name) {
+        if (props.thisAccount.country === data.country) {
             delete data.country;
-        }
-
-        if (parseISO(props.thisAccount.dateOfBirth) === data.dateOfBirth) {
-            delete data.dateOfBirth;
-        }
+        } 
 
         if (props.thisAccount.role === data.role) {
             delete data.role;
         }
 
-        handleSaveEditedUser(data);
+        let formData = data;
+
+        if (parseISO(props.thisAccount.dateOfBirth) === formData.dateOfBirth) {
+            delete formData.dateOfBirth;
+        } else {
+            formData.dateOfBirth = dob;
+        }
+
+        console.log(formData);
+
+        handleSaveEditedUser(formData);
         
     };
 
@@ -78,6 +81,7 @@ const EditAccountModal = (props) => {
             console.log(error);
         } finally { // popup closed
             setShowModal(!showModal);
+            props.onClose();
         }
     }
 
@@ -89,92 +93,107 @@ const EditAccountModal = (props) => {
     return (
         <>
             <Modal isVisible={showModal} onClose={onClose}>
-                <h1>{props.thisAccount.firstName} {props.thisAccount.lastName}</h1>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <input
-                        name="firstName"
-                        defaultValue={props.thisAccount.firstName} 
-                        ref={register({
-                            pattern: {
-                                value: /^[A-Za-z]+$/,
-                                message: "invalid format"
-                            }
-                        })}>
-                    </input>
-                    {errors.firstName?.message && <p>{errors.firstName.message}</p>}
-                    <input 
-                        type="text" 
-                        name="lastName" 
-                        defaultValue={props.thisAccount.lastName} 
-                        ref={register({
-                            pattern: {
-                                value: /^[A-Za-z]+$/,
-                                message: "invalid format"
-                            }
-                        })}>
-                    </input>
-                    <input 
-                        type="text" 
-                        name="email" 
-                        defaultValue={props.thisAccount.email} 
-                        ref={register({
-                            pattern: {
-                                value: /\S+@\S+\.\S+/,
-                                name: "invalid format"
-                            }
-                        })}>
-                    </input>
-                    <Controller as={
-                            <DatePicker
-                                id="dateOfBirth"
-                                showYearDropdown
-                                dateFormat="dd/MM/yyyy"
-                                maxDate={new Date()}
-                                placeholderText="MM/DD/YYYY"
-                                onChange={(date) => setDOB(date)}
-                                selected={dateOfBirth}
-                                autoComplete="off"
-                            />
-                    }
-                        name="dateOfBirth"
-                        control={control}
-                        valueName="selected"
-                        defaultValue={dob}
-                    />
-                    <input 
-                        type="text" 
-                        name="zipCode"
-                        defaultValue={props.thisAccount.zipCode}
-                        ref={register}>
-                    </input>
-                    <select
-                        placeholder={props.thisAccount.country}
-                        options={props.countries}
-                        ref={register}
-                        name="country"
-                    >
-                        {!props.thisAccount.country && <option value={props.thisAccount.country}>Select country...</option>}
-                        {!props.countries ? "loading..." :
-                        props.countries.map((country, index) => {
-                            return <option key={index} value={JSON.stringify(country)}>{country.name}</option>
-                        })}
-                    </select>
-                    <input 
-                        type="text"
-                        name="contactNumber"
-                        defaultValue={props.thisAccount.contactNumber}
-                        ref={register}>
-                    </input>
-                    <select
-                        placeholder={props.thisAccount.role}
-                        name="role"
-                        ref={register}>
-                            <option value={USER}>USER</option>
-                            <option value={ADMIN}>ADMIN</option>
-                    </select>
-                
-                    <input type="submit" className="btn btn-primary" value="Save" />
-                    <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
+                <h3>Editing {props.thisAccount.firstName} {props.thisAccount.lastName}</h3>
+                <form onSubmit={handleSubmit(onSubmit)} className="edit-account-form">
+                    <div className="input-row">
+                        <label htmlFor="firstName">Firstname: </label>
+                        <input
+                            name="firstName"
+                            defaultValue={props.thisAccount.firstName} 
+                            ref={register({
+                                pattern: {
+                                    value: /^[A-Za-z]+$/,
+                                    message: "invalid format"
+                                }
+                            })}>
+                        </input>
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="lastName">Lastname: </label>
+                        <input 
+                            type="text" 
+                            name="lastName" 
+                            defaultValue={props.thisAccount.lastName} 
+                            ref={register({
+                                pattern: {
+                                    value: /^[A-Za-z]+$/,
+                                    message: "invalid format"
+                                }
+                            })}>
+                        </input>
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="email">Email: </label>
+                        <input 
+                            type="text" 
+                            name="email" 
+                            defaultValue={props.thisAccount.email} 
+                            ref={register({
+                                pattern: {
+                                    value: /\S+@\S+\.\S+/,
+                                    name: "invalid format"
+                                }
+                            })}>
+                        </input>
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="dateOfBirth">Date of birth: </label>
+                        <DatePicker
+                            id="dateOfBirth"
+                            showYearDropdown
+                            selected={dob}
+                            dateFormat="dd/MM/yyyy"
+                            maxDate={new Date()}
+                            onChange={(date) => setDOB(date)}
+                            placeholderText="DD/MM/YYYY"
+                            autoComplete="off"
+                        />
+                        
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="zipCode">Zip code: </label>
+                        <input 
+                            type="text" 
+                            name="zipCode"
+                            defaultValue={props.thisAccount.zipCode}
+                            ref={register}>
+                        </input>
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="country">Country: </label>
+                        <select
+                            ref={register}
+                            name="country"
+                        >
+                            {!props.countries ? "loading..." :
+                            props.countries.map((country, index) => {
+                                return <option key={index} value={country}>{country}</option>
+                            })}
+                        </select>
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="contactNumber">Contact number: </label>
+                        <input 
+                            type="text"
+                            name="contactNumber"
+                            defaultValue={props.thisAccount.contactNumber}
+                            ref={register}>
+                        </input>
+                    </div>
+                    <div className="input-row">
+                        <label htmlFor="role">Role: </label>
+                        <select
+                            placeholder={props.thisAccount.role}
+                            name="role"
+                            ref={register}>
+                                <option value={USER}>USER</option>
+                                <option value={ADMIN}>ADMIN</option>
+                        </select>
+                    </div>
+                    <div className="form-buttons">
+                        <input type="submit" className="btn btn-primary" value="Save" />
+                        <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
+                    </div>
                 </form>
             </Modal>
         </>

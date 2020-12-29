@@ -30,11 +30,7 @@ const AccountPage = () => {
             let { data: savedCountries } = await getAllCountries();
 
             savedCountries = savedCountries.data.map((country) => {
-                return {
-                    name: country.name, 
-                    code: country.countryCode,
-                    feeMulti: country.feeMultiplier
-                };
+                return [country.name];
             });
 
             setCountries(savedCountries);
@@ -124,8 +120,8 @@ const AccountPage = () => {
             </Table>
         )}
         <section>
-            {editAccountView && <EditAccountModal onClose={() => setEditAccountView(!editAccountView)} thisAccount={thisAccount} countries={countries} reRender={renderUserDataWithAdminToken} toggleToast={toggleToast} />}
-            {deleteAccountView && <DeleteAccountModal onClose={() => setDeleteAccountView(!deleteAccountView)} thisAccount={thisAccount} toggleToast={toggleToast} />}
+            {editAccountView && <EditAccountModal onClose={() => setEditAccountView(!editAccountView)} countries={countries} thisAccount={thisAccount} reRender={renderUserDataWithAdminToken} toggleToast={toggleToast} />}
+            {deleteAccountView && <DeleteAccountModal onClose={() => setDeleteAccountView(!deleteAccountView)} thisAccount={thisAccount} reRender={renderUserDataWithAdminToken} toggleToast={toggleToast} />}
         </section>
     </>
     )
