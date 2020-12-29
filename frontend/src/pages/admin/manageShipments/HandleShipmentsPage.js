@@ -18,6 +18,7 @@ const HandleShipmentsPage = () => {
   const [editShipmentView, setEditShipmentView] = useState(false);
   const [result, setResult] = useState(null);
   const [thisShipment, setThisShipment] = useState(null);
+  
   const renderShipmentData = async () => {
     try {
       const token = await getUserToken();
@@ -32,6 +33,8 @@ const HandleShipmentsPage = () => {
     }
   }
 
+  
+
   const handleEditClick = (item) => {
     setEditShipmentView(!editShipmentView);
     setThisShipment(item);
@@ -43,7 +46,6 @@ const HandleShipmentsPage = () => {
 
     return (
       <>
-      <Navbar></Navbar>
       {result == null ? <div>
         No shipments found! 
       </div>

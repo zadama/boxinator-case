@@ -40,19 +40,6 @@ function App() {
           requiredRoles={[ADMIN, USER]}
           component={AdminPage}
         />
-        <Route
-          path="/admin-dashboard/country"
-          exact={true}
-          component={CountryPage}
-        />
-
-        <PrivateRoute
-          exact={true}
-          path="/handleShipments"
-          requiredRoles={[ADMIN]}
-          component={HandleShipmentsPage}
-        />
-
         <Route component={NotFoundPage} />
       </Switch>
     </Router>

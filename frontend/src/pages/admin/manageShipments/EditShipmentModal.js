@@ -7,6 +7,7 @@ import validate from "./ShipmentValidations";
 import {getAllCountries} from "../../../api/countries";
 import {updateShipment} from "../../../api/shipments";
 import { useForm, Controller } from 'react-hook-form';
+import Toaster from "../../../components/toast/Toaster";
 
 const EditShipmentModal = (props) => {
   
@@ -14,6 +15,10 @@ const EditShipmentModal = (props) => {
   const [showModal, setShowModal] = useState(true);
   const [countries, setCountries] = useState([]);
   const [id, setId] = useState(props.thisShipment.id); 
+
+  const [toastHeader, setToastHeader] = useState("");
+  const [toastMsg, setToastMsg] = useState("");
+  const [toast, setToast] = useState(false);
 
   //put functionFromParent here for update logic
  // const updateShipment = () => {
@@ -56,22 +61,37 @@ const EditShipmentModal = (props) => {
     props.onClose();
   }
 
-  const saveShipment = (data) => {
-    console.log(data);
+  const onUpdateShipmentClicked = async (shipment) => {
+    console.log("onupdateshipmentclicked");
+    try {
+      const token = await auth.getUserToken();
+      await updateShipment(shipment, token);
+      setToastHeader("Success");
+      setToastMsg("Shipment record was updated successfully.");
+      setToast(true);
+    } catch (error) {
+      console.log(error, "Unable to update shipment");
+      setToastHeader("Error");
+      setToastMsg("Unable to update shipment record details.");
+      setToast(true);
+    } finally {
+      setShowModal(!showModal);
+    }
+
   }
 
   return (
     <div className="container">
     {showModal && (<Modal onClose={onClose}>
-        <form onSubmit={handleSubmit(saveShipment)} className="needs-validation">
+        <form onSubmit={handleSubmit(onUpdateShipmentClicked)} className="needs-validation">
           <div className="form-group">
             <label htmlFor="shipment-id">
               <strong>Shipment ID:</strong>
             </label>
             <input
               className="form-control"
-              id="shipment-id"
-              name = "shipment-id"
+              id="shipment_id"
+              name = "shipment_id"
               defaultValue={props.thisShipment.id}
               ref={register(
                 {required: true}
@@ -112,11 +132,16 @@ const EditShipmentModal = (props) => {
                 }
             })}
               />
-          {errors.receiver?.message && <p>{errors.receiver.message}</p>}          </div>
+          {errors.receiver?.type === "required" && (
+          <span className="error-span">Please enter your desired receiver.</span>
+        )}
+        {errors.receiver?.type === "pattern" && (
+          <span className="error-span">Invalid receiver format.</span>
+        )}        </div>
           <div className="form-group">
             <label htmlFor="weight">
               <strong>Weight:</strong></label>
-              {/*TODO FIX REGEX */}
+              {/*TODO FIX REGEX ^[0-9]*$ */}
             <input
               className="form-control"
               id="weight"
@@ -124,8 +149,14 @@ const EditShipmentModal = (props) => {
               defaultValue={props.thisShipment.weight}
               ref={register({
                 required: true,
-               
+               pattern: {
+                 value: /^[0-9]*$/,
+                message: "invalid format"
+               }
             })}
+            {errors.weight?.type === "required" && (
+              <span className="error-span">Please enter your desired weight. </span>
+            )}
               />
           </div>
             
@@ -174,11 +205,11 @@ const EditShipmentModal = (props) => {
           <div className="form-group">
             <label htmlFor="source-country">
               <strong>Source Country:</strong></label>
-              <DropdownButton id="source-country" title={props.thisShipment.sourceCountry}>
-                <Dropdown.Item>Denmark</Dropdown.Item>
-                <Dropdown.Item>Norway</Dropdown.Item>
-                <Dropdown.Item>Sweden</Dropdown.Item>
-                </DropdownButton>
+              <select id="source-country" title={props.thisShipment.sourceCountry}>
+                <option>Denmark</option>
+                <option>Norway</option>
+                <option>Sweden</option>
+                </select>
           </div>
 
           <Button type="submit" className="btn btn-info">Save</Button>

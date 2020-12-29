@@ -29,7 +29,7 @@ const updateShipment = ({
   sourceCountry
 },
 token
-) => {return Api.patch(`/${shipment_id}`, {
+) => {return Api.patch(`/shipment/${shipment_id}`, {
   receiver,
   weight,
   boxColour,
