@@ -14,10 +14,17 @@ const createShipment = (body, token) => {
   );
 };
 
-const getAllShipments = (token) =>{
-    return Api.get("/shipment/all", {headers: { Authorization: `Bearer ${token}` },
-});
-}
+const getAllShipments = (token) => {
+  return Api.get("/shipment/all", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};
+
+
+const addShipmentReceipt = (body) => {
+  console.log(body);
+  return Api.post("/receipt/", { ...body });
+};
 
 const updateShipment = ({
   shipment_id,
@@ -52,5 +59,5 @@ const deleteShipment = (
   });
 };
 
-export { createShipment,updateShipment, getAllShipments, deleteShipment };
+export { createShipment,updateShipment, getAllShipments, deleteShipment, addShipmentReceipt };
 

@@ -51,7 +51,7 @@ const AdminPage = () => {
       setShowShipments(false);
       setShowAccounts(!showAccounts);
     } else if(value === "countries") {
-      setTitle("Countries")
+      setTitle("Shipping Countries")
       setShowShipments(false);
       setShowAccounts(false);
       setShowCountries(!showCountries);

@@ -9,13 +9,13 @@ const { useState } = require("react");
 
 const UpdateCountryModal = (props) => {
 
-    const [modal, showModal] = useState(false);
+    const [modal, setShowModal] = useState(false);
     const [id, setId] = useState(props.country.id);
 
 
     const updateCountry = () => {
         props.updateCountry({id, ...values});
-        showModal(false);
+        setShowModal(false);
     };
 
     const {values, setValues, setErrors, errors, handleChange, handleSubmit} = useForm(updateCountry, validate);
@@ -28,18 +28,18 @@ const UpdateCountryModal = (props) => {
     const onClose = () => {
         setValues(props.country);
         setErrors({});
-        showModal(false);
+        setShowModal(false);
     };
 
     return (
         <div className="edit-country-modal">
             <button onClick={() => {
-                showModal(true);
+                setShowModal(true);
             }} className="btn btn-info btn-sm ml-2 mt-0">
                 <FontAwesomeIcon icon={faPencilAlt} />
             </button>
 
-            <Modal isVisible={modal} onClose={onClose}>
+            {modal && (<Modal onClose={onClose}>
 
                 <div className="edit-country-form">
                     <form onSubmit={handleSubmit} className="needs-validation" noValidate>
@@ -91,7 +91,7 @@ const UpdateCountryModal = (props) => {
 
                 </div>
 
-            </Modal>
+            </Modal>)}
         </div>
     );
 };
