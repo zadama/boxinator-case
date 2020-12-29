@@ -1,0 +1,10 @@
+.profile-page {
+    margin: 0 auto;
+    width: 50%;
+    display: grid; 
+    grid-template: repeat(4, auto) / repeat(2, auto);
+
+    label {
+        font-weight: bold;
+    }
+}
