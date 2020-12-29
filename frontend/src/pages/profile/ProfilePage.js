@@ -8,6 +8,8 @@ import { getAccount } from '../../api/user';
 import './style.scss';
 
 import EditAccountModal from '../admin/AccountPageModals/EditAccountModal';
+import { updateShipment } from '../../api/shipments';
+import { CANCELLED } from '../../utils/shipmentStatusValues';
 
 const ProfilePage = () => {
 
@@ -49,11 +51,15 @@ const ProfilePage = () => {
         setToast(true);
     }
 
-    const handleCancelShipmentClick = (shipment) => {
+    const handleCancelShipmentClick = async (shipment) => {
         try {
+            const token = await auth.getUserToken();
 
-            console.log(shipment);
-
+            await updateShipment({
+                shipment_id: shipment.id, 
+                shipmentStatus: CANCELLED
+            }, token);
+            renderProfilePageWithData();
         } catch (error) {
             console.log(error);
         }
