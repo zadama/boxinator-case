@@ -27,7 +27,7 @@ const AddCountryModal = (props) => {
                 }} className="btn btn-info btn-sm mt-0">
                     Add country </button>
 
-                <Modal className="add-country-modal" isVisible={modal} onClose={onClose}>
+                {modal && (<Modal className="add-country-modal" onClose={onClose}>
                     <div className="add-country-form">
                         <form onSubmit={handleSubmit} className="needs-validation" noValidate>
                             <div className="form-group">
@@ -83,7 +83,7 @@ const AddCountryModal = (props) => {
 
                     </div>
 
-                </Modal>
+                </Modal>)}
             </div>
         );
 

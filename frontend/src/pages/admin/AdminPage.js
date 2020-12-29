@@ -9,7 +9,7 @@ import { checkToken } from "../../api/user";
 
 import AccountPage from "./AccountPage";
 import CountryPage from "../country/CountryPage";
-import HandleShipmentsPage from "./HandleShipmentsPage";
+import HandleShipmentsPage from "./manageShipments/HandleShipmentsPage";
 
 /**
  * hämta alla shipments från backend, skicka med firebase token
@@ -51,7 +51,7 @@ const AdminPage = () => {
       setShowShipments(false);
       setShowAccounts(!showAccounts);
     } else if(value === "countries") {
-      setTitle("Countries")
+      setTitle("Shipping Countries")
       setShowShipments(false);
       setShowAccounts(false);
       setShowCountries(!showCountries);
