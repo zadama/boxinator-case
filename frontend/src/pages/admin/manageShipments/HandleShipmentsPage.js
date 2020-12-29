@@ -1,27 +1,32 @@
 import React from "react";
 import "../style.scss";
 import { useAuth } from "../../../context/auth";
-import PrivateLayout from "../../../layouts/PrivateLayout";
-import AdminMenu from "../AdminMenu";
 import { useState, useEffect } from "react";
-import Navbar from "../../../components/navbar";
 import Table from "react-bootstrap/Table";
 import {getAllShipments} from "../../../api/shipments";
 import { Button } from "react-bootstrap";
 import EditShipmentModal from "./EditShipmentModal";
+import Toaster from "../../../components/toast/Toaster";
+import {updateShipment} from "../../../api/shipments";
+
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPencilAlt, faTrashAlt} from "@fortawesome/free-solid-svg-icons";
 
 const HandleShipmentsPage = () => {
-  const {getUserToken} = useAuth();
+
+  const auth = useAuth();
   const [editShipmentView, setEditShipmentView] = useState(false);
   const [result, setResult] = useState(null);
   const [thisShipment, setThisShipment] = useState(null);
+
+  const [toastHeader, setToastHeader] = useState("");
+  const [toastMsg, setToastMsg] = useState("");
+  const [toast, setToast] = useState(false);
   
   const renderShipmentData = async () => {
     try {
-      const token = await getUserToken();
+      const token = await auth.getUserToken(); 
       const response =  await getAllShipments(token);
       const {data} = response.data;
       console.log(data);
@@ -33,7 +38,22 @@ const HandleShipmentsPage = () => {
     }
   }
 
-  
+  const onUpdateShipmentClicked = async (shipment) => {
+    console.log(shipment);
+    try {
+      const token = await auth.getUserToken(); 
+      await updateShipment(shipment, token);
+      setToastHeader("Success");
+      setToastMsg("Shipment record was updated successfully.");
+      setToast(true);
+      renderShipmentData();
+    } catch (error) {
+      console.log(error, "Unable to update shipment");
+      setToastHeader("Error");
+      setToastMsg("Unable to update shipment record details.");
+      setToast(true);
+    } 
+  }
 
   const handleEditClick = (item) => {
     setEditShipmentView(!editShipmentView);
@@ -51,7 +71,12 @@ const HandleShipmentsPage = () => {
       </div>
     :  
     <>
-    <h3>Shipments</h3>
+    <div>
+    {toast && <Toaster toastHeaderMsg={toastHeader} toastMsg={toastMsg} onClose={() => {
+                setToast(false);
+            }}/>}
+    </div>
+
     <div className="searchShipment-Container">
      
      </div>
@@ -94,7 +119,7 @@ const HandleShipmentsPage = () => {
             })}
               </tbody>            
       </Table>
-      {editShipmentView && <EditShipmentModal thisShipment={thisShipment} onClose={() => setEditShipmentView(!editShipmentView)}></EditShipmentModal>}
+      {editShipmentView && <EditShipmentModal thisShipment={thisShipment} updateShipment={onUpdateShipmentClicked} onClose={() => setEditShipmentView(!editShipmentView)}></EditShipmentModal>}
       </div>  
       </>
     }
