@@ -1,38 +1,76 @@
-import React from "react";
-import "../style.scss";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../../context/auth";
 import { useState, useEffect } from "react";
-import Table from "react-bootstrap/Table";
-import { getAllShipments } from "../../../api/shipments";
-import { Button } from "react-bootstrap";
 import EditShipmentModal from "./EditShipmentModal";
-import Toaster from "../../../components/toast/Toaster";
-import { updateShipment, deleteShipment } from "../../../api/shipments";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencilAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import DeleteShipmentModal from "./DeleteShipmentModal";
+import Toaster from "../../../components/toast/Toaster";
+import {updateShipment, deleteShipment, getAllShipments} from "../../../api/shipments";
+import Search from "../../../components/search/Search";
+import ShipmentList from "./ShipmentList";
+import "./styles.scss";
 
 const HandleShipmentsPage = () => {
   const auth = useAuth();
+  const firstUpdate = useRef(true);
   const [editShipmentView, setEditShipmentView] = useState(false);
   const [deleteShipmentView, setDeleteShipmentView] = useState(false);
-  const [result, setResult] = useState(null);
-  const [thisShipment, setThisShipment] = useState(null);
+  //const [thisShipment, setThisShipment] = useState(null);
 
   const [toastHeader, setToastHeader] = useState("");
   const [toastMsg, setToastMsg] = useState("");
   const [toast, setToast] = useState(false);
 
+  const [shipments, setShipments] = useState([]);
+  const [shipmentList,setShipmentList] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  
+
+  useEffect( () => {
+    if (firstUpdate.current) {
+     firstUpdate.current = false;
+     renderShipmentData();
+     return;
+   } else {
+     const filtered = shipments.filter( shipment => {
+       return (
+           (shipment.id + "") === searchValue || 
+           shipment.shipmentStatus.toUpperCase().includes(searchValue.toUpperCase())
+       );
+     });
+     setShipmentList(filtered);
+   }
+   
+ },[searchValue]);
+
   const renderShipmentData = async () => {
     try {
-      const token = await auth.getUserToken();
-      const response = await getAllShipments(token);
-      const { data } = response.data;
-      console.log(data);
-      setResult(data);
-    } catch (error) {
+      const token = await auth.getUserToken(); 
+      let response =  await getAllShipments(token);
+      let {data: savedShipments} = response.data;
+      console.log(response)
+      savedShipments = savedShipments
+      .sort(function (a, b) {
+        return a.id - b.id
+      }).map((shipment) => {
+        return {
+            id: shipment.id,
+            account: shipment.account,
+            receiver: shipment.receiver,
+            weight: shipment.weight,
+            boxColour: shipment.boxColour,
+            shipmentStatus: shipment.shipmentStatus,
+            destinationCountry: shipment.destinationCountry.name,
+            sourceCountry: shipment.sourceCountry
+
+        };
+      });
+      setShipments(savedShipments);
+      setShipmentList(savedShipments);
+    }
+    catch(error){
+
       console.log(error);
+
     }
   };
 
@@ -66,23 +104,26 @@ const HandleShipmentsPage = () => {
       setToastMsg("Unable to delete shipment record details.");
       setToast(true);
     }
-  };
 
-  const handleEditClick = (item) => {
+  }
+/*
+  const handleEditClick = (shipment) => {
     setEditShipmentView(!editShipmentView);
-    setThisShipment(item);
-  };
+    //setThisShipment(shipment);
+  }
 
-  const handleDeleteClick = (item) => {
+  const handleDeleteClick = (shipment) => {
     setDeleteShipmentView(!deleteShipmentView);
-    setThisShipment(item);
-  };
+    //setThisShipment(shipment);
+  }
+*/
 
-  useEffect(() => {
-    renderShipmentData();
-  }, []);
-
-  return (
+    return (
+      <>
+      {shipments == null ? <div>
+        No shipments found! 
+      </div>
+    :  
     <>
       {result == null ? (
         <div>No shipments found!</div>
@@ -99,79 +140,25 @@ const HandleShipmentsPage = () => {
               />
             )}
           </div>
+    <div>
+      <Search setSearchValue={setSearchValue}/>
+    </div>
 
-          <div className="searchShipment-Container"></div>
-
-          <div className="displayAllShipment-Container">
-            <h3>All Shipment History</h3>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Shipment Id</th>
-                  <th>Account id</th>
-                  <th>Receiver</th>
-                  <th>Weight</th>
-                  <th>Box Colour</th>
-                  <th>Shipment Status</th>
-                  <th>Destination Country</th>
-                  <th>Source Country</th>
-                  <th>Edit/Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {result.map(function (item) {
-                  return (
-                    <tr key={item.id}>
-                      <td>{item.id}</td>
-                      <td>
-                        <a href="#">
-                          {item.account.id ? item.account.id : item.account}
-                        </a>
-                      </td>
-                      <td>{item.receiver}</td>
-                      <td>{item.weight}</td>
-                      <td>{item.boxColour}</td>
-                      <td>{item.shipmentStatus}</td>
-                      <td>{item.destinationCountry.name}</td>
-                      <td>{item.sourceCountry}</td>
-                      <td>
-                        <Button
-                          variant="primary btn-sm"
-                          onClick={() => handleEditClick(item)}
-                        >
-                          <FontAwesomeIcon icon={faPencilAlt} />
-                        </Button>
-                        <Button
-                          variant="danger btn-sm ml-2"
-                          onClick={() => handleDeleteClick(item)}
-                        >
-                          <FontAwesomeIcon icon={faTrashAlt} />
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-            {editShipmentView && (
-              <EditShipmentModal
-                thisShipment={thisShipment}
-                updateShipment={onUpdateShipment}
-                onClose={() => setEditShipmentView(!editShipmentView)}
-              ></EditShipmentModal>
-            )}
-            {deleteShipmentView && (
-              <DeleteShipmentModal
-                thisShipment={thisShipment}
-                deleteShipment={onDeleteShipment}
-                onClose={() => setDeleteShipmentView(!deleteShipmentView)}
-              ></DeleteShipmentModal>
-            )}
-          </div>
-        </>
-      )}
-    </>
-  );
-};
-
+      <div className="all-shipments-container">
+        <div className="row shipment-table-header">
+          <h3>All Shipment History</h3>
+        </div> 
+          {<ShipmentList 
+              shipmentList={shipmentList}
+              updateShipment={onUpdateShipment} 
+              deleteShipment={onDeleteShipment}
+              >
+            </ShipmentList>}
+      </div>
+      </>
+    }
+      </>
+    );
+  };
+  
 export default HandleShipmentsPage;
