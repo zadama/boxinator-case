@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-flow: column;
   .styled-table {
     border-collapse: collapse;
     margin: 25px 0;
@@ -24,7 +25,6 @@
 
     tbody tr {
       border-bottom: 1px solid #dddddd;
-      cursor: pointer;
     }
     tbody tr:nth-of-type(even) {
       background-color: #f3f3f3;
@@ -37,4 +37,24 @@
       color: #009879;
     }
   }
+}
+
+.cancel-shipment {
+  text-align: center;
+  border-left: 1px solid #80808080;
+
+  > * {
+    cursor: pointer;
+  }
+}
+
+.cancel-container {
+  padding-top: 20px;
+  padding-top: 20px;
+  max-width: 650px;
+  padding: 1em 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
 }

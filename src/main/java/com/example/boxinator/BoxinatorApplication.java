@@ -18,8 +18,6 @@ public class BoxinatorApplication {
     // påbörja med loadern + testa också så allt funkar i proden, skapa konto, lägg till länder osv
     // och check databasen i firebase + terminalen
 
-    // ta bort USER i required role för /admin-dashboard + lägg till confirm-modal för add-shipment
-    // och ha success meddelande sen redirect till handle-shipments och highlighta ( kolla trello)
     // ( testa också GUEST login i prod...
     // lägg till loading(vanliga spinnern), när avändaren matat in nummer och "väntar"
 

@@ -158,8 +158,8 @@ const AddShipmentPage = ({ history }) => {
         const { data: newShipment } = result.data;
 
         history.push({
-          pathname: "/handleShipments",
-          state: { claimShipment: newShipment.id },
+          pathname: "/handle-shipments",
+          state: { claimShipment: newShipment.id, date: new Date() },
         });
       }
     } catch (error) {

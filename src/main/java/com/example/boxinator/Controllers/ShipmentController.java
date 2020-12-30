@@ -130,10 +130,12 @@ public class ShipmentController {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
+
         if (authResponse.getStatusCode() == HttpStatus.OK) {
             if (shipmentRepository.existsById(shipment_id)) {
                 Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
                 Shipment shipment = shipmentRepo.orElse(null);
+
                 if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
 
 

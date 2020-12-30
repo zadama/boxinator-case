@@ -145,11 +145,9 @@ const RegisterPage = ({ history, location }) => {
       const { data } = shipment.data;
       console.log(data);
 
-      // redirect to appropriate route and have a toast here "your shipment was successfully added!" with highlighting the shipment
-
       history.push({
-        pathname: "/admin-dashboard/country", // CHANGE THIS! redirect to users shipment page and also add the claimShipment in that page.
-        state: { claimShipment: data.id },
+        pathname: "/handle-shipments",
+        state: { claimShipment: data.id, date: new Date() },
       });
     } catch (error) {
       console.log(error);

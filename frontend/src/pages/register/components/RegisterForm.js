@@ -256,6 +256,7 @@ const RegisterForm = ({
               minLength: 7,
               maxLength: 15,
               pattern: /^(\d)*$/,
+              validate: (value) => !value.startsWith(0),
             })}
             style={{ borderColor: errors.contactNumber && "red" }}
           ></input>
@@ -277,6 +278,13 @@ const RegisterForm = ({
         {errors.contactNumber?.type === "pattern" && (
           <span className="error-span">
             Phone number can only contain digits.
+          </span>
+        )}
+
+        {errors.contactNumber?.type === "validate" && (
+          <span className="error-span">
+            Phone number can't start with 0. Select your country's phone code
+            and enter your number excluding 0.
           </span>
         )}
       </div>

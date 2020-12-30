@@ -25,4 +25,16 @@ const addShipmentReceipt = (body) => {
   return Api.post("/receipt/", { ...body });
 };
 
-export { createShipment, getAllShipments, addShipmentReceipt };
+const updateShipment = (shipmentId, body, token) => {
+  return Api.patch(
+    "/shipment/" + shipmentId,
+    { ...body },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export { createShipment, getAllShipments, addShipmentReceipt, updateShipment };
