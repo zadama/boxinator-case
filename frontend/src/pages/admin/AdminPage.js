@@ -44,7 +44,7 @@ const AdminPage = () => {
     renderExampleDataWithToken();
   }, []);
 
-  const handleUserDetailsClick = (event, value) => {
+  const handleMenuClick = (event, value) => {
     if(value === "accounts") {
       setTitle("Accounts");
       setShowCountries(false);
@@ -76,7 +76,7 @@ const AdminPage = () => {
           )}
         </section>
         <section className="admin-menu">
-          <AdminMenu getDetails={(event, value) => handleUserDetailsClick(event, value)}/>
+          <AdminMenu getDetails={(event, value) => handleMenuClick(event, value)}/>
         </section>
         <section>
           {!showAccounts ?  "" : <AccountPage />}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
-import Toast from 'react-bootstrap/Toast'
+import Toast from 'react-bootstrap/Toast';
 
 import "./style.scss";
 
