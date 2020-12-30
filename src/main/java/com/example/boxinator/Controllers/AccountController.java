@@ -8,6 +8,7 @@ import com.example.boxinator.Utils.AuthService.AuthResponse;
 import com.example.boxinator.Utils.AuthService.AuthenticationService;
 import com.example.boxinator.Utils.CommonResponse;
 
+
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -92,11 +93,15 @@ public class AccountController {
     public ResponseEntity<CommonResponse> getAllAccounts() {
         CommonResponse cr = new CommonResponse();
 
+        System.out.println("HERE");
         try {
             cr.data = accountRepository.findAll();
             cr.msg = "List of all existing accounts in the database.";
             cr.status = HttpStatus.OK;
         } catch (Exception e){
+            System.out.println("erroooor");
+
+            e.printStackTrace();
             cr.msg = "Currently unable to get the list of all accounts in the database.";
             cr.status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
@@ -238,6 +243,33 @@ public class AccountController {
             cr.msg = "Unauthorized: Invalid token.";
             cr.status = HttpStatus.UNAUTHORIZED;
         }
+        return new ResponseEntity<>(cr, cr.status);
+    }
+
+    @GetMapping("/role")
+    public ResponseEntity<CommonResponse> getUserRole(@RequestHeader(value = "Authorization") String token ) throws FirebaseAuthException {
+
+        CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
+
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
+                try {
+
+
+                    cr.data = authResponse.getBody().account.getRole();
+                    cr.msg = "Role found";
+                    cr.status = HttpStatus.OK;
+                } catch (Exception e) {
+                    cr.msg = e.getMessage();
+                    cr.status = HttpStatus.BAD_REQUEST;
+                }
+
+        } else {
+            cr.data = authResponse.getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
+            cr.status = HttpStatus.UNAUTHORIZED;
+        }
+
         return new ResponseEntity<>(cr, cr.status);
     }
 }

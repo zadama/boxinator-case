@@ -1,73 +1,75 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import PrivateLayout from '../../layouts/PrivateLayout';
+import PrivateLayout from "../../layouts/PrivateLayout";
 import { useAuth } from "../../context/auth";
-import { getAccount } from '../../api/user';
+import { getAccount } from "../../api/user";
 
-import './style.scss';
+import "./style.scss";
 
-import ProfileMenu from './ProfileComponents/ProfileMenu';
-import ProfileInformation from './ProfileComponents/ProfileInformation';
+import ProfileMenu from "./ProfileComponents/ProfileMenu";
+import ProfileInformation from "./ProfileComponents/ProfileInformation";
 
 const ProfilePage = () => {
+  const auth = useAuth();
+  const [data, setData] = useState(null);
 
-    const auth = useAuth();
-    const [data, setData] = useState(null);
+  const [showProfile, setShowProfile] = useState(false);
+  const [showShipments, setShowShipments] = useState(false);
+  const [title, setTitle] = useState("");
 
-    const [showProfile, setShowProfile] = useState(false);
-    const [showShipments, setShowShipments] = useState(false);
-    const [title, setTitle] = useState("");
+  const renderProfilePageWithData = async () => {
+    try {
+      const token = await auth.getUserToken();
 
-    const renderProfilePageWithData = async () => {
-        try {
-            const token = await auth.getUserToken();
+      const { data: thisAccount } = await getAccount(token, auth.user.email);
 
-            const { data: thisAccount } = await getAccount(token, auth.user.email);
-    
-            setData(thisAccount.data);
-        } catch (error) {
-            console.log(error);
-        }
+      setData(thisAccount.data);
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    useEffect(() => {
-        renderProfilePageWithData();
-    }, []);
+  useEffect(() => {
+    renderProfilePageWithData();
+  }, []);
 
+  const handleMenuClick = (event, value) => {
+    if (value === "profile") {
+      setTitle(data.firstName + "'s Profile Information");
+      setShowShipments(false);
+      setShowProfile(!showProfile);
+    } else if (value === "shipments") {
+      setTitle(data.firstName + "'s Shipments");
+      setShowProfile(false);
+      setShowShipments(!showShipments);
+    }
+  };
 
-    const handleMenuClick = (event, value) => {
-        if(value === "profile") {
-          setTitle(data.firstName + "'s Profile Information");
-          setShowShipments(false);
-          setShowProfile(!showProfile);
-        } else if(value === "shipments") {
-          setTitle(data.firstName + "'s Shipments")
-          setShowProfile(false);
-          setShowShipments(!showShipments);
-        }
-      }
-
-    return (
-        <PrivateLayout>
-            <div className="profile-page">
-                <section>
-                {!data ? (
-                    <div>loading....</div>
-                ) : (
-                    <div>
-                    {!title ? <h3>Welcome back, "{data.firstName}"</h3> : <h3>{title}</h3>}
-                    </div>
-                )}
-                </section>
-                <section className="profile-menu">
-                    <ProfileMenu getDetails={(event, value) => handleMenuClick(event, value)}></ProfileMenu>
-                </section>
-                <section>
-                    {!showProfile ? "" : <ProfileInformation />}          
-                </section>
+  return (
+    <PrivateLayout>
+      <div className="profile-page">
+        <section>
+          {!data ? (
+            <div>loading....</div>
+          ) : (
+            <div>
+              {!title ? (
+                <h3>Welcome back, "{data.firstName}"</h3>
+              ) : (
+                <h3>{title}</h3>
+              )}
             </div>
-        </PrivateLayout>
-    )
-}
+          )}
+        </section>
+        <section className="profile-menu">
+          <ProfileMenu
+            getDetails={(event, value) => handleMenuClick(event, value)}
+          ></ProfileMenu>
+        </section>
+        <section>{!showProfile ? "" : <ProfileInformation />}</section>
+      </div>
+    </PrivateLayout>
+  );
+};
 
 export default ProfilePage;

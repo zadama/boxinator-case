@@ -3,6 +3,7 @@ package com.example.boxinator.Models;
 
 import com.example.boxinator.Models.Enums.ShipmentStatus;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -52,6 +53,7 @@ public class Shipment {
     public void setAccount(Account account) {
         this.account = account;
     }
+
 
     public Long getId() {
         return id;

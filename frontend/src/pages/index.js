@@ -1,4 +1,5 @@
 import AddShipmentPage from "./shipment/AddShipmentPage";
+import UserShipmentDetailsPage from "./handle-shipment-user/UserShipmentDetailsPage";
 import AdminPage from "./admin/AdminPage";
 import ProfilePage from "./profile/ProfilePage";
 import LoginPage from "./login/LoginPage";
@@ -14,4 +15,5 @@ export {
   RegisterPage,
   NotFoundPage,
   UnAuthorizedPage,
+  UserShipmentDetailsPage,
 };
