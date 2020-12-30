@@ -5,12 +5,14 @@ import Toast from 'react-bootstrap/Toast';
 
 import { useAuth } from "../../../context/auth";
 import { getAccount } from '../../../api/user';
+import { getAllCountries } from '../../../api/countries';
 import EditAccountModal from '../../admin/AccountPageModals/EditAccountModal';
 
 const ProfileInformation = props => {
     
     const auth = useAuth();
     const [data, setData] = useState(null);
+    const [countries, setCountries] = useState([]);
     const [editAccountView, setEditAccountView] = useState(false);
     const [thisAccount, setThisAccount] = useState(null);
 
@@ -22,7 +24,13 @@ const ProfileInformation = props => {
             const token = await auth.getUserToken();
 
             const { data: thisAccount } = await getAccount(token, auth.user.email);
+            let { data: savedCountries } = await getAllCountries();
 
+            savedCountries = savedCountries.data.map((country) => {
+                return [country.name];
+            });
+
+            setCountries(savedCountries);
             setData(thisAccount.data)
         } catch (error) {
             console.log(error);
@@ -100,7 +108,7 @@ const ProfileInformation = props => {
                         }}>logout</Button>
                     </div>
                 </>)}
-                {editAccountView && <EditAccountModal onClose={() => setEditAccountView(!editAccountView)} thisAccount={thisAccount} toggleToast={toggleToast} reRender={renderProfileInformationWithToken}/>}
+                {editAccountView && <EditAccountModal onClose={() => setEditAccountView(!editAccountView)} countries={countries} thisAccount={thisAccount} toggleToast={toggleToast} reRender={renderProfileInformationWithToken}/>}
         </>
     )
 }
