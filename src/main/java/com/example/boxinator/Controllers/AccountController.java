@@ -104,29 +104,25 @@ public class AccountController {
         return new ResponseEntity<>(cr, cr.status);
     }
 
-    @GetMapping("/{account_id}")
+    @GetMapping("/{account_email}")
     public ResponseEntity<CommonResponse> getAccount(
             @RequestHeader(value = "Authorization") String token,
-            @PathVariable Long account_id
+            @PathVariable String account_email
     ) {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
         if (authResponse.getStatusCode() == HttpStatus.OK) {
-            if (accountRepository.existsById(account_id)){
-                try {
-                    Optional<Account> accountRepo = accountRepository.findById(account_id);
-                    Account account = accountRepo.orElse(null);
+            try {
+                Optional<Account> accountRepo = accountRepository.findByEmail(account_email);
+                Account account = accountRepo.orElse(null);
 
-                    cr.data = account;
-                    cr.msg = "Account found";
-                    cr.status = HttpStatus.OK;
-                } catch (Exception e) {
-                    cr.msg = e.getMessage();
-                    cr.status = HttpStatus.BAD_REQUEST;
-                }
-            } else {
-                cr.msg = "Account with id: "+account_id+" could not be found";
+                cr.data = account;
+                cr.msg = "Account found";
+                cr.status = HttpStatus.OK;
+            } catch (Exception e) {
+                cr.data = "Account with email: "+account_email+" could not be found";
+                cr.msg = e.getMessage();
                 cr.status = HttpStatus.NOT_FOUND;
             }
         } else {

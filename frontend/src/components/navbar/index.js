@@ -17,9 +17,8 @@ const Navbar = () => {
       {auth.user && (auth.user.role === ADMIN || auth.user.role === USER) ? (
         <>
           <Link to="/add-shipment">Add Shipment</Link>
-          {(auth.user.role === ADMIN || auth.user.role === USER) && ( 
-            <Link to="/admin-dashboard">Admin Dashboard</Link>
-          )}
+          {(auth.user.role === ADMIN) && <Link to="/admin-dashboard">Admin Dashboard</Link>}
+          <Link to="/profile-dashboard">Profile Dashboard</Link>
         </>
       ) : (
         <>

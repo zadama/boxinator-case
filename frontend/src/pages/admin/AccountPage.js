@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
-import Toast from 'react-bootstrap/Toast'
+import Toast from 'react-bootstrap/Toast';
 
 import "./style.scss";
 
 import { useAuth } from "../../context/auth";
 import { getAllCountries } from '../../api/countries';
-import { getAllAccounts, getAccount } from '../../api/user';
+import { getAllAccounts } from '../../api/user';
 import DeleteAccountModal from './AccountPageModals/DeleteAccountModal';
 import EditAccountModal from './AccountPageModals/EditAccountModal';
 
