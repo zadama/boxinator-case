@@ -54,7 +54,7 @@ const deleteShipment = (
   token
 
 ) => {
-  return Api.delete(`/${shipment_id}`, {
+  return Api.delete(`/shipment/${shipment_id}`, {
     headers: {Authorization: `bearer ${token}`}
   });
 };
