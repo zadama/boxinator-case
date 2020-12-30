@@ -52,6 +52,7 @@ const HandleShipmentsPage = () => {
       .sort(function (a, b) {
         return a.id - b.id
       }).map((shipment) => {
+        console.log(shipment);
         return {
             id: shipment.id,
             account: shipment.account,
@@ -64,6 +65,7 @@ const HandleShipmentsPage = () => {
 
         };
       });
+      console.log(savedShipments);
       setShipments(savedShipments);
       setShipmentList(savedShipments);
     }
