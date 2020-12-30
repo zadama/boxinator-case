@@ -32,7 +32,6 @@ const EditShipmentModal = (props) => {
   };
 
   const updateShipment = (shipment) => {
-    console.log(props);
     props.updateShipment(shipment);
     setShowModal(false);
   }

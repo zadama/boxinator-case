@@ -7,16 +7,18 @@ import {getAllShipments} from "../../../api/shipments";
 import { Button } from "react-bootstrap";
 import EditShipmentModal from "./EditShipmentModal";
 import Toaster from "../../../components/toast/Toaster";
-import {updateShipment} from "../../../api/shipments";
+import {updateShipment, deleteShipment} from "../../../api/shipments";
 
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPencilAlt, faTrashAlt} from "@fortawesome/free-solid-svg-icons";
+import DeleteShipmentModal from "./DeleteShipmentModal";
 
 const HandleShipmentsPage = () => {
 
   const auth = useAuth();
   const [editShipmentView, setEditShipmentView] = useState(false);
+  const [deleteShipmentView, setDeleteShipmentView] = useState(false);
   const [result, setResult] = useState(null);
   const [thisShipment, setThisShipment] = useState(null);
 
@@ -29,17 +31,14 @@ const HandleShipmentsPage = () => {
       const token = await auth.getUserToken(); 
       const response =  await getAllShipments(token);
       const {data} = response.data;
-      console.log(data);
       setResult(data);
     }
-  
     catch(error){
       console.log(error);
     }
   }
 
-  const onUpdateShipmentClicked = async (shipment) => {
-    console.log(shipment);
+  const onUpdateShipment = async (shipment) => {
     try {
       const token = await auth.getUserToken(); 
       await updateShipment(shipment, token);
@@ -55,8 +54,28 @@ const HandleShipmentsPage = () => {
     } 
   }
 
+  const onDeleteShipment = async (shipment_id) => {
+    try {
+      const token = await auth.getUserToken();
+      await deleteShipment(shipment_id, token);
+      setToastMsg("Shipment record was deleted successfully.");
+      setToast(true);
+      renderShipmentData();
+    } catch(error) {
+      console.log(error, "Unable to delete shipment.");
+      setToastHeader("Error");
+      setToastMsg("Unable to delete shipment record details.");
+      setToast(true);
+    }
+  }
+
   const handleEditClick = (item) => {
     setEditShipmentView(!editShipmentView);
+    setThisShipment(item);
+  }
+
+  const handleDeleteClick = (item) => {
+    setDeleteShipmentView(!deleteShipmentView);
     setThisShipment(item);
   }
   
@@ -109,17 +128,18 @@ const HandleShipmentsPage = () => {
               <td>{item.destinationCountry.name}</td> 
               <td>{item.sourceCountry}</td>
               <td>
-                <Button variant="primary"
+                <Button variant="primary btn-sm"
                   onClick={()=> handleEditClick(item)}>
                     <FontAwesomeIcon icon={faPencilAlt}/>
                 </Button> 
-              <Button variant="danger ml-2"><FontAwesomeIcon icon={faTrashAlt}/></Button>
+              <Button variant="danger btn-sm ml-2" onClick={() => handleDeleteClick(item)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
               </td>
               </tr>)
             })}
               </tbody>            
       </Table>
-      {editShipmentView && <EditShipmentModal thisShipment={thisShipment} updateShipment={onUpdateShipmentClicked} onClose={() => setEditShipmentView(!editShipmentView)}></EditShipmentModal>}
+      {editShipmentView && <EditShipmentModal thisShipment={thisShipment} updateShipment={onUpdateShipment} onClose={() => setEditShipmentView(!editShipmentView)}></EditShipmentModal>}
+      {deleteShipmentView && <DeleteShipmentModal thisShipment={thisShipment} deleteShipment={onDeleteShipment} onClose={() => setDeleteShipmentView(!deleteShipmentView)} ></DeleteShipmentModal>}
       </div>  
       </>
     }
