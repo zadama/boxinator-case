@@ -3,11 +3,15 @@ import {useAuth} from "../../../context/auth";
 import Modal from '../../../components/modal/index';
 import {getAllCountries} from "../../../api/countries";
 import EditShipmentForm from './EditShipmentForm';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPencilAlt} from "@fortawesome/free-solid-svg-icons";
+import { Button } from "react-bootstrap";
+
 
 const EditShipmentModal = (props) => {
   
   const auth = useAuth();
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [countries, setCountries] = useState([]);
 
  useEffect( () => {
@@ -38,13 +42,16 @@ const EditShipmentModal = (props) => {
 
   const onClose = () => {
     setShowModal(false);
-    props.onClose();
   }
 
   return (
-    <div className="container">
+    <div>
+      <Button onClick={ () => {
+        setShowModal(true);
+      }} className="btn btn-info btn-sm ml-2 mt-0"><FontAwesomeIcon icon={faPencilAlt}/></Button>
+    
     {showModal && (<Modal onClose={onClose}>
-       <EditShipmentForm onClose={onClose} thisShipment={props.thisShipment} updateShipment={updateShipment} countries={countries}/>
+       <EditShipmentForm onClose={onClose} shipment={props.shipment} updateShipment={updateShipment} countries={countries}/>
     </Modal>)}
     </div>
   );

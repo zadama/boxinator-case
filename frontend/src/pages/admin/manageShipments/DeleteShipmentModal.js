@@ -1,35 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Modal from '../../../components/modal/index';
+import { Button } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 const DeleteShipmentModal = (props) => {
-    
-    const [showModal, setShowModal] = useState(true);
-    
+
+    const [showModal, setShowModal] = useState(false);
+
     const onDelete = () => {
-        props.deleteShipment(props.thisShipment.id);
+        props.deleteShipment(props.shipment.id);
         setShowModal(false);
     }
 
     const onClose = () => {
-        setShowModal(false);
-        props.onClose();
-      }
+        showModal(false);
+    }
 
     return (
-        <div className="container">
-    {showModal && (<Modal onClose={onClose}>
-            <p>Are you sure you want to delete this record?</p>
-    <button onClick = {onDelete}>
-        Yes
-    </button>
+        <div>
+            <Button variant="danger btn-sm ml-2" onClick={() => setShowModal(true)}><FontAwesomeIcon icon={faTrashAlt} /></Button>
 
-    <button onClick ={props.onClose}>
-        No
-    </button>
-    </Modal> )}
-    
-    </div>
-    
+            {showModal && (<Modal onClose={onClose}>
+                <h5>Are you sure?</h5>
+                <p>This record will be permanently removed from the database.
+                        You can't undo this action.</p>
+                <button className="btn btn-danger btn-sm" onClick={onDelete}>
+                    Delete
+                </button>
+
+                <button className="btn btn-light btn-sm ml-2" onClick={onClose}>
+                    Cancel
+                 </button>
+            </Modal>)}
+
+        </div>
+
     );
 
 };
