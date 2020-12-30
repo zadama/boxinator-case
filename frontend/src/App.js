@@ -11,12 +11,11 @@ import {
   LoginPage,
   NotFoundPage,
   RegisterPage,
+  UserShipmentDetailsPage,
 } from "./pages";
 
 import PrivateRoute from "./components/hoc/PrivateRoute";
 import { ADMIN, USER, GUEST } from "./utils/roles";
-import CountryPage from "./pages/country/CountryPage";
-import HandleShipmentsPage from "./pages/admin/HandleShipmentsPage";
 
 function App() {
   return (
@@ -37,20 +36,14 @@ function App() {
         <PrivateRoute
           exact={true}
           path="/admin-dashboard"
-          requiredRoles={[ADMIN, USER]}
+          requiredRoles={[ADMIN]}
           component={AdminPage}
         />
-        <Route
-          path="/admin-dashboard/country"
-          exact={true}
-          component={CountryPage}
-        />
-
         <PrivateRoute
           exact={true}
-          path="/handleShipments"
-          requiredRoles={[ADMIN]}
-          component={HandleShipmentsPage}
+          path="/handle-shipments"
+          requiredRoles={[USER]}
+          component={UserShipmentDetailsPage}
         />
 
         <Route component={NotFoundPage} />

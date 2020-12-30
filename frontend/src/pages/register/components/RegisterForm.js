@@ -61,7 +61,7 @@ const RegisterForm = ({
 
     formData.contactNumber = countryCode.value + formData.contactNumber;
     console.log(formData);
-    handleRegistration(formData);
+    //handleRegistration(formData);
   };
 
   return (
@@ -303,6 +303,7 @@ const RegisterForm = ({
               placeholder={"Select country"}
               options={countries}
               components={{ Option: IconOption }}
+              isSearchable={false}
             />
           }
           name="country"

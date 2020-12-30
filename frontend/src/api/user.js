@@ -5,14 +5,13 @@ import Api from "./axios";
 const getAllAccounts = (token) => {
   return Api.get("/account/all", {
     headers: {
-      Authorization: `${token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 };
 
-
 const getAccount = (token, account_id) => {
-  return Api.get("/account/"+account_id, {
+  return Api.get("/account/" + account_id, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -47,7 +46,7 @@ const checkToken = (token) => {
 
 // Only for testing purposes...
 const getUserRole = (token) => {
-  return Api.get("/accounttest/role", {
+  return Api.get("/account/role", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

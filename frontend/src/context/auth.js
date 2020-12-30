@@ -172,9 +172,10 @@ const addUserRole = async (user) => {
   if (user) {
     const token = await firebase.auth().currentUser.getIdToken(true);
 
-    const role = await getUserRole(token);
+    const response = await getUserRole(token);
+    const { data: role } = response.data;
 
-    return role.data;
+    return role;
   }
 };
 
