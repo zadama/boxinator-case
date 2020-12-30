@@ -9,9 +9,12 @@ const getAllAccounts = (token) => {
     },
   });
 };
-
+/*
 const getAccount = (token, account_id) => {
   return Api.get("/account/" + account_id, {
+*/
+const getAccount = (token, account_email) => {
+  return Api.get("/account/" + account_email, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

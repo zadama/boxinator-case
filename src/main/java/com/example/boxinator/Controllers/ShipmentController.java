@@ -139,7 +139,7 @@ public class ShipmentController {
                 if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
 
 
-                    if (newShipment.getWeight() != 0) {
+                    if (newShipment.getWeight() != null) {
                         shipment.setWeight(newShipment.getWeight());
                     }
 

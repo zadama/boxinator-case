@@ -97,7 +97,12 @@ const UserShipmentDetailsPage = ({ location, history }) => {
   };
 
   useEffect(() => {
-    if (location.state && location.state.claimShipment && location.state.date) {
+    if (
+      location &&
+      location.state &&
+      location.state.claimShipment &&
+      location.state.date
+    ) {
       const diff = new Date().getTime() - location.state.date.getTime();
       const secondsSinceArrival = Math.floor(diff / 1000);
 

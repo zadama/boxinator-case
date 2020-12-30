@@ -10,6 +10,7 @@ import {
   AdminPage,
   LoginPage,
   NotFoundPage,
+  ProfilePage,
   RegisterPage,
   UserShipmentDetailsPage,
 } from "./pages";
@@ -45,7 +46,12 @@ function App() {
           requiredRoles={[USER]}
           component={UserShipmentDetailsPage}
         />
-
+        <PrivateRoute
+          exact={true}
+          path="/profile-dashboard"
+          requiredRoles={[ADMIN, USER]}
+          component={ProfilePage}
+        />
         <Route component={NotFoundPage} />
       </Switch>
     </Router>

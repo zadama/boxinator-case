@@ -9,7 +9,7 @@ import { checkToken } from "../../api/user";
 
 import AccountPage from "./AccountPage";
 import CountryPage from "../country/CountryPage";
-import HandleShipmentsPage from "./HandleShipmentsPage";
+import HandleShipmentsPage from "./manageShipments/HandleShipmentsPage";
 
 /**
  * hämta alla shipments från backend, skicka med firebase token
@@ -44,7 +44,7 @@ const AdminPage = () => {
     renderExampleDataWithToken();
   }, []);
 
-  const handleUserDetailsClick = (event, value) => {
+  const handleMenuClick = (event, value) => {
     if(value === "accounts") {
       setTitle("Accounts");
       setShowCountries(false);
@@ -76,7 +76,7 @@ const AdminPage = () => {
           )}
         </section>
         <section className="admin-menu">
-          <AdminMenu getDetails={(event, value) => handleUserDetailsClick(event, value)}/>
+          <AdminMenu getDetails={(event, value) => handleMenuClick(event, value)}/>
         </section>
         <section>
           {!showAccounts ?  "" : <AccountPage />}

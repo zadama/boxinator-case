@@ -6,7 +6,7 @@ import "./style.scss";
 
 import { useAuth } from "../../context/auth";
 import { getAllCountries } from "../../api/countries";
-import { getAllAccounts, getAccount } from "../../api/user";
+import { getAllAccounts } from "../../api/user";
 import DeleteAccountModal from "./AccountPageModals/DeleteAccountModal";
 import EditAccountModal from "./AccountPageModals/EditAccountModal";
 
@@ -25,16 +25,11 @@ const AccountPage = () => {
       const token = await auth.getUserToken();
 
       const { data } = await getAllAccounts(token);
-      console.log(data);
 
       let { data: savedCountries } = await getAllCountries();
 
       savedCountries = savedCountries.data.map((country) => {
-        return {
-          name: country.name,
-          code: country.countryCode,
-          feeMulti: country.feeMultiplier,
-        };
+        return [country.name];
       });
 
       setCountries(savedCountries);
@@ -168,8 +163,8 @@ const AccountPage = () => {
         {editAccountView && (
           <EditAccountModal
             onClose={() => setEditAccountView(!editAccountView)}
-            thisAccount={thisAccount}
             countries={countries}
+            thisAccount={thisAccount}
             reRender={renderUserDataWithAdminToken}
             toggleToast={toggleToast}
           />
@@ -178,6 +173,7 @@ const AccountPage = () => {
           <DeleteAccountModal
             onClose={() => setDeleteAccountView(!deleteAccountView)}
             thisAccount={thisAccount}
+            reRender={renderUserDataWithAdminToken}
             toggleToast={toggleToast}
           />
         )}

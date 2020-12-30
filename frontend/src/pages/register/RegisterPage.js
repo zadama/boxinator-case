@@ -138,9 +138,6 @@ const RegisterPage = ({ history, location }) => {
         shipmentStatus: "IN_TRANSIT",
       };
       const shipment = await createShipment(newShipment, token);
-      alert(
-        "Shipment claimed! This should now redirect the handleShipments page(when its done) and highlight the created shipment through state.claimShipment"
-      );
 
       const { data } = shipment.data;
       console.log(data);

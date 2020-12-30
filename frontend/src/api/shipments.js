@@ -37,4 +37,16 @@ const updateShipment = (shipmentId, body, token) => {
   );
 };
 
-export { createShipment, getAllShipments, addShipmentReceipt, updateShipment };
+const deleteShipment = (shipment_id, token) => {
+  return Api.delete(`/shipment/${shipment_id}`, {
+    headers: { Authorization: `bearer ${token}` },
+  });
+};
+
+export {
+  createShipment,
+  updateShipment,
+  getAllShipments,
+  deleteShipment,
+  addShipmentReceipt,
+};
