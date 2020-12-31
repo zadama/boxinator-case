@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../../context/auth";
-import { useState, useEffect } from "react";
 import EditShipmentModal from "./EditShipmentModal";
 import DeleteShipmentModal from "./DeleteShipmentModal";
 import Toaster from "../../../components/toast/Toaster";
-import {updateShipment, deleteShipment, getAllShipments} from "../../../api/shipments";
+import {
+  updateShipment,
+  deleteShipment,
+  getAllShipments,
+} from "../../../api/shipments";
 import Search from "../../../components/search/Search";
 import ShipmentList from "./ShipmentList";
 import "./styles.scss";
@@ -21,38 +24,39 @@ const HandleShipmentsPage = () => {
   const [toast, setToast] = useState(false);
 
   const [shipments, setShipments] = useState([]);
-  const [shipmentList,setShipmentList] = useState([]);
+  const [shipmentList, setShipmentList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  
 
-  useEffect( () => {
+  useEffect(() => {
     if (firstUpdate.current) {
-     firstUpdate.current = false;
-     renderShipmentData();
-     return;
-   } else {
-     const filtered = shipments.filter( shipment => {
-       return (
-           (shipment.id + "") === searchValue || 
-           shipment.shipmentStatus.toUpperCase().includes(searchValue.toUpperCase())
-       );
-     });
-     setShipmentList(filtered);
-   }
-   
- },[searchValue]);
+      firstUpdate.current = false;
+      renderShipmentData();
+      return;
+    } else {
+      const filtered = shipments.filter((shipment) => {
+        return (
+          shipment.id + "" === searchValue ||
+          shipment.shipmentStatus
+            .toUpperCase()
+            .includes(searchValue.toUpperCase())
+        );
+      });
+      setShipmentList(filtered);
+    }
+  }, [searchValue]);
 
   const renderShipmentData = async () => {
     try {
-      const token = await auth.getUserToken(); 
-      let response =  await getAllShipments(token);
-      let {data: savedShipments} = response.data;
-      console.log(response)
+      const token = await auth.getUserToken();
+      let response = await getAllShipments(token);
+      let { data: savedShipments } = response.data;
+      console.log(response);
       savedShipments = savedShipments
-      .sort(function (a, b) {
-        return a.id - b.id
-      }).map((shipment) => {
-        return {
+        .sort(function (a, b) {
+          return a.id - b.id;
+        })
+        .map((shipment) => {
+          return {
             id: shipment.id,
             account: shipment.account,
             receiver: shipment.receiver,
@@ -60,17 +64,13 @@ const HandleShipmentsPage = () => {
             boxColour: shipment.boxColour,
             shipmentStatus: shipment.shipmentStatus,
             destinationCountry: shipment.destinationCountry.name,
-            sourceCountry: shipment.sourceCountry
-
-        };
-      });
+            sourceCountry: shipment.sourceCountry,
+          };
+        });
       setShipments(savedShipments);
       setShipmentList(savedShipments);
-    }
-    catch(error){
-
+    } catch (error) {
       console.log(error);
-
     }
   };
 
@@ -104,9 +104,8 @@ const HandleShipmentsPage = () => {
       setToastMsg("Unable to delete shipment record details.");
       setToast(true);
     }
-
-  }
-/*
+  };
+  /*
   const handleEditClick = (shipment) => {
     setEditShipmentView(!editShipmentView);
     //setThisShipment(shipment);
@@ -118,14 +117,9 @@ const HandleShipmentsPage = () => {
   }
 */
 
-    return (
-      <>
-      {shipments == null ? <div>
-        No shipments found! 
-      </div>
-    :  
+  return (
     <>
-      {result == null ? (
+      {shipmentList == null ? (
         <div>No shipments found!</div>
       ) : (
         <>
@@ -140,25 +134,26 @@ const HandleShipmentsPage = () => {
               />
             )}
           </div>
-    <div>
-      <Search setSearchValue={setSearchValue}/>
-    </div>
+          <div>
+            <Search setSearchValue={setSearchValue} />
+          </div>
 
-      <div className="all-shipments-container">
-        <div className="row shipment-table-header">
-          <h3>All Shipment History</h3>
-        </div> 
-          {<ShipmentList 
-              shipmentList={shipmentList}
-              updateShipment={onUpdateShipment} 
-              deleteShipment={onDeleteShipment}
-              >
-            </ShipmentList>}
-      </div>
-      </>
-    }
-      </>
-    );
-  };
-  
+          <div className="all-shipments-container">
+            <div className="row shipment-table-header">
+              <h3>All Shipment History</h3>
+            </div>
+            {
+              <ShipmentList
+                shipmentList={shipmentList}
+                updateShipment={onUpdateShipment}
+                deleteShipment={onDeleteShipment}
+              ></ShipmentList>
+            }
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
 export default HandleShipmentsPage;
