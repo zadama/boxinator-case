@@ -78,7 +78,7 @@ const HandleShipmentsPage = () => {
     const { shipment_id, ...rest } = shipment;
     try {
       const token = await auth.getUserToken();
-      await updateShipment(shipment_id, { rest }, token);
+      await updateShipment(shipment_id, { ...rest }, token);
       setToastHeader("Success");
       setToastMsg("Shipment record was updated successfully.");
       setToast(true);
