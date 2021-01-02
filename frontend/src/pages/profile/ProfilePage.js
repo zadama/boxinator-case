@@ -33,6 +33,7 @@ const ProfilePage = () => {
     renderProfilePageWithData();
   }, []);
 
+  /*
   const handleMenuClick = (event, value) => {
     if (value === "profile") {
       setTitle(data.firstName + "'s Profile Information");
@@ -43,7 +44,7 @@ const ProfilePage = () => {
       setShowProfile(false);
       setShowShipments(!showShipments);
     }
-  };
+  };*/
 
   return (
     <PrivateLayout>
@@ -61,12 +62,9 @@ const ProfilePage = () => {
             </div>
           )}
         </section>
-        <section className="profile-menu">
-          <ProfileMenu
-            getDetails={(event, value) => handleMenuClick(event, value)}
-          ></ProfileMenu>
+        <section style={{ paddingBottom: "25px" }}>
+          <ProfileInformation />
         </section>
-        <section>{!showProfile ? "" : <ProfileInformation />}</section>
       </div>
     </PrivateLayout>
   );
