@@ -11,6 +11,7 @@ import com.example.boxinator.Utils.CommonResponse;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -239,5 +241,18 @@ public class AccountController {
             cr.status = HttpStatus.UNAUTHORIZED;
         }
         return new ResponseEntity<>(cr, cr.status);
+    }
+
+    @GetMapping("/role")
+    public String getUserRole(@RequestHeader(value = "Authorization") String token ) throws FirebaseAuthException {
+        String [] authToken = token.split(" ");
+        String bearerToken = authToken[1];
+
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(bearerToken);
+        String email = decodedToken.getEmail();
+
+        Optional<Account> account = accountRepository.findByEmail(email);
+
+        return account.isPresent() ? String.valueOf(account.get().getRole()) : "Not found..";
     }
 }
