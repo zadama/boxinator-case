@@ -8,7 +8,6 @@ import com.example.boxinator.Utils.AuthService.AuthResponse;
 import com.example.boxinator.Utils.AuthService.AuthenticationService;
 import com.example.boxinator.Utils.CommonResponse;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
@@ -20,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController

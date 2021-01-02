@@ -70,12 +70,13 @@ public class ShipmentController {
                 cr.msg = "Shipment created";
                 cr.status = HttpStatus.CREATED;
             } catch (DataIntegrityViolationException e) {
+                cr.data = e.getMessage();
                 cr.msg = "Some required field might be missing.";
                 cr.status = HttpStatus.BAD_REQUEST;
             } catch (Exception e) {
-                cr.data = null;
+                cr.data = e.getMessage();
                 cr.msg = "Shipment could not be created";
-                cr.status = HttpStatus.BAD_REQUEST;
+                cr.status = HttpStatus.CONFLICT;
             }
         } else {
             cr.data = authService.checkToken(token).getBody().msg;
@@ -135,8 +136,6 @@ public class ShipmentController {
                 Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
                 Shipment shipment = shipmentRepo.orElse(null);
                 if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
-
-
                     if (newShipment.getWeight() != null) {
                         shipment.setWeight(newShipment.getWeight());
                     }
@@ -163,18 +162,24 @@ public class ShipmentController {
                         newShipment.getShipmentStatus().equals(ShipmentStatus.CANCELLED) &&
                         authResponse.getBody().account.getRole().equals(AccountRole.USER)) {
                     shipment.setShipmentStatus(newShipment.getShipmentStatus());
+                } else {
+                    cr.msg = "Your role does not have permission to do this.";
+                    cr.status = HttpStatus.UNAUTHORIZED;
                 }
                 try {
                     shipmentRepository.save(shipment);
                     cr.data = shipment;
                     cr.msg = "Shipment details have been updated.";
                     cr.status = HttpStatus.CREATED;
-
                 } catch (Exception e) {
-                    cr.status = HttpStatus.BAD_REQUEST;
+                    cr.data = e.getMessage();;
+                    cr.msg = "Shipment could not be updated.";
+                    cr.status = HttpStatus.CONFLICT;
                 }
             } else {
+                cr.data = null;
                 cr.msg = "Shipment with id: " + shipment_id + " was not found.";
+                cr.status = HttpStatus.NOT_FOUND;
             }
         } else {
             cr.data = authResponse.getBody().msg;
@@ -192,20 +197,24 @@ public class ShipmentController {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
-        Shipment shipment = shipmentRepo.orElse(null);
-
         if (authResponse.getStatusCode() == HttpStatus.OK) {
             if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
+                Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
+                Shipment shipment = shipmentRepo.orElse(null);
                 try {
                     cr.data = shipment;
                     shipmentRepository.deleteById(shipment_id);
                     cr.msg = "Shipment with id: " + shipment_id + " has been deleted";
                     cr.status = HttpStatus.CREATED;
                 } catch (Exception e) {
+                    cr.data = e.getMessage();
                     cr.msg = "Unable to delete shipment with id: " + shipment_id;
-                    cr.status = HttpStatus.BAD_REQUEST;
+                    cr.status = HttpStatus.CONFLICT;
                 }
+            } else {
+                cr.data = null;
+                cr.msg = "Your role does not have permission to do this.";
+                cr.status = HttpStatus.UNAUTHORIZED;
             }
         } else {
             cr.data = authResponse.getBody().msg;
@@ -226,14 +235,20 @@ public class ShipmentController {
                 if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
                     cr.data = shipmentRepository.findAll();
                     cr.msg = "List of all shipments in the database.";
+                    cr.status = HttpStatus.OK;
                 } else if (authResponse.getBody().account.getRole().equals(AccountRole.USER)) {
                     cr.data = shipmentRepository.findAllByAccount(authResponse.getBody().account);
                     cr.msg = "List of all shipments by user.";
+                    cr.status = HttpStatus.OK;
+                } else {
+                    cr.data = null;
+                    cr.msg = "You need to be logged in for this action.";
+                    cr.data = HttpStatus.UNAUTHORIZED;
                 }
-                cr.status = HttpStatus.OK;
             } catch (Exception e) {
+                cr.data = e.getMessage();
                 cr.msg = "Currently unable to get list of all shipments.";
-                cr.status = HttpStatus.INTERNAL_SERVER_ERROR;
+                cr.status = HttpStatus.CONFLICT;
             }
         } else {
             cr.data = authResponse.getBody().msg;
@@ -255,15 +270,21 @@ public class ShipmentController {
         Optional<Account> accountRepo = accountRepository.findById(account_id);
         Account account = accountRepo.orElse(null);
 
-
-        if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
-            try {
-                cr.data = account.getShipments();
-                cr.msg = "All shipments found for customer";
-                cr.status = HttpStatus.OK;
-            } catch (Exception e) {
-                cr.msg = "Unable to find all shipments from account with id: " + account_id;
-                cr.status = HttpStatus.BAD_REQUEST;
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
+            if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
+                try {
+                    cr.data = account.getShipments();
+                    cr.msg = "All shipments found for customer";
+                    cr.status = HttpStatus.OK;
+                } catch (Exception e) {
+                    cr.data = e.getMessage();
+                    cr.msg = "Unable to find all shipments from account with id: " + account_id;
+                    cr.status = HttpStatus.CONFLICT;
+                }
+            } else {
+                cr.data = null;
+                cr.msg = "Your role does not have permission to do this.";
+                cr.status = HttpStatus.UNAUTHORIZED;
             }
         } else {
             cr.data = authResponse.getBody().msg;
@@ -289,8 +310,9 @@ public class ShipmentController {
                 cr.msg = "List of all shipments with status: " + statusType;
                 cr.status = HttpStatus.OK;
             } catch (Exception e) {
-                cr.msg = "Unable to find any shipments with status code: " + shipmentStatus;
-                cr.status = HttpStatus.BAD_REQUEST;
+                cr.data = e.getMessage();
+                cr.msg = "Could not retrieve any shipments with status code: " + shipmentStatus;
+                cr.status = HttpStatus.INTERNAL_SERVER_ERROR;
             }
         } else {
             cr.data = authResponse.getBody().msg;
