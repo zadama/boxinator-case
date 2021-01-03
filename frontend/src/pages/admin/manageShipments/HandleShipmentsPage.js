@@ -47,12 +47,10 @@ const HandleShipmentsPage = () => {
       const token = await auth.getUserToken(); 
       let response =  await getAllShipments(token);
       let {data: savedShipments} = response.data;
-      console.log(response)
       savedShipments = savedShipments
       .sort(function (a, b) {
         return a.id - b.id
       }).map((shipment) => {
-        console.log(shipment);
         return {
             id: shipment.id,
             account: shipment.account,
@@ -65,7 +63,6 @@ const HandleShipmentsPage = () => {
 
         };
       });
-      console.log(savedShipments);
       setShipments(savedShipments);
       setShipmentList(savedShipments);
     }
@@ -88,7 +85,9 @@ const HandleShipmentsPage = () => {
       setToastHeader("Error");
       setToastMsg("Unable to update shipment record details.");
       setToast(true);
-    } 
+    } finally {
+      await renderShipmentData();
+    }
   }
 
   const onDeleteShipment = async (shipment_id) => {
@@ -103,16 +102,13 @@ const HandleShipmentsPage = () => {
       setToastHeader("Error");
       setToastMsg("Unable to delete shipment record details.");
       setToast(true);
+    }finally {
+      await renderShipmentData();
     }
   }
 /*
   const handleEditClick = (shipment) => {
     setEditShipmentView(!editShipmentView);
-    //setThisShipment(shipment);
-  }
-
-  const handleDeleteClick = (shipment) => {
-    setDeleteShipmentView(!deleteShipmentView);
     //setThisShipment(shipment);
   }
 */

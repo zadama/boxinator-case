@@ -11,7 +11,7 @@ const EditShipmentForm = (props) => {
 
     const destinationCountries = props.countries.map((country, id) => {
         return(
-          <option key={country.id}>{country.name}</option>
+          <option key={id}>{country.name}</option>
         );
         });
 
@@ -24,7 +24,7 @@ const EditShipmentForm = (props) => {
         className="form-control"
         id="shipment_id"
         name = "shipment_id"
-        defaultValue={props.thisShipment.id}
+        defaultValue={props.shipment.id}
         ref={register(
           {required: true}
       )}
@@ -39,7 +39,7 @@ const EditShipmentForm = (props) => {
         className="form-control"
         id="account-id"
         name = "account-id"
-        defaultValue={props.thisShipment.account.id}
+        defaultValue={props.shipment.account}
         ref={register(
           {required: true}
           )}
@@ -55,7 +55,7 @@ const EditShipmentForm = (props) => {
         className={`form-control ${errors.receiver && "is-invalid"}`}
         id="receiver"
         name="receiver"
-        defaultValue={props.thisShipment.receiver || ""}
+        defaultValue={props.shipment.receiver || ""}
         ref={register({
           required: true,
           pattern: {
@@ -77,11 +77,11 @@ const EditShipmentForm = (props) => {
         className="form-control"
         id="weight"
         name ="weight"
-        defaultValue={props.thisShipment.weight}
+        defaultValue={props.shipment.weight}
         ref={register({
           required: true,
          pattern: {
-           value: /^[0-9]*$/,
+           value: /[^0-9]*$/,
           message: "invalid format"
          }
       })}
@@ -101,8 +101,8 @@ const EditShipmentForm = (props) => {
       <input
         className="form-control"
         id="box-colour"
-        name="box-colour"
-        defaultValue={props.thisShipment.boxColour}
+        name="boxColour"
+        defaultValue={props.shipment.boxColour}
         ref={register(
           {required: true}
       )}
@@ -114,8 +114,8 @@ const EditShipmentForm = (props) => {
     <label htmlFor="shipment-status">
             <strong>Shipment Status: </strong></label >
       <select id="shipment-status" 
-      title={props.thisShipment.shipmentStatus}
-      name="shipment-status"
+      defaultValue={props.shipment.shipmentStatus}
+      name="shipmentStatus"
       ref={register(
         {required: true}
     )}
@@ -131,7 +131,11 @@ const EditShipmentForm = (props) => {
     <div className="form-group">
       <label htmlFor="destination-country">
         <strong>Destination Country:</strong></label>
-        <select id="destination-country" title={props.thisShipment.destinationCountry.name}>
+        <select 
+        id="destination-country" 
+        name="destinationCountry"
+        defaultValue={props.shipment.destinationCountry.name}
+        >
           {destinationCountries}
       </select>
     </div>
@@ -139,14 +143,18 @@ const EditShipmentForm = (props) => {
     <div className="form-group">
       <label htmlFor="source-country">
         <strong>Source Country:</strong></label>
-        <select id="source-country" title={props.thisShipment.sourceCountry}>
+        <select id="source-country" 
+        name="sourceCountry" 
+        ref={register}
+        defaultValue={props.shipment.sourceCountry}
+        >
           <option>Denmark</option>
           <option>Norway</option>
           <option>Sweden</option>
           </select>
     </div>
 
-    <Button type="submit" className="btn btn-info">Save</Button>
+    <Button type="submit" className="btn btn-info" value="Save">Save</Button>
     <Button onClick={props.onClose} className="btn btn-danger">Cancel</Button>
   </form>);
 }

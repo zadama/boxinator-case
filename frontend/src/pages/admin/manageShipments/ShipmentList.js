@@ -8,7 +8,7 @@ const ShipmentList = ({shipmentList=[], updateShipment, deleteShipment}) => {
         return (
             <tr key={shipment.id}>
                 <td>{shipment.id}</td>
-                <td>{shipment.account.id}</td>
+                <td>{shipment.account}</td>
                 <td>{shipment.receiver}</td>
                 <td>{shipment.weight}</td>
                 <td>{shipment.boxColour}</td>

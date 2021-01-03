@@ -27,7 +27,7 @@ const addShipmentReceipt = (body) => {
 };
 
 const updateShipment = ({
-  shipment_id,
+  id,
   receiver,
   weight,
   boxColour,
@@ -36,7 +36,7 @@ const updateShipment = ({
   sourceCountry
 },
 token
-) => {return Api.patch(`/shipment/${shipment_id}`, {
+) => {return Api.patch(`/shipment/${id}`, {
   receiver,
   weight,
   boxColour,
