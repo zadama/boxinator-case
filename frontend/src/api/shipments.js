@@ -26,6 +26,7 @@ const addShipmentReceipt = (body) => {
 };
 
 const updateShipment = (shipmentId, body, token) => {
+  console.log(shipmentId, body);
   return Api.patch(
     "/shipment/" + shipmentId,
     { ...body },

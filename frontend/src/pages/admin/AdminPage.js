@@ -45,23 +45,23 @@ const AdminPage = () => {
   }, []);
 
   const handleMenuClick = (event, value) => {
-    if(value === "accounts") {
+    if (value === "accounts") {
       setTitle("Accounts");
       setShowCountries(false);
       setShowShipments(false);
       setShowAccounts(!showAccounts);
-    } else if(value === "countries") {
-      setTitle("Shipping Countries")
+    } else if (value === "countries") {
+      setTitle("Shipping Countries");
       setShowShipments(false);
       setShowAccounts(false);
       setShowCountries(!showCountries);
-    } else if(value === "shipments") {
-      setTitle("Shipments")
+    } else if (value === "shipments") {
+      setTitle("Shipments");
       setShowCountries(false);
       setShowAccounts(false);
       setShowShipments(!showShipments);
     }
-  }
+  };
 
   return (
     <PrivateLayout>
@@ -76,10 +76,12 @@ const AdminPage = () => {
           )}
         </section>
         <section className="admin-menu">
-          <AdminMenu getDetails={(event, value) => handleMenuClick(event, value)}/>
+          <AdminMenu
+            getDetails={(event, value) => handleMenuClick(event, value)}
+          />
         </section>
-        <section>
-          {!showAccounts ?  "" : <AccountPage />}
+        <section style={{ borderTop: "1px solid #dee2e6" }}>
+          {!showAccounts ? "" : <AccountPage />}
           {!showCountries ? "" : <CountryPage />}
           {!showShipments ? "" : <HandleShipmentsPage />}
         </section>
