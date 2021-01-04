@@ -19,7 +19,21 @@ const EditAccountModal = (props) => {
   const auth = useAuth();
   const { register, handleSubmit, errors, watch, reset, control } = useForm();
   const [showModal, setShowModal] = useState(true);
-  const [dob, setDOB] = useState(new Date());
+  const [dob, setDOB] = useState(
+    props.thisAccount.dateOfBirth
+      ? new Date(props.thisAccount.dateOfBirth)
+      : new Date()
+  );
+
+  const [selectedCountry, setSelectedCountry] = useState({
+    label: props.thisAccount.country,
+    value: props.thisAccount.country,
+  });
+
+  const [selectedRole, setSelectedRole] = useState({
+    label: props.thisAccount.role,
+    value: props.thisAccount.role,
+  });
 
   useEffect(() => {
     !props.thisAccount.dateOfBirth
@@ -29,8 +43,10 @@ const EditAccountModal = (props) => {
   }, [reset]);
 
   const onSubmit = (data) => {
-    console.log(data);
+    console.log(selectedCountry);
+    data.country = selectedCountry.value;
 
+    data.role = selectedRole.value;
     if (props.thisAccount.firstName === data.firstName) {
       delete data.firstName;
     }
@@ -67,15 +83,14 @@ const EditAccountModal = (props) => {
       formData.dateOfBirth = dob;
     }
 
-    formData.country = formData.country.value;
-
-    console.log(formData);
-
     handleSaveEditedUser(formData);
   };
 
   const handleSaveEditedUser = async (user) => {
     // Called when an admin saves changes to an account
+
+    console.log(user);
+
     try {
       const token = await auth.getUserToken(); // Get sessiontoken
 
@@ -188,23 +203,14 @@ const EditAccountModal = (props) => {
             {!props.countries ? (
               "loading..."
             ) : (
-              <Controller
-                as={
-                  <Select
-                    className="select-picker"
-                    placeholder={"Select country"}
-                    options={props.countries}
-                    isSearchable={false}
-                  />
-                }
-                name="country"
-                control={control}
-                valueName="selected"
-                defaultValue={{ label: "Sweden", value: "Sweden" }}
-                rules={{
-                  validate: (data) => {
-                    return data != null;
-                  },
+              <Select
+                value={selectedCountry}
+                className="select-picker"
+                placeholder={"Select country"}
+                options={props.countries}
+                isSearchable={false}
+                onChange={(data) => {
+                  setSelectedCountry(data);
                 }}
               />
             )}
@@ -230,14 +236,19 @@ const EditAccountModal = (props) => {
               <label className="label" htmlFor="role">
                 Role:{" "}
               </label>
-              <select
-                placeholder={props.thisAccount.role}
-                name="role"
-                ref={register}
-              >
-                <option value={USER}>USER</option>
-                <option value={ADMIN}>ADMIN</option>
-              </select>
+              <Select
+                value={selectedRole}
+                className="select-picker"
+                placeholder={"Select role"}
+                options={[
+                  { label: ADMIN, value: ADMIN },
+                  { label: USER, value: USER },
+                ]}
+                isSearchable={false}
+                onChange={(data) => {
+                  setSelectedRole(data);
+                }}
+              />
             </div>
           )}
           <div

@@ -1,16 +1,27 @@
-h3, h5, p {
-    text-align: center;
-    margin: 1%;
-  
+h3,
+h5,
+p {
+  text-align: center;
+  margin: 1%;
+}
+
+.all-shipments-container {
+  border: 2px solid #000000;
+  border-radius: 4px;
+  margin: 2%;
+  padding: 5%;
+}
+
+.shipment-table-header {
+  justify-content: center;
+}
+.btn-container-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  button {
+    flex: 1;
+    margin-right: 20px;
   }
-  
-  .all-shipments-container {
-    border: 2px solid #000000;
-    border-radius: 4px;
-    margin: 2%;
-    padding: 5%;
-  }
-  
-  .shipment-table-header {
-    justify-content: center;
-  }
+}

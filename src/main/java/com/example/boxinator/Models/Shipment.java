@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @JsonIdentityInfo(
@@ -43,6 +44,10 @@ public class Shipment {
 
     @ManyToOne
     private Country destinationCountry;
+
+
+    @Column
+    private Date createdAt;
 
     @JsonGetter("destinationCountry")
     private String destinationCountry() { return destinationCountry.getName();}
@@ -128,6 +133,9 @@ public class Shipment {
         this.shipmentStatus = shipmentStatus;
     }
 
+    public Date getCreatedAt() { return createdAt;}
+
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
 }
 
 
