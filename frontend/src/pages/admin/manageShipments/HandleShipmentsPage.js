@@ -63,7 +63,7 @@ const HandleShipmentsPage = () => {
             weight: shipment.weight,
             boxColour: shipment.boxColour,
             shipmentStatus: shipment.shipmentStatus,
-            destinationCountry: shipment.destinationCountry.name,
+            destinationCountry: shipment.destinationCountry,
             sourceCountry: shipment.sourceCountry,
           };
         });
@@ -75,7 +75,7 @@ const HandleShipmentsPage = () => {
   };
 
   const onUpdateShipment = async (shipment) => {
-    const { shipment_id, ...rest } = shipment;
+    const { shipment_id,account_id,id, ...rest } = shipment;
     try {
       const token = await auth.getUserToken();
       await updateShipment(shipment_id, { ...rest }, token);
