@@ -1,10 +1,10 @@
-import React from 'react';
-import { Button } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
+import React from "react";
+import { Button } from "react-bootstrap";
+import { useForm } from "react-hook-form";
 import { statusValues } from "../../../utils/shipmentStatusValues";
 
-
 const EditShipmentForm = (props) => {
+  const { register, handleSubmit, errors, control, watch } = useForm();
 
     const { register, handleSubmit, errors, control, watch } = useForm();
 
@@ -59,10 +59,11 @@ const EditShipmentForm = (props) => {
         ref={register({
           required: true,
           pattern: {
+
               value: /^[A-Za-z]+$/,
-              message: "invalid format"
-          }
-      })}
+              message: "invalid format",
+            },
+          })}
         />
     {errors.receiver?.type === "required" && (
     <span className="error-span">Please enter your desired receiver.</span>
@@ -85,15 +86,41 @@ const EditShipmentForm = (props) => {
           message: "invalid format"
          }
       })}
+
+        {errors.receiver?.type === "required" && (
+          <span className="error-span">
+            Please enter your desired receiver.
+          </span>
+        )}
+        {errors.receiver?.type === "pattern" && (
+          <span className="error-span">Invalid receiver format.</span>
+        )}{" "}
+      </div>
+      <div className="form-group">
+        <label htmlFor="weight">
+          <strong>Weight:</strong>
+        </label>
+        <input
+          className="form-control"
+          id="weight"
+          name="weight"
+          defaultValue={props.shipment.weight}
+          ref={register({
+            required: true,
+            pattern: {
+              value: /^[0-9]*$/,
+              message: "invalid format",
+            },
+          })}
         />
         {errors.weight?.type === "required" && (
-    <span className="error-span">Please enter your desired weight.</span>
-  )}
-  {errors.weight?.type === "pattern" && (
-    <span className="error-span">Invalid weight format.</span>
-  )}        
-    </div>
-      
+          <span className="error-span">Please enter your desired weight.</span>
+        )}
+        {errors.weight?.type === "pattern" && (
+          <span className="error-span">Invalid weight format.</span>
+        )}
+      </div>
+
       {/*TODO - fix validation */}
     <div className="form-group">
       <label htmlFor="box-colour">
@@ -106,8 +133,9 @@ const EditShipmentForm = (props) => {
         ref={register(
           {required: true}
       )}
+
         />
-    </div>
+      </div>
 
     
     <div className="form-group">
@@ -125,8 +153,8 @@ const EditShipmentForm = (props) => {
               <option key={status}>{status}</option >
             )
           })}
-      </select>
-    </div>
+        </select>
+      </div>
 
     <div className="form-group">
       <label htmlFor="destination-country">
@@ -137,8 +165,8 @@ const EditShipmentForm = (props) => {
         defaultValue={props.shipment.destinationCountry.name}
         >
           {destinationCountries}
-      </select>
-    </div>
+        </select>
+      </div>
 
     <div className="form-group">
       <label htmlFor="source-country">
@@ -151,8 +179,9 @@ const EditShipmentForm = (props) => {
           <option>Denmark</option>
           <option>Norway</option>
           <option>Sweden</option>
-          </select>
-    </div>
+        </select>
+      </div>
+
 
     <Button type="submit" className="btn btn-info" value="Save">Save</Button>
     <Button onClick={props.onClose} className="btn btn-danger">Cancel</Button>

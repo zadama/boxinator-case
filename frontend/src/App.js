@@ -10,13 +10,13 @@ import {
   AdminPage,
   LoginPage,
   NotFoundPage,
+  ProfilePage,
   RegisterPage,
+  UserShipmentDetailsPage,
 } from "./pages";
 
 import PrivateRoute from "./components/hoc/PrivateRoute";
 import { ADMIN, USER, GUEST } from "./utils/roles";
-import CountryPage from "./pages/country/CountryPage";
-import HandleShipmentsPage from "./pages/admin/manageShipments/HandleShipmentsPage";
 
 function App() {
   return (
@@ -37,8 +37,20 @@ function App() {
         <PrivateRoute
           exact={true}
           path="/admin-dashboard"
-          requiredRoles={[ADMIN, USER]}
+          requiredRoles={[ADMIN]}
           component={AdminPage}
+        />
+        <PrivateRoute
+          exact={true}
+          path="/handle-shipments"
+          requiredRoles={[USER]}
+          component={UserShipmentDetailsPage}
+        />
+        <PrivateRoute
+          exact={true}
+          path="/profile-dashboard"
+          requiredRoles={[ADMIN, USER]}
+          component={ProfilePage}
         />
         <Route component={NotFoundPage} />
       </Switch>

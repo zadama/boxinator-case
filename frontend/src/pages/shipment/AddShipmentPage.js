@@ -5,12 +5,15 @@ import Button from "react-bootstrap/Button";
 import { useAuth } from "../../context/auth";
 import ShipmentForm from "./components/ShipmentForm";
 import CompleteOrder from "./components/CompleteOrder";
+import TruckLoader from "../../components/truck-loader";
 import { createShipment, addShipmentReceipt } from "../../api/shipments";
 import { ntc as convertHex } from "../../utils/ntc";
 import { GUEST } from "../../utils/roles";
+import Alert from "../../components/alert";
 
 const AddShipmentPage = ({ history }) => {
   const isFirstSubmission = useRef(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
 
   const { logout, getUserToken } = useAuth();
@@ -23,6 +26,7 @@ const AddShipmentPage = ({ history }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const [alertMessage, setAlertMessage] = useState(null);
 
   const handleChange = (event) => {
     // differentiate between general event and react-select event.
@@ -89,6 +93,8 @@ const AddShipmentPage = ({ history }) => {
     return hasErr;
   };
 
+  // handle error-handling for both guest and normal USER, add aler
+  // Add also success alert after setIsLoading(false) after recipt shipment (have it in try catch)
   const onHandleShipment = async () => {
     if (hasErrors()) {
       if (isFirstSubmission.current) {
@@ -97,18 +103,37 @@ const AddShipmentPage = ({ history }) => {
       return;
     }
 
+    setIsLoading(true);
+
     const match = convertHex.name(state.colorValue);
     const colorName = match[1];
 
     if (user.role === GUEST) {
-      await addShipmentReceipt({
-        weight: state.boxWeight,
-        boxColour: colorName,
-        destinationCountry: state.destinationCountry.value,
-        sourceCountry: state.sourceCountry.value,
-        receiver: state.receiver,
-        recipient: user.email,
-      });
+      try {
+        await addShipmentReceipt({
+          weight: state.boxWeight,
+          boxColour: colorName,
+          destinationCountry: state.destinationCountry.value,
+          sourceCountry: state.sourceCountry.value,
+          receiver: state.receiver,
+          recipient: user.email,
+        });
+        // set success message alert
+        setAlertMessage({
+          message:
+            "We have sent you an email. Sign up with that to claim the shipment.",
+          variant: "success",
+        });
+      } catch (error) {
+        // set failure alert message alert
+        setAlertMessage({
+          message: "Failed to process shipment",
+          variant: "danger",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+
       return;
     }
 
@@ -128,17 +153,23 @@ const AddShipmentPage = ({ history }) => {
       );
 
       if (result.status === 201) {
-        // create a confirm modal of some sort...
-        // also maybe, redirect to user handle shipments?
         // Send shipment Id with and show success message in handle shipments instead
         // with latest shipment highlughted by getting shipment id in location state
+        const { data: newShipment } = result.data;
 
-        alert(
-          "Shipment was addded! This will change to a confirmation modal and then redirect after. (BEFORE ADDING)"
-        );
+        history.push({
+          pathname: "/handle-shipments",
+          state: { claimShipment: newShipment.id, date: new Date() },
+        });
       }
     } catch (error) {
       console.log(error);
+      // Set failure message alert
+      setIsLoading(false);
+      setAlertMessage({
+        message: "Failed to process shipment",
+        variant: "danger",
+      });
     }
   };
 
@@ -146,6 +177,19 @@ const AddShipmentPage = ({ history }) => {
     <PrivateLayout>
       <div className="container">
         <h1>Place a new shipment</h1>
+
+        {isLoading && <TruckLoader />}
+
+        {alertMessage && (
+          <Alert
+            message={alertMessage.message}
+            onClose={() => {
+              setAlertMessage(null);
+            }}
+            variant={alertMessage.variant}
+            expire={3000}
+          />
+        )}
 
         <div className="add-shipment-container">
           <ShipmentForm
@@ -160,15 +204,6 @@ const AddShipmentPage = ({ history }) => {
           </div>
         </div>
       </div>
-
-      <Button
-        onClick={async () => {
-          await logout();
-          history.replace("/login");
-        }}
-      >
-        Logout
-      </Button>
     </PrivateLayout>
   );
 };

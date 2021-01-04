@@ -17,11 +17,31 @@
     grid-template-columns: repeat(3, auto);
     width: 60%;
     margin: 20px auto;
-    text-decoration: underline;
+
+    .admin-navlinks {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      img {
+        max-width: 45px;
+        margin-right: 5px;
+      }
+    }
 
     button {
       border-radius: 0px;
       padding: 5px;
+      color: rgb(101, 105, 114);
+      font-weight: 500;
+      border: none;
+
+      &:active,
+      &:focus,
+      &:hover {
+        border: none;
+        box-shadow: none;
+        text-decoration: none;
+      }
     }
 
     button:nth-child(1) {
@@ -31,21 +51,19 @@
       border-left: 3px solid black;
     }
   }
-
 }
 
+.edit-account-form {
+  display: grid;
+  margin: 20px;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: repeat(5, 20px);
+  row-gap: 25px;
+  column-gap: 25px;
 
-  .edit-account-form {
+  .form-buttons {
     display: grid;
-    margin: 20px;
     grid-template-columns: 50% 50%;
-    grid-template-rows: repeat(5, 20px);
-    row-gap: 25px;
-    column-gap: 25px;
-
-    .form-buttons {
-      display: grid;
-      grid-template-columns: 50% 50%;
-      column-gap: 5px;
-    }
+    column-gap: 5px;
   }
+}

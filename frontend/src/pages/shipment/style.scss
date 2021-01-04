@@ -103,3 +103,27 @@
     }
   }
 }
+
+.shipment-overview {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  align-self: flex-start;
+  padding-top: 20px;
+  padding-top: 20px;
+  max-width: 650px;
+  padding: 1em 3em;
+
+  section {
+    border-top: 1px solid #80808059;
+    border-bottom: 1px solid #80808059;
+
+    div {
+      margin-top: 10px;
+
+      &:last-child {
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
