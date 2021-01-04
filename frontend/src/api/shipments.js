@@ -24,8 +24,32 @@ const addShipmentReceipt = (body) => {
   console.log(body);
   return Api.post("/receipt/", { ...body });
 };
+/*
+
+const updateShipment = ({
+  id,
+  receiver,
+  weight,
+  boxColour,
+  shipmentStatus,
+  destinationCountry,
+  sourceCountry
+},
+token
+) => {return Api.patch(`/shipment/${id}`, {
+  receiver,
+  weight,
+  boxColour,
+  shipmentStatus,
+  destinationCountry,
+  sourceCountry
+}, {
+  headers: {Authorization: `Bearer ${token}`}
+});
+*/
 
 const updateShipment = (shipmentId, body, token) => {
+  console.log(shipmentId, body);
   return Api.patch(
     "/shipment/" + shipmentId,
     { ...body },
@@ -35,6 +59,7 @@ const updateShipment = (shipmentId, body, token) => {
       },
     }
   );
+
 };
 
 const deleteShipment = (shipment_id, token) => {

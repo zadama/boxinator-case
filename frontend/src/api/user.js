@@ -41,12 +41,6 @@ const updateAccount = (token, account_id, newUser) => {
   );
 };
 
-const checkToken = (token) => {
-  return Api.get("/accounttest/checktoken", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-};
-
 // Only for testing purposes...
 const getUserRole = (token) => {
   return Api.get("/account/role", {
@@ -91,7 +85,6 @@ export {
   deleteAccount,
   createUser,
   createAnonUser,
-  checkToken,
   getUserRole,
   updateUser,
 };

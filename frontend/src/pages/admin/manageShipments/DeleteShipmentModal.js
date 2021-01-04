@@ -4,6 +4,8 @@ import { Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
+import "./styles.scss";
+
 const DeleteShipmentModal = (props) => {
 
     const [showModal, setShowModal] = useState(false);
@@ -14,7 +16,7 @@ const DeleteShipmentModal = (props) => {
     }
 
     const onClose = () => {
-        showModal(false);
+        setShowModal(false);
     }
 
     return (
@@ -22,16 +24,20 @@ const DeleteShipmentModal = (props) => {
             <Button variant="danger btn-sm ml-2" onClick={() => setShowModal(true)}><FontAwesomeIcon icon={faTrashAlt} /></Button>
 
             {showModal && (<Modal onClose={onClose}>
-                <h5>Are you sure?</h5>
-                <p>This record will be permanently removed from the database.
-                        You can't undo this action.</p>
-                <button className="btn btn-danger btn-sm" onClick={onDelete}>
-                    Delete
-                </button>
+                <div>
+                    <h5>Are you sure?</h5>
+                    <p>This record will be permanently removed from the database.
+                            You can't undo this action.</p>
+                    <div className="text-center">
+                        <button className="btn btn-danger btn-sm" onClick={onDelete}>
+                            Delete
+                        </button>
 
-                <button className="btn btn-light btn-sm ml-2" onClick={onClose}>
-                    Cancel
-                 </button>
+                        <button className="btn btn-light btn-sm ml-2" onClick={onClose}>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
             </Modal>)}
 
         </div>

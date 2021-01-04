@@ -2,6 +2,7 @@ package com.example.boxinator.Models;
 
 
 import com.example.boxinator.Models.Enums.ShipmentStatus;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -42,6 +43,11 @@ public class Shipment {
 
     @ManyToOne
     private Country destinationCountry;
+
+    @JsonGetter("account")
+    private String account() {
+        return account.getFirstName() + " " + account.getLastName();
+    }
 
     @ManyToOne
     private Account account;

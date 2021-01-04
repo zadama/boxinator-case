@@ -8,7 +8,7 @@ const ShipmentList = ({shipmentList=[], updateShipment, deleteShipment}) => {
         return (
             <tr key={shipment.id}>
                 <td>{shipment.id}</td>
-                <td>{shipment.account.id}</td>
+                <td>{shipment.account}</td>
                 <td>{shipment.receiver}</td>
                 <td>{shipment.weight}</td>
                 <td>{shipment.boxColour}</td>
@@ -25,31 +25,33 @@ const ShipmentList = ({shipmentList=[], updateShipment, deleteShipment}) => {
         )
     });
 
-    return (
-            <table className="table table-bordered">
-                <thead className="thead-light">
-                <tr>
-                    <th scope="col">Shipment Id</th>
-                    <th scope="col"> Account</th>
-                    <th scope="col">Receiver</th>
-                    <th scope="col">Weight</th>
-                    <th scope="col">Box Colour</th>
-                    <th scope="col">Shipment Status</th>
-                    <th scope="col">Destination Country</th>
-                    <th scope="col">Source Country</th>
-                    <th scope="col">Edit Details</th>
-                </tr>
-                </thead>
-                <tbody>
-                { shipmentList.length > 0
-                    ? shipmentObjects
-                        :<tr>
-                            <td>No record was found.</td>
-                        </tr>
-                }
-                </tbody>
-            </table>
-    );
+
+  return (
+    <table className="table table-bordered">
+      <thead className="thead-light">
+        <tr>
+          <th scope="col">Shipment Id</th>
+          <th scope="col"> Account</th>
+          <th scope="col">Receiver</th>
+          <th scope="col">Weight</th>
+          <th scope="col">Box Colour</th>
+          <th scope="col">Shipment Status</th>
+          <th scope="col">Destination Country</th>
+          <th scope="col">Source Country</th>
+          <th scope="col">Edit Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        {shipmentList.length > 0 ? (
+          shipmentObjects
+        ) : (
+          <tr>
+            <td>No record was found.</td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  );
 };
 
 export default ShipmentList;
