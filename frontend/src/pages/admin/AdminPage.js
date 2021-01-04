@@ -5,7 +5,7 @@ import PrivateLayout from "../../layouts/PrivateLayout";
 import AdminMenu from "./AdminMenu";
 import { useEffect } from "react";
 import { useState } from "react";
-import { checkToken } from "../../api/user";
+import { getAccount } from "../../api/user";
 
 import AccountPage from "./AccountPage";
 import CountryPage from "../country/CountryPage";
@@ -31,9 +31,8 @@ const AdminPage = () => {
     try {
       const token = await auth.getUserToken();
 
-      const { data } = await checkToken(token);
-
-      setData(data);
+      const { data } = await getAccount(token, auth.user.email);
+      setData(data.data.firstName + " " + data.data.lastName);
     } catch (error) {
       console.log(error);
     }
@@ -71,7 +70,7 @@ const AdminPage = () => {
             <div>loading....</div>
           ) : (
             <div>
-              {!title ? <h3>Welcome back, "{data}"</h3> : <h3>{title}</h3>}
+              {!title ? <h3>Welcome "{data}"</h3> : <h3>{title}</h3>}
             </div>
           )}
         </section>

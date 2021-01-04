@@ -19,8 +19,6 @@ import java.util.Optional;
 
 public class CountryController {
 
- // GET/countries(CHECK), POST/countries/:country_id, PUT/countries/country_id
-
     @Autowired
     private CountryRepository countryRepository;
 
@@ -91,41 +89,49 @@ public class CountryController {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        if (authResponse.getStatusCode() == HttpStatus.OK && authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
-            if (countryRepository.existsById(country_id)) {
-                Optional<Country> countryToUpdateRepo = countryRepository.findById(country_id);
-                Country country = countryToUpdateRepo.orElse(null);
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
+            if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
+                if (countryRepository.existsById(country_id)) {
+                    Optional<Country> countryToUpdateRepo = countryRepository.findById(country_id);
+                    Country country = countryToUpdateRepo.orElse(null);
 
-                if (country != null) {
-                    if (countryToUpdate.getName() != null) {
-                        country.setName(countryToUpdate.getName());
+                    if (country != null) {
+                        if (countryToUpdate.getName() != null) {
+                            country.setName(countryToUpdate.getName());
+                        }
+
+                        if (countryToUpdate.getCountryCode() != null) {
+                            country.setCountryCode(countryToUpdate.getCountryCode());
+                        }
+
+                        if (countryToUpdate.getFeeMultiplier() != 0) {
+                            country.setFeeMultiplier(countryToUpdate.getFeeMultiplier());
+                        }
+
+                        try {
+                            countryRepository.save(country);
+                            cr.data = country;
+                            cr.msg = "Record of country with id: " + country_id + " has been updated.";
+                            cr.status = HttpStatus.OK;
+                        } catch (Exception e) {
+                            cr.data = null;
+                            cr.msg = "Unable to update country.";
+                            cr.status = HttpStatus.INTERNAL_SERVER_ERROR;
+                        }
                     }
 
-                    if (countryToUpdate.getCountryCode() != null) {
-                        country.setCountryCode(countryToUpdate.getCountryCode());
-                    }
-
-                    if (countryToUpdate.getFeeMultiplier() != 0) {
-                        country.setFeeMultiplier(countryToUpdate.getFeeMultiplier());
-                    }
-
-                    try {
-                        countryRepository.save(country);
-                        cr.data = country;
-                        cr.msg = "Record of country with id: " + country_id + " has been updated.";
-                        cr.status = HttpStatus.OK;
-                    } catch (Exception e) {
-                        cr.status = HttpStatus.BAD_REQUEST;
-                    }
+                } else {
+                    cr.msg = "Record of country with id " + country_id + " was not found.";
+                    cr.status = HttpStatus.NOT_FOUND;
                 }
-
             } else {
-                cr.msg = "Record of country with id " + country_id + " was not found.";
-                cr.status = HttpStatus.NOT_FOUND;
+                cr.data = authResponse.getBody().msg;
+                cr.msg = "Your role does not have permission to do this.";
+                cr.status = HttpStatus.UNAUTHORIZED;
             }
         } else {
             cr.data = authResponse.getBody().msg;
-            cr.msg = "Your role does not have permission to do this.";
+            cr.msg = "Unauthorized: Invalid token.";
             cr.status = HttpStatus.UNAUTHORIZED;
         }
         return new ResponseEntity<>(cr, cr.status);
@@ -151,7 +157,7 @@ public class CountryController {
                     cr.status = HttpStatus.CREATED;
                 } catch (Exception e) {
                     cr.msg = "Unable to delete country with id: " + country_id;
-                    cr.status = HttpStatus.BAD_REQUEST;
+                    cr.status = HttpStatus.INTERNAL_SERVER_ERROR;
                 }
             } else {
                 cr.data = authResponse.getBody().msg;
