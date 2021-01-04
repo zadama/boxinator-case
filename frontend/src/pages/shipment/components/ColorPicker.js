@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { ChromePicker } from "react-color";
 
-const ColorPicker = ({ onHandleColorPicker }) => {
+const ColorPicker = ({ onHandleColorPicker, defaultValue }) => {
   const [displayColorPicker, setDisplayColorPicker] = useState("");
-  const [colorValue, setColorValue] = useState("#E0CBCB");
+  const [colorValue, setColorValue] = useState(
+    defaultValue ? defaultValue : "#E0CBCB"
+  );
   const [colorPlaceholder, setColorPlaceholder] = useState("");
 
   const toggleColorPicker = () => {
@@ -17,7 +19,11 @@ const ColorPicker = ({ onHandleColorPicker }) => {
 
   return (
     <div className="color-picker">
-      <button className="color-picker-button" onClick={toggleColorPicker}>
+      <button
+        type="button"
+        className="color-picker-button"
+        onClick={toggleColorPicker}
+      >
         Pick Color
       </button>
 

@@ -50,7 +50,7 @@ const HandleShipmentsPage = () => {
       const token = await auth.getUserToken();
       let response = await getAllShipments(token);
       let { data: savedShipments } = response.data;
-      console.log(response);
+      console.log(savedShipments);
       savedShipments = savedShipments
         .sort(function (a, b) {
           return a.id - b.id;
@@ -75,7 +75,7 @@ const HandleShipmentsPage = () => {
   };
 
   const onUpdateShipment = async (shipment) => {
-    const { shipment_id,account_id,id, ...rest } = shipment;
+    const { shipment_id, account_id, id, ...rest } = shipment;
     try {
       const token = await auth.getUserToken();
       await updateShipment(shipment_id, { ...rest }, token);
@@ -88,11 +88,10 @@ const HandleShipmentsPage = () => {
       setToastHeader("Error");
       setToastMsg("Unable to update shipment record details.");
       setToast(true);
-
     } finally {
       await renderShipmentData();
     }
-  }
+  };
 
   const onDeleteShipment = async (shipment_id) => {
     try {
@@ -106,7 +105,7 @@ const HandleShipmentsPage = () => {
       setToastHeader("Error");
       setToastMsg("Unable to delete shipment record details.");
       setToast(true);
-    }finally {
+    } finally {
       await renderShipmentData();
     }
   };

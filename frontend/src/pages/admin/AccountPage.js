@@ -29,7 +29,10 @@ const AccountPage = () => {
       let { data: savedCountries } = await getAllCountries();
 
       savedCountries = savedCountries.data.map((country) => {
-        return [country.name];
+        return {
+          label: country.name,
+          value: country.name,
+        };
       });
 
       setCountries(savedCountries);

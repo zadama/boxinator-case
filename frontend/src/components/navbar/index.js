@@ -39,9 +39,7 @@ const Navbar = () => {
               <Link to="/admin-dashboard">Admin Dashboard</Link>
             )}
 
-            {auth.user.role === USER && (
-              <Link to="/handle-shipments">Shipments overview</Link>
-            )}
+            <Link to="/handle-shipments">Shipments overview</Link>
 
             <Link to="/profile-dashboard">
               <FontAwesomeIcon size="lg" color={"black"} icon={faUserAlt} />
