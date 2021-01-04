@@ -9,14 +9,21 @@ import { Button } from "react-bootstrap";
 
 
 const EditShipmentModal = (props) => {
-  
+  const [id, setId] = useState(props.shipment.id);
   const auth = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [countries, setCountries] = useState([]);
 
- useEffect( () => {
-   getCountries();
- }, []); 
+  const updateShipment = (shipment) => {
+    props.updateShipment({id, ...shipment});
+    console.log("Update Shipment show shipment object: " + props.shipment);
+    console.log("Update Shipment show destinationCountry: " + shipment.destinationCountry);
+    setShowModal(false);
+  }
+
+  useEffect ( () => {
+    getCountries();
+  }, [props.shipment]);
 
   const getCountries = async () => {
     try {
@@ -35,11 +42,6 @@ const EditShipmentModal = (props) => {
     }
   };
 
-  const updateShipment = (shipment) => {
-    props.updateShipment(shipment);
-    setShowModal(false);
-  }
-
   const onClose = () => {
     setShowModal(false);
   }
@@ -51,7 +53,11 @@ const EditShipmentModal = (props) => {
       }} className="btn btn-info btn-sm ml-2 mt-0"><FontAwesomeIcon icon={faPencilAlt}/></Button>
     
     {showModal && (<Modal onClose={onClose}>
-       <EditShipmentForm onClose={onClose} shipment={props.shipment} updateShipment={updateShipment} countries={countries}/>
+       <EditShipmentForm 
+        onClose={onClose} 
+        shipment={props.shipment} 
+        updateShipment={updateShipment} 
+        countries={countries}/>
     </Modal>)}
     </div>
   );
