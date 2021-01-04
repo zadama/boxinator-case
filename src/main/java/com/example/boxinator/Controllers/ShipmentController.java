@@ -131,7 +131,8 @@ public class ShipmentController {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-
+        System.out.println(newShipment.getDestinationCountry().getName());
+        System.out.println(shipment_id);
         if (authResponse.getStatusCode() == HttpStatus.OK) {
             if (shipmentRepository.existsById(shipment_id)) {
                 Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
@@ -151,7 +152,8 @@ public class ShipmentController {
                     }
 
                     if (newShipment.getDestinationCountry() != null) {
-                        shipment.setDestinationCountry(newShipment.getDestinationCountry());
+                        Optional<Country>newDestinationCountry=countryRepository.findByName(newShipment.getDestinationCountry().getName());
+                        shipment.setDestinationCountry(newDestinationCountry.get());
                     }
 
                     if (newShipment.getSourceCountry() != null) {

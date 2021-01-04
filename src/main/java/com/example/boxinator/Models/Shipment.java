@@ -44,6 +44,9 @@ public class Shipment {
     @ManyToOne
     private Country destinationCountry;
 
+    @JsonGetter("destinationCountry")
+    private String destinationCountry() { return destinationCountry.getName();}
+
     @JsonGetter("account")
     private String account() {
         return account.getFirstName() + " " + account.getLastName();
