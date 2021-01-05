@@ -54,7 +54,6 @@ const EditAccountModal = (props) => {
       delete data.contactNumber;
     }
 
-    console.log("props", props.account.country, "data", data.country)
     if (props.account.country === data.country) {
       delete data.country;
     }
@@ -71,7 +70,7 @@ const EditAccountModal = (props) => {
     } else {
       formData.dateOfBirth = dob;
     }
-    console.log("formdata", formData)
+
     props.updateAccount(formData);
     onClose();
 

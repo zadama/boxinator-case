@@ -7,8 +7,6 @@ import "./style.scss";
 import { useAuth } from "../../context/auth";
 import { getAllCountries } from "../../api/countries";
 import {deleteAccount, getAllAccounts, updateAccount} from "../../api/user";
-import DeleteAccountModal from "./AccountPageModals/DeleteAccountModal";
-import EditAccountModal from "./AccountPageModals/EditAccountModal";
 import AccountList from "./AccountPageModals/AccountList";
 
 const AccountPage = () => {
@@ -19,16 +17,11 @@ const AccountPage = () => {
   const [accounts, setAccounts] = useState([]);
   const [accountList, setAccountList] = useState([]);
   //
-  
+
   const auth = useAuth();
-  const [data, setData] = useState(null);
   const [countries, setCountries] = useState([]);
-  const [editAccountView, setEditAccountView] = useState(false);
-  const [deleteAccountView, setDeleteAccountView] = useState(false);
-  const [thisAccount, setThisAccount] = useState(null);
   const [toast, setToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
-
 
   useEffect(() => {
     if (firstUpdate.current) {
@@ -119,20 +112,6 @@ const AccountPage = () => {
     setToastMsg(action);
     setToast(true);
   };
-/*
-  const handleEditClick = (user) => {
-    // Open modal when admin wants to edit an account
-    setEditAccountView(!editAccountView);
-    setThisAccount(user);
-  };
-
-  const handleDeleteClick = (user) => {
-    // Open modal when admin wants to delete an account
-    setDeleteAccountView(!deleteAccountView);
-    setThisAccount(user);
-  };
-
- */
 
   return (
     <>
@@ -172,23 +151,6 @@ const AccountPage = () => {
 
         )}
       </div>
-
-      <section>
-        {editAccountView && (
-          <EditAccountModal
-            onClose={() => setEditAccountView(!editAccountView)}
-
-            reRender={renderUserDataWithAdminToken}
-            toggleToast={toggleToast}
-          />
-        )}
-        {deleteAccountView && (
-          <DeleteAccountModal
-            onClose={() => setDeleteAccountView(!deleteAccountView)}
-            toggleToast={toggleToast}
-          />
-        )}
-      </section>
     </>
   );
 };
