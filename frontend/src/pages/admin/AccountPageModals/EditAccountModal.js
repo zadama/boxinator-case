@@ -113,47 +113,72 @@ const EditAccountModal = (props) => {
         <h3 style={{ paddingTop: "10px" }}>
           Editing {props.account.firstName} {props.account.lastName}
         </h3>
-        <form onSubmit={handleSubmit(onSubmit)}
-              className="register">
+        <form
+          style={{
+            width: "85%",
+            paddingTop: "10px",
+            paddingBottom: "15px",
+          }}
+          onSubmit={handleSubmit(onSubmit)}
+          className="register needs-validation"
+          noValidate>
+
           <div className="register-form-group half-width">
             <label className="label" htmlFor="firstName">
-              Firstname:{" "}
+              First name:{" "}
             </label>
             <input
-              className="input"
-              name="firstName"
-              defaultValue={props.account.firstName}
-              ref={register({
+                type="text"
+                className={`form-control ${errors.firstName && "is-invalid"}`}
+                name="firstName"
+                defaultValue={props.account.firstName}
+                ref={register({
+                required: true,
                 pattern: {
                   value: /^[A-Za-z]+$/,
                   message: "invalid format",
                 },
               })}
-            ></input>
+            />
+            {errors.firstName?.type === "required" && (
+                <span className="error-span">Please enter a first name.</span>
+            )}
+            {errors.firstName?.type === "pattern" && (
+                <span className="error-span">Invalid name format.</span>
+            )}
           </div>
+
           <div className="register-form-group half-width">
             <label className="label" htmlFor="lastName">
-              Lastname:{" "}
+              Last name:{" "}
             </label>
             <input
-              className="input"
-              type="text"
-              name="lastName"
-              defaultValue={props.account.lastName}
-              ref={register({
+                type="text"
+                className={`form-control ${errors.lastName && "is-invalid"}`}
+                name="lastName"
+                defaultValue={props.account.lastName}
+                ref={register({
+                required: true,
                 pattern: {
                   value: /^[A-Za-z]+$/,
                   message: "invalid format",
                 },
               })}
-            ></input>
+            />
+            {errors.lastName?.type === "required" && (
+                <span className="error-span">Please enter a last name.</span>
+            )}
+            {errors.lastName?.type === "pattern" && (
+                <span className="error-span">Invalid name format.</span>
+            )}
           </div>
+
           <div className="register-form-group half-width">
             <label className="label" htmlFor="email">
               Email:{" "}
             </label>
             <input
-              className="input"
+              className={`form-control ${errors.email && "is-invalid"}`}
               type="text"
               name="email"
               defaultValue={props.account.email}
@@ -163,8 +188,15 @@ const EditAccountModal = (props) => {
                   name: "invalid format",
                 },
               })}
-            ></input>
+            />
+            {errors.email?.type === "required" && (
+                <span className="error-span">Please enter an email address.</span>
+            )}
+            {errors.email?.type === "pattern" && (
+                <span className="error-span">Invalid email format.</span>
+            )}
           </div>
+
           <div className="register-form-group half-width">
             <label className="label" htmlFor="dateOfBirth">
               Date of birth:{" "}
@@ -181,6 +213,7 @@ const EditAccountModal = (props) => {
               className="input"
             />
           </div>
+
           <div className="register-form-group half-width">
             <label className="label" htmlFor="zipCode">
               Zip code:{" "}
@@ -191,8 +224,9 @@ const EditAccountModal = (props) => {
               name="zipCode"
               defaultValue={props.account.zipCode}
               ref={register}
-            ></input>
+            />
           </div>
+
           <div className="register-form-group half-width">
             <label className="label" htmlFor="country">
               Country:{" "}
@@ -209,6 +243,7 @@ const EditAccountModal = (props) => {
               />
             )}
           </div>
+
           <div
             className={`register-form-group ${
               auth.user.role === USER ? "full-width" : "half-width"
@@ -218,13 +253,22 @@ const EditAccountModal = (props) => {
               Contact number:{" "}
             </label>
             <input
-              className="input"
+              className={`form-control ${errors.contactNumber && "is-invalid"}`}
               type="text"
               name="contactNumber"
               defaultValue={props.account.contactNumber}
-              ref={register}
-            ></input>
+              ref={register({
+                pattern: {
+                  value: /^[+0-9]/,
+                  message: "invalid format",
+                },
+              })}
+            />
+            {errors.contactNumber?.type === "pattern" && (
+                <span className="error-span">Invalid contact number format.</span>
+            )}
           </div>
+
           {auth.user.role === ADMIN && (
             <div className="register-form-group half-width">
               <label className="label" htmlFor="role">

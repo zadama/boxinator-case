@@ -44,7 +44,10 @@ const UpdateCountryModal = (props) => {
             {showModal && (<Modal onClose={onClose}>
 
                 <div className="edit-country-form">
-                    <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+                    <form
+                        onSubmit={handleSubmit}
+                        className="needs-validation"
+                        noValidate>
                         <div className="form-group">
                             <label htmlFor="countryName">
                                 <strong>Country name:</strong>
