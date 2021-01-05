@@ -90,6 +90,7 @@ const AccountPage = () => {
 
   const handleSaveEditedUser = async (account) => {
     // Called when an admin saves changes to an account
+    console.log(account);
     try {
       const token = await auth.getUserToken(); // Get sessiontoken
       await updateAccount(token, account.id, account); // Pass token, pathvariable and body with request
@@ -98,8 +99,6 @@ const AccountPage = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      // popup closed
-
     }
   };
 

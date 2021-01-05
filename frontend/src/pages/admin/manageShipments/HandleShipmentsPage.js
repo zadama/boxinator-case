@@ -109,12 +109,6 @@ const HandleShipmentsPage = () => {
       await renderShipmentData();
     }
   };
-  /*
-  const handleEditClick = (shipment) => {
-    setEditShipmentView(!editShipmentView);
-    //setThisShipment(shipment);
-  }
-*/
 
   return (
     <>

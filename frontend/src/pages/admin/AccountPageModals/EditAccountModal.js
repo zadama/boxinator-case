@@ -31,7 +31,8 @@ const EditAccountModal = (props) => {
   }, [reset]);
 
   const onSubmit = (data) => {
-    console.log(data);
+    console.log("onsubmit", data);
+    console.log("props.account", props.account.id);
 
     if (props.account.firstName === data.firstName) {
       delete data.firstName;
@@ -53,7 +54,8 @@ const EditAccountModal = (props) => {
       delete data.contactNumber;
     }
 
-    if (props.account.country === data.country.value) {
+    console.log("props", props.account.country, "data", data.country)
+    if (props.account.country === data.country) {
       delete data.country;
     }
 
@@ -62,39 +64,22 @@ const EditAccountModal = (props) => {
     }
 
     let formData = data;
+    formData.id = props.account.id;
 
     if (parseISO(props.account.dateOfBirth) === formData.dateOfBirth) {
       delete formData.dateOfBirth;
     } else {
       formData.dateOfBirth = dob;
     }
-
-    formData.country = formData.country.value;
-
-    console.log(formData);
-
+    console.log("formdata", formData)
     props.updateAccount(formData);
+    onClose();
+
   };
 
-  /*
-  const handleSaveEditedUser = async (user) => {
-    // Called when an admin saves changes to an account
-    try {
-      const token = await auth.getUserToken(); // Get sessiontoken
-
-      await updateAccount(token, props.thisAccount.id, user); // Pass token, pathvariable and body with request
-      props.reRender(); // Rerender page
-      props.toggleToast("saved");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      // popup closed
-      setShowModal(!showModal);
-      props.onClose();
-    }
-  };
-
-   */
+  const countries = props.countries.map((country, id) => {
+    return <option key={id}>{country}</option>
+  })
 
   const onClose = () => {
     setShowModal(false);
@@ -112,7 +97,8 @@ const EditAccountModal = (props) => {
         <h3 style={{ paddingTop: "10px" }}>
           Editing {props.account.firstName} {props.account.lastName}
         </h3>
-        <form onSubmit={handleSubmit(onSubmit)} className="register">
+        <form onSubmit={handleSubmit(onSubmit)}
+              className="register">
           <div className="register-form-group half-width">
             <label className="label" htmlFor="firstName">
               Firstname:{" "}
@@ -198,25 +184,21 @@ const EditAccountModal = (props) => {
             {!props.countries ? (
               "loading..."
             ) : (
-              <Controller
-                as={
-                  <Select
-                    className="select-picker"
-                    placeholder={"Select country"}
-                    options={props.countries}
-                    isSearchable={false}
-                  />
-                }
+
+              <select
+                className="select-picker"
+                defaultValue={props.account.country}
                 name="country"
+                ref={register}
                 control={control}
-                valueName="selected"
-                defaultValue={{ label: "Sweden", value: "Sweden" }}
                 rules={{
                   validate: (data) => {
                     return data != null;
                   },
                 }}
-              />
+              >
+                {countries}
+              </select>
             )}
           </div>
           <div
