@@ -2,7 +2,7 @@ import React from "react";
 import DeleteShipmentModal from "./DeleteShipmentModal";
 import EditShipmentModal from "./EditShipmentModal";
 
-const ShipmentList = ({shipmentList=[], updateShipment, deleteShipment}) => {
+const ShipmentList = ({shipmentList=[], isLoading, updateShipment, deleteShipment}) => {
 
     const shipmentObjects = shipmentList.map((shipment, index) => {
         return (
@@ -42,13 +42,22 @@ const ShipmentList = ({shipmentList=[], updateShipment, deleteShipment}) => {
         </tr>
       </thead>
       <tbody>
-        {shipmentList.length > 0 ? (
-          shipmentObjects
-        ) : (
-          <tr>
-            <td>No record was found.</td>
-          </tr>
-        )}
+        { isLoading
+            ? (<tr>
+                <td><strong>Loading...</strong></td>
+            </tr>)
+            : (
+                shipmentList.length > 0
+                    ? (shipmentObjects)
+                    : (
+                    <tr>
+                        <td>No records were found.</td>
+                    </tr>
+                    )
+            )
+
+        }
+
       </tbody>
     </table>
   );

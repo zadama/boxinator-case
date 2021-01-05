@@ -1,8 +1,9 @@
 import EditAccountModal from "./EditAccountModal";
 import DeleteAccountModal from "./DeleteAccountModal";
+import React from "react";
 
 
-const AccountList = ({accountList=[],countries, updateAccount, deleteAccount }) => {
+const AccountList = ({accountList=[], isLoading, countries, updateAccount, deleteAccount }) => {
 
     const accountObjects = accountList.map((account, index) => {
         return (
@@ -52,14 +53,18 @@ return (
       </tr>
     </thead>
     <tbody>
-
-        {accountList.length > 0 ? (
+    {   isLoading
+        ? (<tr>
+            <td><strong>Loading...</strong></td>
+        </tr>)
+        : (accountList.length > 0 ? (
             accountObjects
         ) : (
             <tr>
-                <td>No record was found.</td>
+                <td>No records were found.</td>
             </tr>
-        )}
+        ))
+    }
     </tbody>
     </table>
 );

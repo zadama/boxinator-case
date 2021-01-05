@@ -5,7 +5,7 @@ import DeleteCountryModal from "./DeleteCountryModal";
 
 import "./styles.scss";
 
-const CountryList = ({countryList=[], updateCountry, deleteCountry}) => {
+const CountryList = ({countryList=[], isLoading, updateCountry, deleteCountry}) => {
 
     const countryObjects = countryList.map((country, index) => {
         return (
@@ -36,11 +36,18 @@ const CountryList = ({countryList=[], updateCountry, deleteCountry}) => {
                 </tr>
                 </thead>
                 <tbody>
-                { countryList.length > 0
-                    ? countryObjects
-                        :<tr>
-                            <td>No record was found.</td>
-                        </tr>
+                {   isLoading
+                    ? (<tr>
+                        <td><strong>Loading...</strong></td>
+                    </tr>)
+                    : (countryList.length > 0
+                        ? (countryObjects)
+                        : (<tr>
+                            <td>No records were found.</td>
+                          </tr>
+                            )
+                    )
+
                 }
                 </tbody>
             </table>
