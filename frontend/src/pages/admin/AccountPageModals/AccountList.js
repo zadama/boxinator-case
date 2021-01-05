@@ -15,7 +15,7 @@ const AccountList = ({accountList=[],countries, updateAccount, deleteAccount }) 
                       .slice(0, 10)
                       .replace("T", " ")}
                   </td>
-                  <td>{!account.zipcode ? "Not defined" : account.zipcode}</td>
+                  <td>{!account.zipCode ? "Not defined" : account.zipCode}</td>
                   <td>{!account.country ? "Not defined" : account.country}</td>
                   <td>{!account.contactNumber ? "Not defined" : account.contactNumber}</td>
                   <td>{account.role}</td>

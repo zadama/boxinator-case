@@ -55,7 +55,6 @@ const AccountPage = () => {
         };
       });
       let { data: savedAccounts } = response.data;
-      console.log(response.data);
       savedAccounts = savedAccounts
         .sort(function (a, b) {
           return a.id - b.id;
@@ -67,14 +66,13 @@ const AccountPage = () => {
             lastName:  account.lastName,
             email: account.email,
             dateOfBirth: account.dateOfBirth,
-            zipcode: account.zipCode,
+            zipCode: account.zipCode,
             country: account.country,
             contactNumber: account.contactNumber,
             role: account.role,
             shipments: account.userShipments
           };
         });
-      console.log(savedAccounts);
 
       setAccounts(savedAccounts);
       setAccountList(savedAccounts);
