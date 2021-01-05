@@ -161,6 +161,7 @@ const CountryPage = () => {
         </div>
 
         <CountryList
+          isLoading={isLoading}
           countryList={countryList}
           updateCountry={onUpdateCountryClicked}
           deleteCountry={onDeleteCountryClicked}

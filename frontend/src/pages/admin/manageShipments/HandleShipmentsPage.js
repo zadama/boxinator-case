@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../../context/auth";
-import EditShipmentModal from "./EditShipmentModal";
-import DeleteShipmentModal from "./DeleteShipmentModal";
 import Toaster from "../../../components/toast/Toaster";
 import {
   updateShipment,
@@ -15,10 +13,9 @@ import "./styles.scss";
 const HandleShipmentsPage = () => {
   const auth = useAuth();
   const firstUpdate = useRef(true);
-  const [editShipmentView, setEditShipmentView] = useState(false);
-  const [deleteShipmentView, setDeleteShipmentView] = useState(false);
-  //const [thisShipment, setThisShipment] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
+  //For Toaster component
   const [toastHeader, setToastHeader] = useState("");
   const [toastMsg, setToastMsg] = useState("");
   const [toast, setToast] = useState(false);
@@ -46,6 +43,7 @@ const HandleShipmentsPage = () => {
   }, [searchValue]);
 
   const renderShipmentData = async () => {
+    setIsLoading(true);
     try {
       const token = await auth.getUserToken();
       let response = await getAllShipments(token);
@@ -70,10 +68,13 @@ const HandleShipmentsPage = () => {
       setShipmentList(savedShipments);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const onUpdateShipment = async (shipment) => {
+    setIsLoading(true);
     const { shipment_id, account_id, id, ...rest } = shipment;
     try {
       const token = await auth.getUserToken();
@@ -88,14 +89,17 @@ const HandleShipmentsPage = () => {
       setToastMsg("Unable to update shipment record details.");
       setToast(true);
     } finally {
+      setIsLoading(false);
       await renderShipmentData();
     }
   };
 
   const onDeleteShipment = async (shipment_id) => {
+    setIsLoading(true);
     try {
       const token = await auth.getUserToken();
       await deleteShipment(shipment_id, token);
+      setToastHeader("Success");
       setToastMsg("Shipment record was deleted successfully.");
       setToast(true);
       renderShipmentData();
@@ -105,45 +109,38 @@ const HandleShipmentsPage = () => {
       setToastMsg("Unable to delete shipment record details.");
       setToast(true);
     } finally {
+      setIsLoading(false);
       await renderShipmentData();
     }
   };
 
   return (
     <>
-      {shipmentList == null ? (
-        <div>No shipments found!</div>
-      ) : (
-        <>
-          <div>
-            {toast && (
-              <Toaster
-                toastHeaderMsg={toastHeader}
-                toastMsg={toastMsg}
-                onClose={() => {
-                  setToast(false);
-                }}
-              />
-            )}
-          </div>
-          <div>
-            <Search setSearchValue={setSearchValue} />
-          </div>
-
-          <div className="all-shipments-container">
-            <div className="row shipment-table-header">
-              <h4>All Shipment History</h4>
-            </div>
-            {
-              <ShipmentList
-                shipmentList={shipmentList}
-                updateShipment={onUpdateShipment}
-                deleteShipment={onDeleteShipment}
-              ></ShipmentList>
-            }
-          </div>
-        </>
+      {toast && (
+        <Toaster
+          toastHeaderMsg={toastHeader}
+          toastMsg={toastMsg}
+          onClose={() => {
+            setToast(false);
+          }}
+        />
       )}
+      <div>
+        <Search setSearchValue={setSearchValue} />
+      </div>
+
+      <div className="all-shipments-container">
+        <div className="row shipment-table-header">
+          <h4>All Shipment History</h4>
+        </div>
+
+          <ShipmentList
+              isLoading={isLoading}
+              shipmentList={shipmentList}
+              updateShipment={onUpdateShipment}
+              deleteShipment={onDeleteShipment}
+          />
+      </div>
     </>
   );
 };

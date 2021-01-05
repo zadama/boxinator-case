@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Search from "../../components/search/Search";
-import Toast from "react-bootstrap/Toast";
+import Toaster from "../../components/toast/Toaster"
 
 import "./style.scss";
 
@@ -11,17 +11,20 @@ import AccountList from "./AccountPageModals/AccountList";
 
 const AccountPage = () => {
 
-  //For search component
+  //For Search component
   const firstUpdate = useRef(true);
   const [searchValue, setSearchValue] = useState("");
   const [accounts, setAccounts] = useState([]);
   const [accountList, setAccountList] = useState([]);
-  //
 
   const auth = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [countries, setCountries] = useState([]);
-  const [toast, setToast] = useState(false);
+
+  //For Toaster component
+  const [toastHeader, setToastHeader] = useState("");
   const [toastMsg, setToastMsg] = useState("");
+  const [toast, setToast] = useState(false);
 
   useEffect(() => {
     if (firstUpdate.current) {
@@ -44,6 +47,7 @@ const AccountPage = () => {
 }, [searchValue]);
 
   const renderUserDataWithAdminToken = async () => {
+    setIsLoading(true);
     try {
       const token = await auth.getUserToken();
       let response = await getAllAccounts(token);
@@ -81,62 +85,65 @@ const AccountPage = () => {
       setCountries(savedCountries); //from prev. version
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // Called when an admin saves changes to an account
   const handleSaveEditedUser = async (account) => {
-    // Called when an admin saves changes to an account
-    console.log(account);
+    setIsLoading(true);
     try {
       const token = await auth.getUserToken(); // Get sessiontoken
       await updateAccount(token, account.id, account); // Pass token, pathvariable and body with request
       renderUserDataWithAdminToken();//rerender page
-      toggleToast("saved");
+      setToastHeader("Success");
+      setToastMsg("Account record was updated successfully.");
+      setToast(true);
     } catch (error) {
       console.log(error);
+      setToastHeader("Error");
+      setToastMsg("Unable to update account record details.");
+      setToast(true);
     } finally {
+      setIsLoading(false);
+      await renderUserDataWithAdminToken();
     }
   };
 
   const deleteUser = async (accountId) => {
+    setIsLoading(true);
     try {
       const token = await auth.getUserToken(); // Get sessiontoken
       await deleteAccount(token, accountId); // Pass token and pathvariable
-      toggleToast("deleted");
+      setToastHeader("Success");
+      setToastMsg("Account record was deleted successfully.");
+      setToast(true);
       renderUserDataWithAdminToken();
     } catch (error) {
       console.log(error);
+      setToastHeader("Error");
+      setToastMsg("Unable to delete shipment record details.");
+      setToast(true);
     } finally {
+      setIsLoading(false);
       await renderUserDataWithAdminToken();
     }
   }
 
-  const toggleToast = (action) => {
-    setToastMsg(action);
-    setToast(true);
-  };
-
   return (
     <>
-      <Toast
-        show={toast}
-        onClose={() => {
-          setToast(false);
-          setToastMsg("");
-        }}
-        delay={2500}
-        autohide
-      >
-        <Toast.Header>
-          <strong className="mr-auto">Bootstrap</strong>
-          <small>just now</small>
-        </Toast.Header>
-        <Toast.Body>Account {toastMsg && toastMsg}.</Toast.Body>
-      </Toast>
+      {toast && (
+          <Toaster
+              toastHeaderMsg={toastHeader}
+              toastMsg={toastMsg}
+              onClose={() => {
+                setToast(false);
+              }}
+          />
+      )}
       <div>
-        <Search
-            setSearchValue={setSearchValue}
-            accountList={accountList}/>
+        <Search setSearchValue={setSearchValue}/>
       </div>
 
       <div className="all-accounts-container">
@@ -144,15 +151,12 @@ const AccountPage = () => {
           <h4>All Accounts</h4>
         </div>
 
-        {!accountList ? (
-            <div>loading...</div>
-        ) : (
-            <AccountList accountList={accountList}
-                         countries={countries}
-                         updateAccount={handleSaveEditedUser}
-                         deleteAccount={deleteUser}/>
-
-        )}
+        <AccountList
+            isLoading={isLoading}
+            accountList={accountList}
+            countries={countries}
+            updateAccount={handleSaveEditedUser}
+            deleteAccount={deleteUser}/>
       </div>
     </>
   );
