@@ -10,7 +10,6 @@ import com.example.boxinator.Utils.CommonResponse;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -108,7 +107,7 @@ public class AccountController {
         return new ResponseEntity<>(cr, cr.status);
     }
 
-    @GetMapping("/{account_email}")
+    @GetMapping("/get/{account_email}")
     public ResponseEntity<CommonResponse> getAccount(
             @RequestHeader(value = "Authorization") String token,
             @PathVariable String account_email
@@ -143,7 +142,7 @@ public class AccountController {
             @RequestHeader(value = "Authorization") String token,
             @PathVariable Long account_id,
             @RequestBody Account changedAccount
-    ) throws FirebaseAuthException {
+    ) throws Exception {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
@@ -175,14 +174,12 @@ public class AccountController {
 
                     if (changedAccount.getContactNumber() != null) { account.setContactNumber(changedAccount.getContactNumber()); }
 
-                    if (changedAccount.getRole() != null && authResponse.getBody().account.getRole().equals(AccountRole.USER)) {
-
-                        // Do a check before here: if authResp role is not ADMIN and the
-                        // changedAccount role is ADMIN, meaning a USER/GUEST wants to change
-                        // its role to ADMIN, don't allow that! everything else is okay.
+                    if (changedAccount.getRole() != null
+                            && !authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)
+                            && changedAccount.getRole().equals(AccountRole.ADMIN)) {
+                        throw new Exception("UNAUTHORIZED! You can not change role to ADMIN.");
+                    } else if (changedAccount.getRole() != null){
                         account.setRole(changedAccount.getRole());
-                    } else {
-                        cr.msg += "Role ";
                     }
 
                     try {

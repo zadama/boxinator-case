@@ -20,8 +20,24 @@ import {Button} from "react-bootstrap";
 const EditAccountModal = (props) => {
   const auth = useAuth();
   const { register, handleSubmit, errors, watch, reset, control } = useForm();
-  const [showModal, setShowModal] = useState(false);
-  const [dob, setDOB] = useState(new Date());
+
+  const [showModal, setShowModal] = useState(true);
+  const [dob, setDOB] = useState(
+    props.thisAccount.dateOfBirth
+      ? new Date(props.thisAccount.dateOfBirth)
+      : new Date()
+  );
+
+  const [selectedCountry, setSelectedCountry] = useState({
+    label: props.thisAccount.country,
+    value: props.thisAccount.country,
+  });
+
+  const [selectedRole, setSelectedRole] = useState({
+    label: props.thisAccount.role,
+    value: props.thisAccount.role,
+  });
+
 
   useEffect(() => {
     !props.account.dateOfBirth
@@ -31,10 +47,12 @@ const EditAccountModal = (props) => {
   }, [reset]);
 
   const onSubmit = (data) => {
-    console.log("onsubmit", data);
-    console.log("props.account", props.account.id);
 
-    if (props.account.firstName === data.firstName) {
+    console.log(selectedCountry);
+    data.country = selectedCountry.value;
+
+    data.role = selectedRole.value;
+    if (props.thisAccount.firstName === data.firstName) {
       delete data.firstName;
     }
 
@@ -183,7 +201,6 @@ const EditAccountModal = (props) => {
             {!props.countries ? (
               "loading..."
             ) : (
-
               <select
                 className="select-picker"
                 defaultValue={props.account.country}
@@ -202,7 +219,7 @@ const EditAccountModal = (props) => {
           </div>
           <div
             className={`register-form-group ${
-              props.account.role === USER ? "full-width" : "half-width"
+              auth.user.role === USER ? "full-width" : "half-width"
             }`}
           >
             <label className="label" htmlFor="contactNumber">
@@ -216,7 +233,7 @@ const EditAccountModal = (props) => {
               ref={register}
             ></input>
           </div>
-          {props.account.role === ADMIN && (
+          {auth.user.role === ADMIN && (
             <div className="register-form-group half-width">
               <label className="label" htmlFor="role">
                 Role:{" "}

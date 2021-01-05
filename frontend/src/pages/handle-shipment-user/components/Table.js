@@ -15,6 +15,7 @@ const Table = ({ shipments, selectedShipment, handleShipmentClicked }) => {
               <th>Color</th>
               <th>Price</th>
               <th>Destination</th>
+              <th>Ordered</th>
               <th>Status</th>
               <th className="cancel-shipment">Cancel shipment?</th>
             </tr>
@@ -22,13 +23,7 @@ const Table = ({ shipments, selectedShipment, handleShipmentClicked }) => {
           <tbody>
             {shipments
               .sort((a, b) => {
-                if (a.receiver < b.receiver) {
-                  return -1;
-                }
-                if (a.receiver > b.receiver) {
-                  return 1;
-                }
-                return 0;
+                return new Date(b.createdAt) - new Date(a.createdAt);
               })
               .map((item) => (
                 <tr
@@ -43,7 +38,13 @@ const Table = ({ shipments, selectedShipment, handleShipmentClicked }) => {
                   <td>{item.weight}</td>
                   <td>{item.boxColour}</td>
                   <td>{item.totalPrice}</td>
-                  <td>{item.destinationCountry.name}</td>
+                  <td>{item.destinationCountry}</td>
+                  <td>
+                    {new Date(item.createdAt)
+                      .toISOString()
+                      .slice(0, 16)
+                      .replace("T", " ")}
+                  </td>
                   <td>{item.shipmentStatus}</td>
                   {item.shipmentStatus !== CANCELLED ? (
                     <td

@@ -46,14 +46,25 @@ const CountryPage = () => {
     }
   };
 
-  const onUpdateCountryClicked = async (country) => {
+  const onUpdateCountryClicked = async (oldCountry, newCountry) => {
     setIsLoading(true);
     try {
       const token = await auth.getUserToken();
-      await updateCountryById(country, token);
-      setToastHeader("Success");
-      setToastMsg("Country record was updated successfully.");
-      setToast(true);
+
+      if (oldCountry.name === newCountry.name) delete newCountry.name;
+      if (oldCountry.countryCode === newCountry.countryCode) delete newCountry.countryCode;
+      if (oldCountry.feeMultiplier === newCountry.feeMultiplier) delete newCountry.feeMultiplier;
+
+      if (Object.keys(newCountry).length > 1) {      
+        await updateCountryById(newCountry, token);
+        setToastHeader("Success");
+        setToastMsg("Country record was updated successfully.");
+        setToast(true);
+      } else {
+        setToastHeader("Error");
+        setToastMsg("No Change to country record was made.");
+        setToast(true);
+      }
     } catch (error) {
       console.log(error, "Unable to update country details");
       setToastHeader("Error");
@@ -87,7 +98,6 @@ const CountryPage = () => {
     try {
       const token = await auth.getUserToken();
       let response = await getAllCountries(token);
-      console.log(response);
       let { data: savedCountries } = response.data;
       savedCountries = savedCountries
         .sort(function (a, b) {

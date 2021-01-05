@@ -49,7 +49,10 @@ const AccountPage = () => {
       let response = await getAllAccounts(token);
       let { data: savedCountries } = await getAllCountries();
       savedCountries = savedCountries.data.map((country) => {
-        return [country.name];
+        return {
+          label: country.name,
+          value: country.name,
+        };
       });
       let { data: savedAccounts } = response.data;
       console.log(response.data);

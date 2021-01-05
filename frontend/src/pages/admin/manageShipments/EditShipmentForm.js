@@ -1,22 +1,55 @@
-import React from "react";
-import { Button } from "react-bootstrap";
+import React, { useRef, useState } from "react";
+import { Button, Col } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { statusValues } from "../../../utils/shipmentStatusValues";
+
+import ColorPicker from "../../shipment/components/ColorPicker";
+import { ntc as convertHex, namesToHex } from "../../../utils/ntc";
+
+import Select from "react-select";
 
 const EditShipmentForm = (props) => {
   const { register, handleSubmit, errors, control, watch } = useForm();
 
-  const destinationCountries = props.countries.map((country, id) => {
-    return <option key={id}>{country.name}</option>;
+  const [shipmentStatus, setShipmentStatus] = useState({
+    label: props.shipment.shipmentStatus,
+    value: props.shipment.shipmentStatus,
+  });
+  const [destinationCountry, setDestinationCountry] = useState({
+    label: props.shipment.destinationCountry,
+    value: props.shipment.destinationCountry,
+  });
+  const [sourceCountry, setSourceCountry] = useState({
+    label: props.shipment.sourceCountry,
+    value: props.shipment.sourceCountry,
   });
 
+  const boxColour = useRef(props.shipment.boxColour);
+
+  const onHandleColorPicker = (color) => {
+    const match = convertHex.name(color.hex);
+    const colorName = match[1];
+
+    console.log(colorName);
+
+    boxColour.current = colorName;
+  };
+
   const handleForm = (data) => {
-   data.destinationCountry = {name: data.destinationCountry}
-   props.updateShipment(data);
-  }
+    data.destinationCountry = { name: destinationCountry.value };
+    data.boxColour = boxColour.current;
+    data.shipmentStatus = shipmentStatus.value;
+    console.log(data);
+    props.updateShipment(data);
+  };
 
   return (
     <form
+      style={{
+        width: "85%",
+        paddingTop: "10px",
+        paddingBottom: "15px",
+      }}
       onSubmit={handleSubmit(handleForm)}
       className="needs-validation"
     >
@@ -106,12 +139,9 @@ const EditShipmentForm = (props) => {
         <label htmlFor="box-colour">
           <strong>Box Colour:</strong>
         </label>
-        <input
-          className="form-control"
-          id="box-colour"
-          name="boxColour"
-          defaultValue={props.shipment.boxColour}
-          ref={register({ required: true })}
+        <ColorPicker
+          defaultValue={namesToHex[props.shipment.boxColour]}
+          onHandleColorPicker={onHandleColorPicker}
         />
       </div>
 
@@ -119,54 +149,82 @@ const EditShipmentForm = (props) => {
         <label htmlFor="shipment-status">
           <strong>Shipment Status: </strong>
         </label>
-        <select
-          id="shipment-status"
-          defaultValue={props.shipment.shipmentStatus}
-          name="shipmentStatus"
-          ref={register({ required: true })}
-        >
-          {statusValues.map(function (status) {
-            return <option key={status}>{status}</option>;
+
+        <Select
+          value={shipmentStatus}
+          className="select-picker"
+          placeholder={"Select status"}
+          options={statusValues.map((item) => {
+            return {
+              label: item,
+              value: item,
+            };
           })}
-        </select>
+          isSearchable={false}
+          onChange={(data) => {
+            setShipmentStatus(data);
+          }}
+        />
       </div>
 
       <div className="form-group">
         <label htmlFor="destination-country">
           <strong>Destination Country:</strong>
         </label>
-        <select
-          id="destination-country"
-          name="destinationCountry"
-          ref={register}
-          defaultValue={props.shipment.destinationCountry.name}
-        >
-          {destinationCountries}
-        </select>
+        <Select
+          value={destinationCountry}
+          className="select-picker"
+          placeholder={"Select destination country"}
+          options={props.countries.map((item) => {
+            return {
+              label: item.name,
+              value: item.name,
+            };
+          })}
+          isSearchable={false}
+          onChange={(data) => {
+            setDestinationCountry(data);
+          }}
+        />
       </div>
 
       <div className="form-group">
         <label htmlFor="source-country">
           <strong>Source Country:</strong>
         </label>
-        <select
-          id="source-country"
-          name="sourceCountry"
-          ref={register}
-          defaultValue={props.shipment.sourceCountry}
-        >
-          <option>Denmark</option>
-          <option>Norway</option>
-          <option>Sweden</option>
-        </select>
+        <Select
+          value={sourceCountry}
+          className="select-picker"
+          placeholder={"Select source country"}
+          options={[
+            {
+              label: "Sweden",
+              name: "Sweden",
+            },
+            {
+              label: "Norway",
+              name: "Norway",
+            },
+            {
+              label: "Denmark",
+              name: "Denmark",
+            },
+          ]}
+          isSearchable={false}
+          onChange={(data) => {
+            setSourceCountry(data);
+          }}
+        />
       </div>
 
-      <Button type="submit" className="btn btn-info" value="Save">
-        Save
-      </Button>
-      <Button onClick={props.onClose} className="btn btn-danger">
-        Cancel
-      </Button>
+      <div className="btn-container-form">
+        <Button type="submit" className="btn btn-info" value="Save">
+          Save
+        </Button>
+        <Button onClick={props.onClose} className="btn btn-danger">
+          Cancel
+        </Button>
+      </div>
     </form>
   );
 };

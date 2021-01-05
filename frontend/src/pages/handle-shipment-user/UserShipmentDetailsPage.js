@@ -46,20 +46,10 @@ const UserShipmentDetailsPage = ({ location, history }) => {
       //const countries = await getAllCountries(token);
       const { data: result } = await getAllShipments(token);
       const shipmentData = result.data;
+      console.log(shipmentData);
 
       // Filters all objects that only have destinationCountry Id and not full object.
       // Adds to it destinationCountry that already exists among received data from backend.
-      shipmentData
-        .filter((ship) => ship.destinationCountry.name == null)
-        .map((obj) => {
-          obj.destinationCountry = shipmentData.find(
-            (element) =>
-              element.destinationCountry &&
-              element.destinationCountry.id === obj.destinationCountry
-          ).destinationCountry;
-
-          return obj;
-        });
 
       setShipments(result.data);
     } catch (error) {
@@ -85,7 +75,7 @@ const UserShipmentDetailsPage = ({ location, history }) => {
         },
         token
       );
-      renderUserShipments();
+      await renderUserShipments();
     } catch (error) {
       setAlert({
         message: "Could not cancel shipment. Please try again later.",

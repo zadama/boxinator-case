@@ -74,7 +74,7 @@ const HandleShipmentsPage = () => {
   };
 
   const onUpdateShipment = async (shipment) => {
-    const { shipment_id,account_id,id, ...rest } = shipment;
+    const { shipment_id, account_id, id, ...rest } = shipment;
     try {
       const token = await auth.getUserToken();
       await updateShipment(shipment_id, { ...rest }, token);
@@ -87,11 +87,10 @@ const HandleShipmentsPage = () => {
       setToastHeader("Error");
       setToastMsg("Unable to update shipment record details.");
       setToast(true);
-
     } finally {
       await renderShipmentData();
     }
-  }
+  };
 
   const onDeleteShipment = async (shipment_id) => {
     try {
@@ -105,7 +104,7 @@ const HandleShipmentsPage = () => {
       setToastHeader("Error");
       setToastMsg("Unable to delete shipment record details.");
       setToast(true);
-    }finally {
+    } finally {
       await renderShipmentData();
     }
   };

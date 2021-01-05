@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +59,7 @@ public class ShipmentController {
                 shipment.setWeight(shipmentDTO.getWeight());
                 shipment.setShipmentStatus(shipmentDTO.getShipmentStatus());
                 shipment.setSourceCountry(shipmentDTO.getSourceCountry());
+                shipment.setCreatedAt(new Date());
 
                 Optional<Country> coutryRepo = countryRepository.findByName(shipmentDTO.getDestinationCountry());
                 Country country = coutryRepo.orElse(null);
@@ -131,8 +133,7 @@ public class ShipmentController {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        System.out.println(newShipment.getDestinationCountry().getName());
-        System.out.println(shipment_id);
+
         if (authResponse.getStatusCode() == HttpStatus.OK) {
             if (shipmentRepository.existsById(shipment_id)) {
                 Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
