@@ -217,7 +217,7 @@ const EditAccountModal = (props) => {
           </div>
           <div
             className={`register-form-group ${
-              props.thisAccount.role === USER ? "full-width" : "half-width"
+              auth.user.role === USER ? "full-width" : "half-width"
             }`}
           >
             <label className="label" htmlFor="contactNumber">
@@ -231,7 +231,7 @@ const EditAccountModal = (props) => {
               ref={register}
             ></input>
           </div>
-          {props.thisAccount.role === ADMIN && (
+          {auth.user.role === ADMIN && (
             <div className="register-form-group half-width">
               <label className="label" htmlFor="role">
                 Role:{" "}
