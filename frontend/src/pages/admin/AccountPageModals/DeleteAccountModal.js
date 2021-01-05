@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Modal from '../../../components/modal/index';
 import { useAuth } from '../../../context/auth';
-import { deleteAccount } from '../../../api/user';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrashAlt} from "@fortawesome/free-solid-svg-icons";
 
@@ -13,21 +12,6 @@ const DeleteAccountModal = (props) => {
     const [showModal, setShowModal] = useState(false);
     const [deleteBtn, setDeleteBtn] = useState(false);
     const [id, setId] = useState(props.account.id);
-/*
-    const deleteUser = async (account) => {
-        try {
-            const token = await auth.getUserToken(); // Get sessiontoken
-            await deleteAccount(token, account.id); // Pass token and pathvariable
-            props.reRender();
-            props.toggleToast("deleted");
-        } catch (error) {
-            console.log(error);
-        } finally {
-            onClose();
-        }
-    }
-
- */
 
     const deleteAccount = () => {
         props.deleteAccount(props.account.id);
