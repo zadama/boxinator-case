@@ -6,7 +6,9 @@ const ColorPicker = ({ onHandleColorPicker, defaultValue }) => {
   const [colorValue, setColorValue] = useState(
     defaultValue ? defaultValue : "#E0CBCB"
   );
-  const [colorPlaceholder, setColorPlaceholder] = useState("");
+  const [colorPlaceholder, setColorPlaceholder] = useState(
+    defaultValue ? defaultValue : ""
+  );
 
   const toggleColorPicker = () => {
     setDisplayColorPicker(!displayColorPicker);
@@ -14,6 +16,7 @@ const ColorPicker = ({ onHandleColorPicker, defaultValue }) => {
 
   const handleColorComplete = (color) => {
     onHandleColorPicker(color);
+    console.log(color.hex);
     setColorPlaceholder(color.hex);
   };
 
