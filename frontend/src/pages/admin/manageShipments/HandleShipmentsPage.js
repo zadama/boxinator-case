@@ -50,7 +50,6 @@ const HandleShipmentsPage = () => {
       const token = await auth.getUserToken();
       let response = await getAllShipments(token);
       let { data: savedShipments } = response.data;
-      console.log(savedShipments);
       savedShipments = savedShipments
         .sort(function (a, b) {
           return a.id - b.id;
