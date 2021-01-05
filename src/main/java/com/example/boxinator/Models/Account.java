@@ -51,7 +51,7 @@ public class Account {
     @Column(nullable = false)
     private AccountRole role;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Shipment> shipments = new HashSet<>();
 
     @JsonIgnore
