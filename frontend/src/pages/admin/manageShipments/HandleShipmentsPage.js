@@ -50,7 +50,6 @@ const HandleShipmentsPage = () => {
       const token = await auth.getUserToken();
       let response = await getAllShipments(token);
       let { data: savedShipments } = response.data;
-      console.log(savedShipments);
       savedShipments = savedShipments
         .sort(function (a, b) {
           return a.id - b.id;
@@ -109,12 +108,6 @@ const HandleShipmentsPage = () => {
       await renderShipmentData();
     }
   };
-  /*
-  const handleEditClick = (shipment) => {
-    setEditShipmentView(!editShipmentView);
-    //setThisShipment(shipment);
-  }
-*/
 
   return (
     <>
@@ -139,7 +132,7 @@ const HandleShipmentsPage = () => {
 
           <div className="all-shipments-container">
             <div className="row shipment-table-header">
-              <h3>All Shipment History</h3>
+              <h4>All Shipment History</h4>
             </div>
             {
               <ShipmentList

@@ -156,7 +156,7 @@ const CountryPage = () => {
 
       <div className="all-countries-container">
         <div className="row country-table-header">
-          <h3>All Countries</h3>
+          <h4>All Countries</h4>
           <AddCountryModal addCountry={onAddCountryClicked} />
         </div>
 

@@ -141,7 +141,7 @@ const ProfileInformation = (props) => {
         <EditAccountModal
           onClose={() => setEditAccountView(!editAccountView)}
           countries={countries}
-          thisAccount={thisAccount}
+          account={thisAccount}
           toggleToast={toggleToast}
           reRender={renderProfileInformationWithToken}
         />
