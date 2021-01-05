@@ -29,9 +29,6 @@ const EditShipmentForm = (props) => {
   const onHandleColorPicker = (color) => {
     const match = convertHex.name(color.hex);
     const colorName = match[1];
-
-    console.log(colorName);
-
     boxColour.current = colorName;
   };
 
@@ -39,7 +36,6 @@ const EditShipmentForm = (props) => {
     data.destinationCountry = { name: destinationCountry.value };
     data.boxColour = boxColour.current;
     data.shipmentStatus = shipmentStatus.value;
-    console.log(data);
     props.updateShipment(data);
   };
 
@@ -101,7 +97,7 @@ const EditShipmentForm = (props) => {
         />
         {errors.receiver?.type === "required" && (
           <span className="error-span">
-            Please enter your desired receiver.
+            Please enter a shipment receiver.
           </span>
         )}
         {errors.receiver?.type === "pattern" && (
@@ -127,7 +123,7 @@ const EditShipmentForm = (props) => {
           })}
         />
         {errors.weight?.type === "required" && (
-          <span className="error-span">Please enter your desired weight.</span>
+          <span className="error-span">Please enter the shipment's weight.</span>
         )}
         {errors.weight?.type === "pattern" && (
           <span className="error-span">Invalid weight format.</span>
