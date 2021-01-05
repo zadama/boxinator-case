@@ -139,7 +139,7 @@ const HandleShipmentsPage = () => {
 
           <div className="all-shipments-container">
             <div className="row shipment-table-header">
-              <h3>All Shipment History</h3>
+              <h4>All Shipment History</h4>
             </div>
             {
               <ShipmentList

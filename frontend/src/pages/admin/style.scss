@@ -53,6 +53,17 @@
   }
 }
 
+.all-accounts-container {
+  border: 2px solid #000000;
+  border-radius: 4px;
+  margin: 2%;
+  padding: 5%;
+}
+
+.account-table-header {
+  justify-content: center;
+}
+
 .edit-account-form {
   display: grid;
   margin: 20px;

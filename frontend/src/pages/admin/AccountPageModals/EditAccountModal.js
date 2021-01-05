@@ -10,58 +10,60 @@ import "../../register/style.scss";
 
 import { useAuth } from "../../../context/auth";
 import { ADMIN, USER } from "../../../utils/roles";
-import { updateAccount } from "../../../api/user";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPencilAlt} from "@fortawesome/free-solid-svg-icons";
+import {Button} from "react-bootstrap";
 
 const EditAccountModal = (props) => {
   const auth = useAuth();
   const { register, handleSubmit, errors, watch, reset, control } = useForm();
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [dob, setDOB] = useState(new Date());
 
   useEffect(() => {
-    !props.thisAccount.dateOfBirth
+    !props.account.dateOfBirth
       ? setDOB(new Date())
-      : setDOB(parseISO(props.thisAccount.dateOfBirth)); // If user does not have a chosen DoB, set a temporary one
-    reset({ ...props.thisAccount });
+      : setDOB(parseISO(props.account.dateOfBirth)); // If user does not have a chosen DoB, set a temporary one
+    reset({ ...props.account });
   }, [reset]);
 
   const onSubmit = (data) => {
     console.log(data);
 
-    if (props.thisAccount.firstName === data.firstName) {
+    if (props.account.firstName === data.firstName) {
       delete data.firstName;
     }
 
-    if (props.thisAccount.lastName === data.lastName) {
+    if (props.account.lastName === data.lastName) {
       delete data.lastName;
     }
 
-    if (props.thisAccount.email === data.email) {
+    if (props.account.email === data.email) {
       delete data.email;
     }
 
-    if (props.thisAccount.zipCode === parseInt(data.zipCode)) {
-      delete data.zipCode;
+    if (props.account.zipcode === parseInt(data.zipcode)) {
+      delete data.zipcode;
     }
 
-    if (props.thisAccount.contactNumber === parseInt(data.contactNumber)) {
+    if (props.account.contactNumber === parseInt(data.contactNumber)) {
       delete data.contactNumber;
     }
 
-    if (props.thisAccount.country === data.country.value) {
+    if (props.account.country === data.country.value) {
       delete data.country;
     }
 
-    if (props.thisAccount.role === data.role) {
+    if (props.account.role === data.role) {
       delete data.role;
     }
 
     let formData = data;
 
-    if (parseISO(props.thisAccount.dateOfBirth) === formData.dateOfBirth) {
+    if (parseISO(props.account.dateOfBirth) === formData.dateOfBirth) {
       delete formData.dateOfBirth;
     } else {
       formData.dateOfBirth = dob;
@@ -71,9 +73,10 @@ const EditAccountModal = (props) => {
 
     console.log(formData);
 
-    handleSaveEditedUser(formData);
+    props.updateAccount(formData);
   };
 
+  /*
   const handleSaveEditedUser = async (user) => {
     // Called when an admin saves changes to an account
     try {
@@ -91,16 +94,23 @@ const EditAccountModal = (props) => {
     }
   };
 
+   */
+
   const onClose = () => {
-    setShowModal(!showModal);
-    props.onClose();
+    setShowModal(false);
   };
 
   return (
     <>
-      <Modal isVisible={showModal} onClose={onClose}>
+      <Button onClick={ () => {
+        setShowModal(true);
+      }} className="btn btn-info btn-sm ml-2 mt-0"><FontAwesomeIcon icon={faPencilAlt}/>
+      </Button>
+
+      {showModal && (<Modal onClose={onClose}>
+
         <h3 style={{ paddingTop: "10px" }}>
-          Editing {props.thisAccount.firstName} {props.thisAccount.lastName}
+          Editing {props.account.firstName} {props.account.lastName}
         </h3>
         <form onSubmit={handleSubmit(onSubmit)} className="register">
           <div className="register-form-group half-width">
@@ -110,7 +120,7 @@ const EditAccountModal = (props) => {
             <input
               className="input"
               name="firstName"
-              defaultValue={props.thisAccount.firstName}
+              defaultValue={props.account.firstName}
               ref={register({
                 pattern: {
                   value: /^[A-Za-z]+$/,
@@ -127,7 +137,7 @@ const EditAccountModal = (props) => {
               className="input"
               type="text"
               name="lastName"
-              defaultValue={props.thisAccount.lastName}
+              defaultValue={props.account.lastName}
               ref={register({
                 pattern: {
                   value: /^[A-Za-z]+$/,
@@ -144,7 +154,7 @@ const EditAccountModal = (props) => {
               className="input"
               type="text"
               name="email"
-              defaultValue={props.thisAccount.email}
+              defaultValue={props.account.email}
               ref={register({
                 pattern: {
                   value: /\S+@\S+\.\S+/,
@@ -177,7 +187,7 @@ const EditAccountModal = (props) => {
               className="input"
               type="text"
               name="zipCode"
-              defaultValue={props.thisAccount.zipCode}
+              defaultValue={props.account.zipcode}
               ref={register}
             ></input>
           </div>
@@ -211,7 +221,7 @@ const EditAccountModal = (props) => {
           </div>
           <div
             className={`register-form-group ${
-              props.thisAccount.role === USER ? "full-width" : "half-width"
+              props.account.role === USER ? "full-width" : "half-width"
             }`}
           >
             <label className="label" htmlFor="contactNumber">
@@ -221,17 +231,17 @@ const EditAccountModal = (props) => {
               className="input"
               type="text"
               name="contactNumber"
-              defaultValue={props.thisAccount.contactNumber}
+              defaultValue={props.account.contactNumber}
               ref={register}
             ></input>
           </div>
-          {props.thisAccount.role === ADMIN && (
+          {props.account.role === ADMIN && (
             <div className="register-form-group half-width">
               <label className="label" htmlFor="role">
                 Role:{" "}
               </label>
               <select
-                placeholder={props.thisAccount.role}
+                placeholder={props.account.role}
                 name="role"
                 ref={register}
               >
@@ -259,7 +269,7 @@ const EditAccountModal = (props) => {
             </button>
           </div>
         </form>
-      </Modal>
+      </Modal>)}
     </>
   );
 };

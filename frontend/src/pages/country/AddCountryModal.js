@@ -24,7 +24,7 @@ const AddCountryModal = (props) => {
             <div>
                 <button onClick={() => {
                     showModal(true);
-                }} className="btn btn-info btn-sm mt-0">
+                }} className="btn btn-info btn-sm mt-0 ml-2">
                     Add country </button>
 
                 {modal && (<Modal className="add-country-modal" onClose={onClose}>

@@ -16,8 +16,6 @@ const EditShipmentModal = (props) => {
 
   const updateShipment = (shipment) => {
     props.updateShipment({id, ...shipment});
-    console.log("Update Shipment show shipment object: " + props.shipment);
-    console.log("Update Shipment show destinationCountry: " + shipment.destinationCountry);
     setShowModal(false);
   }
 

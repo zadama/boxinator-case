@@ -61,7 +61,7 @@ const RegisterForm = ({
 
     formData.contactNumber = countryCode.value + formData.contactNumber;
     console.log(formData);
-    //handleRegistration(formData);
+    handleRegistration(formData);
   };
 
   return (

@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import Search from "../../components/search/Search";
-import { Table } from "react-bootstrap";
 import Toast from "react-bootstrap/Toast";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 import "./style.scss";
 
 import { useAuth } from "../../context/auth";
 import { getAllCountries } from "../../api/countries";
-import { getAllAccounts } from "../../api/user";
+import {deleteAccount, getAllAccounts, updateAccount} from "../../api/user";
 import DeleteAccountModal from "./AccountPageModals/DeleteAccountModal";
 import EditAccountModal from "./AccountPageModals/EditAccountModal";
+import AccountList from "./AccountPageModals/AccountList";
 
 const AccountPage = () => {
 
@@ -32,7 +30,8 @@ const AccountPage = () => {
   const [toastMsg, setToastMsg] = useState("");
 
 
-  useEffect(() => { if (firstUpdate.current) {
+  useEffect(() => {
+    if (firstUpdate.current) {
     firstUpdate.current = false;
     renderUserDataWithAdminToken();
     return;
@@ -41,9 +40,10 @@ const AccountPage = () => {
       return (
         account.id + "" === searchValue ||
         account.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-        account.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        account.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
+        account.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
         account.role.toUpperCase().includes(searchValue.toUpperCase()) ||
-        account.country.toLower().includes(searchValue.toLowerCase()) 
+        account.country.toLowerCase().includes(searchValue.toLowerCase())
       );
     });
     setAccountList(filtered);
@@ -53,17 +53,13 @@ const AccountPage = () => {
   const renderUserDataWithAdminToken = async () => {
     try {
       const token = await auth.getUserToken();
-
       let response = await getAllAccounts(token);
-
       let { data: savedCountries } = await getAllCountries();
-
       savedCountries = savedCountries.data.map((country) => {
         return [country.name];
       });
-
       let { data: savedAccounts } = response.data;
-
+      console.log(response.data);
       savedAccounts = savedAccounts
         .sort(function (a, b) {
           return a.id - b.id;
@@ -71,16 +67,19 @@ const AccountPage = () => {
         .map((account) => {
           return {
             id: account.id,
-            name: account.firstName + " " + account.lastName,
+            firstName: account.firstName,
+            lastName:  account.lastName,
             email: account.email,
             dateOfBirth: account.dateOfBirth,
-            zipcode: account.zipcode,
+            zipcode: account.zipCode,
             country: account.country,
             contactNumber: account.contactNumber,
             role: account.role,
+            shipments: account.userShipments
           };
         });
       console.log(savedAccounts);
+
       setAccounts(savedAccounts);
       setAccountList(savedAccounts);
       setCountries(savedCountries); //from prev. version
@@ -89,14 +88,39 @@ const AccountPage = () => {
     }
   };
 
-    
+  const handleSaveEditedUser = async (account) => {
+    // Called when an admin saves changes to an account
+    try {
+      const token = await auth.getUserToken(); // Get sessiontoken
+      await updateAccount(token, account.id, account); // Pass token, pathvariable and body with request
+      renderUserDataWithAdminToken();//rerender page
+      toggleToast("saved");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      // popup closed
+
+    }
+  };
+
+  const deleteUser = async (accountId) => {
+    try {
+      const token = await auth.getUserToken(); // Get sessiontoken
+      await deleteAccount(token, accountId); // Pass token and pathvariable
+      toggleToast("deleted");
+      renderUserDataWithAdminToken();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      await renderUserDataWithAdminToken();
+    }
+  }
+
   const toggleToast = (action) => {
     setToastMsg(action);
     setToast(true);
   };
-
- 
-
+/*
   const handleEditClick = (user) => {
     // Open modal when admin wants to edit an account
     setEditAccountView(!editAccountView);
@@ -108,6 +132,8 @@ const AccountPage = () => {
     setDeleteAccountView(!deleteAccountView);
     setThisAccount(user);
   };
+
+ */
 
   return (
     <>
@@ -126,77 +152,33 @@ const AccountPage = () => {
         </Toast.Header>
         <Toast.Body>Account {toastMsg && toastMsg}.</Toast.Body>
       </Toast>
-      
-      <Search 
-        setSearchValue={setSearchValue}
-        accountList={accountList}/>
-      {!data ? (
-        <div>loading...</div>
-      ) : ( 
-        
-        <Table className="table table-bordered">
-          <thead className="thead-light">
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Email</th>
-              <th scope="col">Date of Birth</th>
-              <th scope="col">Zipcode</th>
-              <th scope="col">Country of residence</th>
-              <th scope="col">Contact number</th>
-              <th scope="col">Role</th>
-              <th scope="col">Shipments</th>
-              <th scope="col">Edit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.data.map(function (user) {
-              return (
-                <tr key={user.id}>
-                  <td>{user.id}</td>
-                  <td>
-                    {user.firstName} {user.lastName}
-                  </td>
-                  <td>{user.email}</td>
-                  <td>
-                    {!user.dateOfBirth ? "Not defined" : new Date(user.dateOfBirth)
-                      .toISOString()
-                      .slice(0, 10)
-                      .replace("T", " ")}
-                  </td>
-                  <td>{!user.zipCode ? "Not defined" : user.zipCode}</td>
-                  <td>{!user.country ? "Not defined" : user.country}</td>
-                  <td>
-                    {!user.contactNumber ? "Not defined" : user.contactNumber}
-                  </td>
-                  <td>{user.role}</td>
-                  <td className="shipments">{user.userShipments.length}</td>
-                  <td className="btns">
-                    <button
-                      className="btn btn-info btn-sm ml-2 mt-0"
-                      onClick={() => handleEditClick(user)}
-                    >
-                     <FontAwesomeIcon icon={faPencilAlt}/>
-                    </button>
-                    <button
-                      className="btn-danger btn-sm ml-2"
-                      onClick={() => handleDeleteClick(user)}
-                    >
-                    <FontAwesomeIcon icon={faTrashAlt} />
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      )}
+      <div>
+        <Search
+            setSearchValue={setSearchValue}
+            accountList={accountList}/>
+      </div>
+
+      <div className="all-accounts-container">
+        <div className="row account-table-header">
+          <h4>All Accounts</h4>
+        </div>
+
+        {!accountList ? (
+            <div>loading...</div>
+        ) : (
+            <AccountList accountList={accountList}
+                         countries={countries}
+                         updateAccount={handleSaveEditedUser}
+                         deleteAccount={deleteUser}/>
+
+        )}
+      </div>
+
       <section>
         {editAccountView && (
           <EditAccountModal
             onClose={() => setEditAccountView(!editAccountView)}
-            countries={countries}
-            thisAccount={thisAccount}
+
             reRender={renderUserDataWithAdminToken}
             toggleToast={toggleToast}
           />
@@ -204,8 +186,6 @@ const AccountPage = () => {
         {deleteAccountView && (
           <DeleteAccountModal
             onClose={() => setDeleteAccountView(!deleteAccountView)}
-            thisAccount={thisAccount}
-            reRender={renderUserDataWithAdminToken}
             toggleToast={toggleToast}
           />
         )}
