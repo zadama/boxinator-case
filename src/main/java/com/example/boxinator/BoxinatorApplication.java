@@ -1,6 +1,8 @@
 
 package com.example.boxinator;
 
+
+
 import com.google.api.client.json.Json;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -8,6 +10,7 @@ import com.google.firebase.FirebaseOptions;
 import com.google.gson.JsonObject;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -30,12 +33,14 @@ public class BoxinatorApplication {
     private String firebaseConfig;
 
 
+
     public static void main(String[] args) {
         SpringApplication.run(BoxinatorApplication.class, args);
     }
 
     @Bean
     public void firebaseAuth()  {
+
 
         try {
             JSONObject jsonObject = new JSONObject(firebaseConfig);
