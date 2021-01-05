@@ -1,4 +1,6 @@
+
 package com.example.boxinator;
+
 
 import com.google.api.client.json.Json;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -19,7 +21,7 @@ import java.io.InputStream;
 
 @SpringBootApplication
 public class BoxinatorApplication {
-
+    
     @Value("${firebase_path}")
     private String firebasePath;
 
@@ -33,11 +35,11 @@ public class BoxinatorApplication {
     @Bean
     public void firebaseAuth()  {
 
+
         try {
             JSONObject jsonObject = new JSONObject(firebaseConfig);
             String str = jsonObject.toString();
             InputStream serviceAccount = new ByteArrayInputStream(str.getBytes());
-
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -52,5 +54,6 @@ public class BoxinatorApplication {
             e.printStackTrace();
         }
     }
+
 
 }

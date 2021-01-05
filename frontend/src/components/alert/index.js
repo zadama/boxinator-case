@@ -5,6 +5,7 @@ const AlertNotification = ({ onClose, message, variant, expire }) => {
   useEffect(() => {
     if (expire) {
       setTimeout(() => {
+        console.log("Calling close...");
         onClose();
       }, expire);
     }

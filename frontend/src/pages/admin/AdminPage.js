@@ -5,11 +5,11 @@ import PrivateLayout from "../../layouts/PrivateLayout";
 import AdminMenu from "./AdminMenu";
 import { useEffect } from "react";
 import { useState } from "react";
-import { checkToken } from "../../api/user";
+import { getAccount } from "../../api/user";
 
 import AccountPage from "./AccountPage";
 import CountryPage from "../country/CountryPage";
-import HandleShipmentsPage from "./HandleShipmentsPage";
+import HandleShipmentsPage from "./manageShipments/HandleShipmentsPage";
 
 /**
  * hämta alla shipments från backend, skicka med firebase token
@@ -31,9 +31,8 @@ const AdminPage = () => {
     try {
       const token = await auth.getUserToken();
 
-      const { data } = await checkToken(token);
-
-      setData(data);
+      const { data } = await getAccount(token, auth.user.email);
+      setData(data.data.firstName + " " + data.data.lastName);
     } catch (error) {
       console.log(error);
     }
@@ -44,24 +43,24 @@ const AdminPage = () => {
     renderExampleDataWithToken();
   }, []);
 
-  const handleUserDetailsClick = (event, value) => {
-    if(value === "accounts") {
+  const handleMenuClick = (event, value) => {
+    if (value === "accounts") {
       setTitle("Accounts");
       setShowCountries(false);
       setShowShipments(false);
       setShowAccounts(!showAccounts);
-    } else if(value === "countries") {
-      setTitle("Shipping Countries")
+    } else if (value === "countries") {
+      setTitle("Shipping Countries");
       setShowShipments(false);
       setShowAccounts(false);
       setShowCountries(!showCountries);
-    } else if(value === "shipments") {
-      setTitle("Shipments")
+    } else if (value === "shipments") {
+      setTitle("Shipments");
       setShowCountries(false);
       setShowAccounts(false);
       setShowShipments(!showShipments);
     }
-  }
+  };
 
   return (
     <PrivateLayout>
@@ -71,15 +70,17 @@ const AdminPage = () => {
             <div>loading....</div>
           ) : (
             <div>
-              {!title ? <h3>Welcome back, "{data}"</h3> : <h3>{title}</h3>}
+              {!title ? <h3>Welcome "{data}"</h3> : <h3>{title}</h3>}
             </div>
           )}
         </section>
         <section className="admin-menu">
-          <AdminMenu getDetails={(event, value) => handleUserDetailsClick(event, value)}/>
+          <AdminMenu
+            getDetails={(event, value) => handleMenuClick(event, value)}
+          />
         </section>
-        <section>
-          {!showAccounts ?  "" : <AccountPage />}
+        <section style={{ borderTop: "1px solid #dee2e6" }}>
+          {!showAccounts ? "" : <AccountPage />}
           {!showCountries ? "" : <CountryPage />}
           {!showShipments ? "" : <HandleShipmentsPage />}
         </section>

@@ -9,19 +9,19 @@ const { useState } = require("react");
 
 const DeleteCountryModal = (props) => {
 
-    const [modal, showModal] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [id, setId] = useState(props.country.id);
     const [name] = useState(props.country.name);
     const [countryCode] = useState(props.country.countryCode);
     const [feeMultiplier] = useState(props.country.feeMultiplier);
 
     const onClose = () => {
-        showModal(false);
+        setShowModal(false);
     };
 
     const onDeleteClicked = () => {
         props.deleteCountry(id);
-        showModal(false);
+        setShowModal(false);
 
     };
 
@@ -29,12 +29,12 @@ const DeleteCountryModal = (props) => {
         <div className="delete-country-modal">
             <button
                 onClick={() => {
-                    showModal(true);
+                    setShowModal(true);
                 }} className="btn btn-danger btn-sm ml-2 mt-0">
                 <FontAwesomeIcon icon={faTrashAlt}/>
             </button>
 
-            {modal && (<Modal  onClose={onClose}>
+            {showModal && (<Modal  onClose={onClose}>
                 <div>
                     <h5>Are you sure?</h5>
                     <p>This entry will be permanently removed from the database.

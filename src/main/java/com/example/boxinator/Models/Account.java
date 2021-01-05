@@ -2,13 +2,12 @@ package com.example.boxinator.Models;
 
 import com.example.boxinator.Models.Enums.AccountRole;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @JsonIdentityInfo(
@@ -52,15 +51,27 @@ public class Account {
     @Column(nullable = false)
     private AccountRole role;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     private Set<Shipment> shipments = new HashSet<>();
 
+    @JsonIgnore
     public Set<Shipment> getShipments() {
         return shipments;
     }
-
+    @JsonIgnore
     public void setShipments(Set<Shipment> shipments) {
         this.shipments = shipments;
+    }
+
+    // Json property, userShipments
+    public List<Long> getUserShipments(){
+        List<Long> shipmentIds = new ArrayList<>();
+
+        for(Shipment shipment: shipments){
+            shipmentIds.add(shipment.getId());
+        }
+
+        return shipmentIds;
     }
 
     public Long getId() {

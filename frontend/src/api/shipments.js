@@ -24,5 +24,54 @@ const addShipmentReceipt = (body) => {
   console.log(body);
   return Api.post("/receipt/", { ...body });
 };
+/*
 
-export { createShipment, getAllShipments, addShipmentReceipt };
+const updateShipment = ({
+  id,
+  receiver,
+  weight,
+  boxColour,
+  shipmentStatus,
+  destinationCountry,
+  sourceCountry
+},
+token
+) => {return Api.patch(`/shipment/${id}`, {
+  receiver,
+  weight,
+  boxColour,
+  shipmentStatus,
+  destinationCountry,
+  sourceCountry
+}, {
+  headers: {Authorization: `Bearer ${token}`}
+});
+*/
+
+const updateShipment = (shipmentId, body, token) => {
+  console.log(shipmentId, body);
+  return Api.patch(
+    "/shipment/" + shipmentId,
+    { ...body },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+};
+
+const deleteShipment = (shipment_id, token) => {
+  return Api.delete(`/shipment/${shipment_id}`, {
+    headers: { Authorization: `bearer ${token}` },
+  });
+};
+
+export {
+  createShipment,
+  updateShipment,
+  getAllShipments,
+  deleteShipment,
+  addShipmentReceipt,
+};

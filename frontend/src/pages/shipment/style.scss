@@ -31,41 +31,6 @@
         background: #fff;
         color: #111f2c;
       }
-
-      .color-picker {
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-
-        .color-picker-button {
-          background-color: #b85fc6;
-          color: white;
-          font-weight: 600;
-          min-height: 45px;
-          min-width: 140px;
-          border-radius: 10px;
-          border: none;
-        }
-
-        .color-picker-popover {
-          position: absolute;
-          z-index: 2;
-
-          .cover {
-            position: fixed;
-            top: 0px;
-            right: 0px;
-            bottom: 0px;
-            left: 0px;
-          }
-        }
-
-        .color-placeholder {
-          height: 45px;
-          width: 45px;
-          border-radius: 2px;
-        }
-      }
     }
   }
 
@@ -99,6 +64,30 @@
       h4 {
         text-align: center;
         padding-top: 8px;
+      }
+    }
+  }
+}
+
+.shipment-overview {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  align-self: flex-start;
+  padding-top: 20px;
+  padding-top: 20px;
+  max-width: 650px;
+  padding: 1em 3em;
+
+  section {
+    border-top: 1px solid #80808059;
+    border-bottom: 1px solid #80808059;
+
+    div {
+      margin-top: 10px;
+
+      &:last-child {
+        margin-bottom: 10px;
       }
     }
   }

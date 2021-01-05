@@ -25,7 +25,6 @@ public class ReceiptController {
     @Autowired
     private AccountRepository accountRepository;
 
-    // Should be moved to account controller.
     @PostMapping("/account")
     public ResponseEntity<CommonResponse> createAnonAccount(@RequestBody Account account) {
         CommonResponse cr = new CommonResponse();
@@ -60,11 +59,9 @@ public class ReceiptController {
 
     @PostMapping()
     public ResponseEntity<CommonResponse> createShipmentReceipt(@RequestBody ReceiptDTO receiptDTO) {
-        CommonResponse cr = new CommonResponse();
 
-        sendgridService.sendReceipt(receiptDTO.getRecipient(), receiptDTO.getReceiver(), receiptDTO.getDestinationCountry(), receiptDTO.getSourceCountry(), receiptDTO.getBoxColour(), receiptDTO.getWeight());
+        return sendgridService.sendReceipt(receiptDTO.getRecipient(), receiptDTO.getReceiver(), receiptDTO.getDestinationCountry(), receiptDTO.getSourceCountry(), receiptDTO.getBoxColour(), receiptDTO.getWeight());
 
-        return new ResponseEntity<>(cr, HttpStatus.OK);
     }
 
 

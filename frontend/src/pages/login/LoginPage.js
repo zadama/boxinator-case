@@ -95,7 +95,7 @@ const LoginPage = ({ history }) => {
         />
       )}
 
-      <div className="login">
+      <div style={{ padding: "0px" }} className="login">
         {errorMessage && (
           <Alert
             message={errorMessage}
