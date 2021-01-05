@@ -78,6 +78,7 @@ const ShipmentForm = ({ state, handleChange, setColorValue, errors }) => {
               placeholder={"Select source country"}
               options={sourceCountries}
               onChange={handleChange}
+              isSearchable={false}
             />
             {errors.sourceCountry && (
               <span className="error-span">{errors.sourceCountry}</span>
@@ -92,6 +93,7 @@ const ShipmentForm = ({ state, handleChange, setColorValue, errors }) => {
               placeholder={"Select destination country"}
               options={savedCountries}
               onChange={handleChange}
+              isSearchable={false}
             />
 
             {errors.destinationCountry && (

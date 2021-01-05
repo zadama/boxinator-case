@@ -10,7 +10,11 @@ const Modal = ({ children, isVisible, onClose }) => {
 
   return (
     <div className="custom-overlay">
-      <div ref={modalRef} className="custom-modal">
+      <div
+        style={{ maxHeight: "500px", overflowY: "scroll" }}
+        ref={modalRef}
+        className="custom-modal"
+      >
         {children}
       </div>
     </div>

@@ -138,18 +138,13 @@ const RegisterPage = ({ history, location }) => {
         shipmentStatus: "IN_TRANSIT",
       };
       const shipment = await createShipment(newShipment, token);
-      alert(
-        "Shipment claimed! This should now redirect the handleShipments page(when its done) and highlight the created shipment through state.claimShipment"
-      );
 
       const { data } = shipment.data;
       console.log(data);
 
-      // redirect to appropriate route and have a toast here "your shipment was successfully added!" with highlighting the shipment
-
       history.push({
-        pathname: "/admin-dashboard/country", // CHANGE THIS! redirect to users shipment page and also add the claimShipment in that page.
-        state: { claimShipment: data.id },
+        pathname: "/handle-shipments",
+        state: { claimShipment: data.id, date: new Date() },
       });
     } catch (error) {
       console.log(error);
@@ -212,8 +207,6 @@ const RegisterPage = ({ history, location }) => {
           }}
         />
       )}
-
-     
 
       <RegisterForm
         guestEmail={guestEmail}

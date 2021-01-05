@@ -2,10 +2,13 @@ package com.example.boxinator.Models;
 
 
 import com.example.boxinator.Models.Enums.ShipmentStatus;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @JsonIdentityInfo(
@@ -42,6 +45,18 @@ public class Shipment {
     @ManyToOne
     private Country destinationCountry;
 
+
+    @Column
+    private Date createdAt;
+
+    @JsonGetter("destinationCountry")
+    private String destinationCountry() { return destinationCountry.getName();}
+
+    @JsonGetter("account")
+    private String account() {
+        return account.getFirstName() + " " + account.getLastName();
+    }
+
     @ManyToOne
     private Account account;
 
@@ -52,6 +67,7 @@ public class Shipment {
     public void setAccount(Account account) {
         this.account = account;
     }
+
 
     public Long getId() {
         return id;
@@ -117,6 +133,9 @@ public class Shipment {
         this.shipmentStatus = shipmentStatus;
     }
 
+    public Date getCreatedAt() { return createdAt;}
+
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
 }
 
 

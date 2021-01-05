@@ -9,18 +9,20 @@ const { useState } = require("react");
 
 const UpdateCountryModal = (props) => {
 
-    const [modal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [thisCountry, setThisCountry] = useState(props.country);
     const [id, setId] = useState(props.country.id);
 
 
     const updateCountry = () => {
-        props.updateCountry({id, ...values});
+        props.updateCountry(thisCountry, {id, ...values});
         setShowModal(false);
     };
 
     const {values, setValues, setErrors, errors, handleChange, handleSubmit} = useForm(updateCountry, validate);
 
     useEffect (() => {
+        setThisCountry(props.country);
         setValues(props.country);
     }, [props.country])
 
@@ -39,10 +41,13 @@ const UpdateCountryModal = (props) => {
                 <FontAwesomeIcon icon={faPencilAlt} />
             </button>
 
-            {modal && (<Modal onClose={onClose}>
+            {showModal && (<Modal onClose={onClose}>
 
                 <div className="edit-country-form">
-                    <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+                    <form
+                        onSubmit={handleSubmit}
+                        className="needs-validation"
+                        noValidate>
                         <div className="form-group">
                             <label htmlFor="countryName">
                                 <strong>Country name:</strong>

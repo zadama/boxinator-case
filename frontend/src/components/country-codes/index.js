@@ -10,6 +10,7 @@ const CountryCodes = ({ value, handleChange }) => {
       value={value}
       onChange={handleChange}
       options={countryCodes}
+      isSearchable={false}
     />
   );
 };

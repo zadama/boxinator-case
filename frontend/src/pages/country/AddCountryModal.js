@@ -7,27 +7,27 @@ const { useState } = require("react");
 
 const AddCountryModal = (props) => {
 
-    const [modal, showModal] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const {values, errors, handleChange, handleSubmit} = useForm(addCountry, validate);
 
     function addCountry() {
         props.addCountry(values);
-        showModal(false);
+        setShowModal(false);
     }
 
     const onClose = () => {
-        showModal(false);
+        setShowModal(false);
     };
 
         return (
             <div>
                 <button onClick={() => {
-                    showModal(true);
-                }} className="btn btn-info btn-sm mt-0">
+                    setShowModal(true);
+                }} className="btn btn-info btn-sm mt-0 ml-2">
                     Add country </button>
 
-                {modal && (<Modal className="add-country-modal" onClose={onClose}>
+                {showModal && (<Modal className="add-country-modal" onClose={onClose}>
                     <div className="add-country-form">
                         <form onSubmit={handleSubmit} className="needs-validation" noValidate>
                             <div className="form-group">

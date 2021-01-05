@@ -136,9 +136,9 @@ return user.reauthenticateWithCredential(credential);
   };
 
   // When the user leaves the page before enrolling 2Fa, we delete the account
-  const handleLeavePage = (e) => {
+  const handleLeavePage = async (e) => {
     if (!hasEnrolled2Fa.current) {
-      onDeleteUser();
+      await onDeleteUser();
     }
   };
 

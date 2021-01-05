@@ -1,3 +1,4 @@
+
 package com.example.boxinator;
 
 import com.google.api.client.json.Json;
@@ -7,6 +8,7 @@ import com.google.firebase.FirebaseOptions;
 import com.google.gson.JsonObject;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
+
 @SpringBootApplication
 public class BoxinatorApplication {
 
@@ -25,6 +28,7 @@ public class BoxinatorApplication {
 
     @Value("${FIREBASE_CONFIG}")
     private String firebaseConfig;
+
 
     public static void main(String[] args) {
         SpringApplication.run(BoxinatorApplication.class, args);
@@ -37,6 +41,7 @@ public class BoxinatorApplication {
             JSONObject jsonObject = new JSONObject(firebaseConfig);
             String str = jsonObject.toString();
             InputStream serviceAccount = new ByteArrayInputStream(str.getBytes());
+
 
 
             FirebaseOptions options = new FirebaseOptions.Builder()
@@ -54,3 +59,4 @@ public class BoxinatorApplication {
     }
 
 }
+
