@@ -207,7 +207,6 @@ const RegisterPage = ({ history, location }) => {
           }}
         />
       )}
-
       <RegisterForm
         guestEmail={guestEmail}
         handleRegistration={handleRegistration}
