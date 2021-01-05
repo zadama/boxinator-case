@@ -3,6 +3,8 @@ import React from "react";
 import useForm from "./useForm";
 import validate from "./FormValidations";
 
+import "./styles.scss";
+
 const { useState } = require("react");
 
 const AddCountryModal = (props) => {
@@ -28,6 +30,7 @@ const AddCountryModal = (props) => {
                     Add country </button>
 
                 {showModal && (<Modal className="add-country-modal" onClose={onClose}>
+                    <h5>Adding Country</h5>
                     <div className="add-country-form">
                         <form onSubmit={handleSubmit} className="needs-validation" noValidate>
                             <div className="form-group">
@@ -75,9 +78,12 @@ const AddCountryModal = (props) => {
                                 {errors.feeMultiplier && (<p className="is-invalid invalid-feedback">
                                     {errors.feeMultiplier}</p>)}
                             </div>
-                            <button className="btn btn-info"
-                                    type="submit">Add</button>
-                            <button onClick={onClose} className="btn btn-danger">Cancel</button>
+
+                            <div className="text-center form-buttons">
+                                <button className="btn btn-info" type="submit">Add</button>
+                                <button onClick={onClose} className="btn btn-danger ml-2">Cancel</button>
+                            </div>
+
 
                         </form>
 

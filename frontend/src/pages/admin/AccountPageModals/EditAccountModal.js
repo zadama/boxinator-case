@@ -110,9 +110,9 @@ const EditAccountModal = (props) => {
 
       {showModal && (<Modal onClose={onClose}>
 
-        <h3 style={{ paddingTop: "10px" }}>
+        <h5 style={{ paddingTop: "10px" }}>
           Editing {props.account.firstName} {props.account.lastName}
-        </h3>
+        </h5>
         <form
           style={{
             width: "85%",
