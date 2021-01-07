@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 //place fontawesome icon inside input element
 
-const Search = ({setSearchValue}) => {
+const Search = ({setSearchValue, type}) => {
 
     const [keyword, setKeyword] = useState("");
 
@@ -32,6 +32,13 @@ const Search = ({setSearchValue}) => {
                         onChange={handleChange}/>
                     <i><FontAwesomeIcon icon={faSearch} size="lg"/></i>
                 </div>
+            </div>
+            <div className="search-examples">
+                <p> Searchable fields: {!type ? "" :
+                type.map((word) => {
+                    return <span key={word}>{word} </span>;
+                })}
+                </p>
             </div>
         </div>
     );
