@@ -25,7 +25,7 @@ const Navbar = () => {
             src={Logo}
             style={{ maxWidth: "100px" }}
           ></img>
-          <h3>SendIt</h3>
+          <h3>Sendit</h3>
         </div>
       </Link>
       <div style={{ marginRight: "auto" }}></div>
@@ -39,10 +39,11 @@ const Navbar = () => {
               <Link to="/admin-dashboard">Admin Dashboard</Link>
             )}
 
-            <Link to="/handle-shipments">Shipments overview</Link>
-
+            {auth.user.role === USER && (
+              <Link to="/handle-shipments">Shipments overview</Link>
+            )}
             <Link to="/profile-dashboard">
-              <FontAwesomeIcon size="lg" color={"black"} icon={faUserAlt} />
+              <FontAwesomeIcon size="lg" color={"white"} icon={faUserAlt} />
             </Link>
           </>
         ) : (

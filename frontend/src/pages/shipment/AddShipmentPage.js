@@ -8,7 +8,7 @@ import CompleteOrder from "./components/CompleteOrder";
 import TruckLoader from "../../components/truck-loader";
 import { createShipment, addShipmentReceipt } from "../../api/shipments";
 import { ntc as convertHex } from "../../utils/ntc";
-import { GUEST } from "../../utils/roles";
+import { ADMIN, GUEST, USER } from "../../utils/roles";
 import Alert from "../../components/alert";
 
 const AddShipmentPage = ({ history }) => {
@@ -157,10 +157,17 @@ const AddShipmentPage = ({ history }) => {
         // with latest shipment highlughted by getting shipment id in location state
         const { data: newShipment } = result.data;
 
-        history.push({
-          pathname: "/handle-shipments",
-          state: { claimShipment: newShipment.id, date: new Date() },
-        });
+        if (user.role === USER) {
+          history.push({
+            pathname: "/handle-shipments",
+            state: { claimShipment: newShipment.id, date: new Date() },
+          });
+        } else if (user.role === ADMIN) {
+          history.push({
+            pathname: "/admin-dashboard",
+            state: { claimShipment: newShipment.id },
+          });
+        }
       }
     } catch (error) {
       console.log(error);

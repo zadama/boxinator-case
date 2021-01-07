@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../../register/style.scss";
 import { Button } from "react-bootstrap";
-import Toast from "react-bootstrap/Toast";
+import Toaster from "../../../components/toast/Toaster"
 
 import { useAuth } from "../../../context/auth";
-import { getAccount } from "../../../api/user";
+import { getAccount, updateAccount } from "../../../api/user";
 import { getAllCountries } from "../../../api/countries";
 import EditAccountModal from "../../admin/AccountPageModals/EditAccountModal";
 
@@ -12,11 +12,12 @@ const ProfileInformation = (props) => {
   const auth = useAuth();
   const [data, setData] = useState(null);
   const [countries, setCountries] = useState([]);
-  const [editAccountView, setEditAccountView] = useState(false);
-  const [thisAccount, setThisAccount] = useState(null);
 
-  const [toast, setToast] = useState(false);
+  //For Toaster component
+  const [toastHeader, setToastHeader] = useState("");
   const [toastMsg, setToastMsg] = useState("");
+  const [toast, setToast] = useState(false);
+
 
   const renderProfileInformationWithToken = async () => {
     try {
@@ -43,34 +44,35 @@ const ProfileInformation = (props) => {
     renderProfileInformationWithToken();
   }, []);
 
-  const handleEditClick = (account) => {
-    // Open modal when admin wants to edit an account
-    setEditAccountView(!editAccountView);
-    setThisAccount(account);
+  const editAccount = async (account) => {
+    console.log(account);
+    try {
+      const token = await auth.getUserToken(); // Get sessiontoken
+      await updateAccount(token, account.id, account); // Pass token, pathvariable and body with request
+      setToastHeader("Success");
+      setToastMsg("The account was updated successfully.");
+      setToast(true);
+      await renderProfileInformationWithToken(); // Rerender page
+    } catch (error) {
+      console.log(error);
+      setToastHeader("Error");
+      setToastMsg("Unable to update account details.");
+      setToast(true);
+    } 
   };
 
-  const toggleToast = (action) => {
-    setToastMsg(action);
-    setToast(true);
-  };
 
   return (
     <>
-      <Toast
-        show={toast}
-        onClose={() => {
-          setToast(false);
-          setToastMsg("");
-        }}
-        delay={2500}
-        autohide
-      >
-        <Toast.Header>
-          <strong className="mr-auto">Bootstrap</strong>
-          <small>just now</small>
-        </Toast.Header>
-        <Toast.Body>Account {toastMsg && toastMsg}.</Toast.Body>
-      </Toast>
+      {toast && (
+          <Toaster
+              toastHeaderMsg={toastHeader}
+              toastMsg={toastMsg}
+              onClose={() => {
+                setToast(false);
+              }}
+          />
+      )}
       {!data ? (
         <h3>loading...</h3>
       ) : (
@@ -104,7 +106,10 @@ const ProfileInformation = (props) => {
               <label className="label" htmlFor="dateOfBirth">
                 Date of birth{" "}
               </label>
-              <input className="input" readOnly value={data.dateOfBirth} />
+              <input className="input" readOnly value={new Date(data.dateOfBirth)
+                      .toISOString()
+                      .slice(0, 10)
+                      .replace("T", " ")} />
             </div>
             <div className="register-form-group half-width">
               <label className="label" htmlFor="country">
@@ -126,7 +131,11 @@ const ProfileInformation = (props) => {
             </div>
           </div>
           <div className="profile-buttons">
-            <Button onClick={() => handleEditClick(data)}>edit</Button>
+            <EditAccountModal
+              countries={countries}
+              account={data}
+              updateAccount={editAccount}
+            />
             <Button
               onClick={async () => {
                 await auth.logout();
@@ -136,15 +145,6 @@ const ProfileInformation = (props) => {
             </Button>
           </div>
         </>
-      )}
-      {editAccountView && (
-        <EditAccountModal
-          onClose={() => setEditAccountView(!editAccountView)}
-          countries={countries}
-          account={thisAccount}
-          toggleToast={toggleToast}
-          reRender={renderProfileInformationWithToken}
-        />
       )}
     </>
   );

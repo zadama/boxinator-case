@@ -6,15 +6,12 @@ import { getAccount } from "../../api/user";
 
 import "./style.scss";
 
-import ProfileMenu from "./ProfileComponents/ProfileMenu";
 import ProfileInformation from "./ProfileComponents/ProfileInformation";
 
 const ProfilePage = () => {
   const auth = useAuth();
   const [data, setData] = useState(null);
 
-  const [showProfile, setShowProfile] = useState(false);
-  const [showShipments, setShowShipments] = useState(false);
   const [title, setTitle] = useState("");
 
   const renderProfilePageWithData = async () => {
@@ -32,19 +29,6 @@ const ProfilePage = () => {
   useEffect(() => {
     renderProfilePageWithData();
   }, []);
-
-  /*
-  const handleMenuClick = (event, value) => {
-    if (value === "profile") {
-      setTitle(data.firstName + "'s Profile Information");
-      setShowShipments(false);
-      setShowProfile(!showProfile);
-    } else if (value === "shipments") {
-      setTitle(data.firstName + "'s Shipments");
-      setShowProfile(false);
-      setShowShipments(!showShipments);
-    }
-  };*/
 
   return (
     <PrivateLayout>
