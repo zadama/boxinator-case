@@ -62,7 +62,7 @@ private final String testToken= "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0
     }
 
     @Test
-    @DisplayName("Testing_Get_All_Accounts_With_Valid_testToken")
+    @DisplayName("Testing_Get_All_Accounts_With_Valid_Test_Token")
     void testingGetAllAccountsWithValidTestToken() {
         //Given
         String token = testToken;
@@ -73,7 +73,7 @@ private final String testToken= "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0
     }
 
     @Test
-    @DisplayName("Testing_Get_All_Accounts_With_Invalid_testToken")
+    @DisplayName("Testing_Get_All_Accounts_With_Invalid_Test_Token")
     void testingGetAllAccountsWithInvalidTestToken() {
         //Given
         String token = "123 123";
@@ -82,11 +82,17 @@ private final String testToken= "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0
         //then
         assertNotEquals(HttpStatus.OK,res.getBody().status);
     }
-    
+
     @Test
-    @Disabled
-    @DisplayName("")
-    void getAccount() {
+    @DisplayName("Testing_Get_Account_With_Valid_Test_Token_And_Valid_Mail")
+    void testingGetAccountWithValidTestTokenAndValidMail() {
+        //Given
+        String token = testToken;
+        String testMail ="oscar.dahlquist@gmail.com";
+        //when
+        ResponseEntity<CommonResponse> res = accountController.getAccount(token,testMail);
+        //then
+        assertEquals(HttpStatus.OK, res.getBody().status);
     }
 
 
