@@ -4,7 +4,7 @@ import { Button } from "react-bootstrap";
 import Toast from "react-bootstrap/Toast";
 
 import { useAuth } from "../../../context/auth";
-import { getAccount } from "../../../api/user";
+import { getAccount, updateAccount } from "../../../api/user";
 import { getAllCountries } from "../../../api/countries";
 import EditAccountModal from "../../admin/AccountPageModals/EditAccountModal";
 
@@ -12,8 +12,6 @@ const ProfileInformation = (props) => {
   const auth = useAuth();
   const [data, setData] = useState(null);
   const [countries, setCountries] = useState([]);
-  const [editAccountView, setEditAccountView] = useState(false);
-  const [thisAccount, setThisAccount] = useState(null);
 
   const [toast, setToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
@@ -43,16 +41,18 @@ const ProfileInformation = (props) => {
     renderProfileInformationWithToken();
   }, []);
 
-  const handleEditClick = (account) => {
-    // Open modal when admin wants to edit an account
-    setEditAccountView(!editAccountView);
-    setThisAccount(account);
+  const editAccount = async (account) => {
+    console.log(account);
+    try {
+      const token = await auth.getUserToken(); // Get sessiontoken
+
+      await updateAccount(token, account.id, account); // Pass token, pathvariable and body with request
+      await renderProfileInformationWithToken(); // Rerender page
+    } catch (error) {
+      console.log(error);
+    } 
   };
 
-  const toggleToast = (action) => {
-    setToastMsg(action);
-    setToast(true);
-  };
 
   return (
     <>
@@ -104,7 +104,10 @@ const ProfileInformation = (props) => {
               <label className="label" htmlFor="dateOfBirth">
                 Date of birth{" "}
               </label>
-              <input className="input" readOnly value={data.dateOfBirth} />
+              <input className="input" readOnly value={new Date(data.dateOfBirth)
+                      .toISOString()
+                      .slice(0, 10)
+                      .replace("T", " ")} />
             </div>
             <div className="register-form-group half-width">
               <label className="label" htmlFor="country">
@@ -126,7 +129,11 @@ const ProfileInformation = (props) => {
             </div>
           </div>
           <div className="profile-buttons">
-            <Button onClick={() => handleEditClick(data)}>edit</Button>
+            <EditAccountModal
+              countries={countries}
+              account={data}
+              updateAccount={editAccount}
+            />
             <Button
               onClick={async () => {
                 await auth.logout();
@@ -136,15 +143,6 @@ const ProfileInformation = (props) => {
             </Button>
           </div>
         </>
-      )}
-      {editAccountView && (
-        <EditAccountModal
-          onClose={() => setEditAccountView(!editAccountView)}
-          countries={countries}
-          account={thisAccount}
-          toggleToast={toggleToast}
-          reRender={renderProfileInformationWithToken}
-        />
       )}
     </>
   );

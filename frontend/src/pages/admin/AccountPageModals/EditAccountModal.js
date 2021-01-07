@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Select from "react-select";
 
 import Modal from "../../../components/modal/index";
@@ -92,10 +92,6 @@ const EditAccountModal = (props) => {
     onClose();
 
   };
-
-  const countries = props.countries.map((country, id) => {
-    return <option key={id}>{country}</option>
-  })
 
   const onClose = () => {
     setShowModal(false);
