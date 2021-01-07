@@ -52,7 +52,7 @@ public class SendgridService {
                String queryParams = "receiver=" + receiver + "&des_country="+ desCountry +"&src_country="+ srcCountry  +  "&box_color=" + boxColor + "&weight=" + weight + "&id="+ account.getId() + "&email=" + recipient;
                System.out.println(queryParams);
                String verificationLink = enviromentMode.equals("dev") ? "http://localhost:3000/register?" + queryParams : "https://boxinator-application.herokuapp.com/register?" + queryParams;
-               Email from = new Email("paria.karim@se.experis.com"); // Should be changed to our "company" email
+               Email from = new Email("boxinator.mail@gmail.com"); // Should be changed to our "company" email
                Email to = new Email(recipient);
 
                String subject = "Sending with Twilio SendGrid is Fun";

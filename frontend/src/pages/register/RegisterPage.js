@@ -53,6 +53,10 @@ const RegisterPage = ({ history, location }) => {
       formData.current.email = guestEmail;
     }
 
+    // Make email to lowerCase here, test in devbranch first... ( checkout)
+    formData.current.email = formData.current.email?.toLowerCase();
+
+    /*
     try {
       await register(formData.current.email, formData.current.password);
 
@@ -68,7 +72,7 @@ const RegisterPage = ({ history, location }) => {
       if (errorHandler != null) {
         setErrorMessage(errorHandler.response);
       }
-    }
+    }*/
   };
 
   const fetchCountries = async () => {
