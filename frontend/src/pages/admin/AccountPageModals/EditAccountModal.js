@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Select from "react-select";
 
 import Modal from "../../../components/modal/index";
@@ -93,10 +93,6 @@ const EditAccountModal = (props) => {
 
   };
 
-  const countries = props.countries.map((country, id) => {
-    return <option key={id}>{country}</option>
-  })
-
   const onClose = () => {
     setShowModal(false);
   };
@@ -110,9 +106,9 @@ const EditAccountModal = (props) => {
 
       {showModal && (<Modal onClose={onClose}>
 
-        <h3 style={{ paddingTop: "10px" }}>
+        <h5 style={{ paddingTop: "10px" }}>
           Editing {props.account.firstName} {props.account.lastName}
-        </h3>
+        </h5>
         <form
           style={{
             width: "85%",

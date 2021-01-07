@@ -5,6 +5,8 @@ import validate from "./FormValidations";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPencilAlt} from "@fortawesome/free-solid-svg-icons";
 
+import "./styles.scss";
+
 const { useState } = require("react");
 
 const UpdateCountryModal = (props) => {
@@ -42,7 +44,7 @@ const UpdateCountryModal = (props) => {
             </button>
 
             {showModal && (<Modal onClose={onClose}>
-
+                <h5>Editing {props.country.name}</h5>
                 <div className="edit-country-form">
                     <form
                         onSubmit={handleSubmit}
@@ -90,8 +92,11 @@ const UpdateCountryModal = (props) => {
                             {errors.feeMultiplier && (<p className="is-invalid invalid-feedback">
                                 {errors.feeMultiplier}</p>)}
                         </div>
-                        <button type="submit" className="btn btn-info">Save</button>
-                        <button onClick={onClose} className="btn btn-danger">Cancel</button>
+                        <div className="text-center form-buttons">
+                            <button type="submit" className="btn btn-primary">Save</button>
+                            <button onClick={onClose} className="btn btn-secondary ml-2">Cancel</button>
+                        </div>
+
                     </form>
 
                 </div>

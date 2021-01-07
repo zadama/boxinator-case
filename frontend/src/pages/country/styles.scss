@@ -1,11 +1,14 @@
 
 h1,h5 {
   text-align: center;
+}
 
+h5 {
+  text-align: center;
+  padding: 1.5%;
 }
 
 .all-countries-container {
-  border: 2px solid #000000;
   border-radius: 4px;
   margin: 2%;
   padding: 5%;
@@ -15,7 +18,19 @@ h1,h5 {
   justify-content: center;
 }
 
+.edit-country-form, .add-country-form, .delete-country-modal{
+  width: 80%;
+  padding: 15px 20px 15px 20px;
+}
+
+
 .button{
   margin-bottom: 10px;
+}
+
+.form-buttons {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  column-gap: 5px;
 }
 

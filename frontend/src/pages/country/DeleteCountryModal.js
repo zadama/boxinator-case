@@ -26,7 +26,7 @@ const DeleteCountryModal = (props) => {
     };
 
     return (
-        <div className="delete-country-modal">
+        <div className="delete-country-container">
             <button
                 onClick={() => {
                     setShowModal(true);
@@ -35,8 +35,8 @@ const DeleteCountryModal = (props) => {
             </button>
 
             {showModal && (<Modal  onClose={onClose}>
-                <div>
-                    <h5>Are you sure?</h5>
+                <h5>Are you sure?</h5>
+                <div className="delete-country-modal">
                     <p>This entry will be permanently removed from the database.
                         You can't undo this action. </p>
                     <table className="table">
@@ -50,8 +50,8 @@ const DeleteCountryModal = (props) => {
                     </table>
                     <div className="text-center">
                         <button onClick={onDeleteClicked} className="btn btn-danger btn-sm">Delete</button>
-                        <button onClick={onClose} className="btn btn-light btn-sm ml-2">
-                            <strong> Oops! Cancel</strong>
+                        <button onClick={onClose} className="btn btn-secondary btn-sm ml-2">
+                            <strong>Cancel</strong>
                         </button>
                     </div>
                 </div>
