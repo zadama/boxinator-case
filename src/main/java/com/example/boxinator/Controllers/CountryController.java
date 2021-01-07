@@ -154,7 +154,7 @@ public class CountryController {
                     cr.data = country;
                     countryRepository.deleteById(country_id);
                     cr.msg = "The country with id: " + country_id + " has been deleted";
-                    cr.status = HttpStatus.CREATED;
+                    cr.status = HttpStatus.OK;
                 } catch (Exception e) {
                     cr.msg = "Unable to delete country with id: " + country_id;
                     cr.status = HttpStatus.INTERNAL_SERVER_ERROR;

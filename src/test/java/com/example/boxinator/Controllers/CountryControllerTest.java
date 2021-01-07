@@ -65,7 +65,7 @@ private CountryController countryController;
 
     @Test
     @DisplayName("Testing_Update_Country_By_Id_,Changing_Its'_")
-    void updateCountryById() {
+    void testingUpdateCountryById() {
         //Given
         Country country = new Country();
         String token = testToken;
@@ -81,11 +81,19 @@ private CountryController countryController;
 
     @Test
     @DisplayName("Testing_Delete_Country_By_ID")
-    void deleteCountryById() {
+    void testingDeleteCountryById() {
         //Given
+        String token = testToken;
+        Country countryToBeDeleted = new Country();
+        countryToBeDeleted.setName("JohnLand");
+        countryToBeDeleted.setCountryCode("JL");
+        countryToBeDeleted.setFeeMultiplier(3);
 
+        ResponseEntity <CommonResponse> testRes =countryController.addCountry(token,countryToBeDeleted);
+        countryToBeDeleted = (Country)testRes.getBody().data;
         //When
-
+        ResponseEntity<CommonResponse> res = countryController.deleteCountryById(token,countryToBeDeleted.getId());
         //Then
+        assertEquals(HttpStatus.OK,res.getStatusCode());
     }
 }
