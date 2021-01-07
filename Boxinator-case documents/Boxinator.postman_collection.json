@@ -1,0 +1,573 @@
+{
+	"info": {
+		"_postman_id": "c7f97a54-bf54-4ea8-b7f9-aa3f98c9c87a",
+		"name": "Boxinator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Country",
+			"item": [
+				{
+					"name": "Get All Countries",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/v1/settings/country/all",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"v1",
+								"settings",
+								"country",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Country",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0YjYxNmE0MWFhZmE5MmNlZTVjYzg3Yjc2MmRmNjRmYTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm94aW5hdG9yLWZjZDRjIiwiYXVkIjoiYm94aW5hdG9yLWZjZDRjIiwiYXV0aF90aW1lIjoxNjA5OTI5Mjc1LCJ1c2VyX2lkIjoiYUZXWHJwdm5yOVZwQUZMd1JIcUtKNVZ4VDFxMSIsInN1YiI6ImFGV1hycHZucjlWcEFGTHdSSHFLSjVWeFQxcTEiLCJpYXQiOjE2MDk5NTAyODUsImV4cCI6MTYwOTk1Mzg4NSwiZW1haWwiOiJtYXRoYm9iMDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWF0aGJvYjAwQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIiwic2lnbl9pbl9zZWNvbmRfZmFjdG9yIjoicGhvbmUiLCJzZWNvbmRfZmFjdG9yX2lkZW50aWZpZXIiOiIwOGE5ZTA1Ny1kMzQwLTQ1YWMtOTk4OC05OTJkZTZjMjRiMGQifX0.Rib169nc_Ozj4z2xTv_8JguvV3-pj08bKAmBI5bO-cbHFetCBPGezrWzAWnwzEF-qM_wXe1n8cQpXNFsX78tVqqmwu92zv362-wKMWBv8pWo13aZ9LHKPGDpQTJ0kEoaorGfIuv3zgLueTdI3Wdjjm32RPPjLUcJchSO-ic4KESbBWrWWR-RR4nZEyFcQcNy6HuwWfy4dIq0YgUOhMF3WPiOyoJTLXNwJuWehAdqZkh6q8W0qXW5KBZMCd-UUFHR0KC0zHSbJCM3dCm1YIqq88Sey1VyBjKXD4-uzG-C0SWG3L_b_bQTE7UwZNe2Nudb2b2Mh5OV2qDhX7Rl6ea2Yg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Testland\",\r\n    \"countryCode\": \"TES\",\r\n    \"feeMultiplier\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/v1/settings/country/create",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"v1",
+								"settings",
+								"country",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Country By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0YjYxNmE0MWFhZmE5MmNlZTVjYzg3Yjc2MmRmNjRmYTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm94aW5hdG9yLWZjZDRjIiwiYXVkIjoiYm94aW5hdG9yLWZjZDRjIiwiYXV0aF90aW1lIjoxNjA5OTI5Mjc1LCJ1c2VyX2lkIjoiYUZXWHJwdm5yOVZwQUZMd1JIcUtKNVZ4VDFxMSIsInN1YiI6ImFGV1hycHZucjlWcEFGTHdSSHFLSjVWeFQxcTEiLCJpYXQiOjE2MDk5NTAyODUsImV4cCI6MTYwOTk1Mzg4NSwiZW1haWwiOiJtYXRoYm9iMDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWF0aGJvYjAwQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIiwic2lnbl9pbl9zZWNvbmRfZmFjdG9yIjoicGhvbmUiLCJzZWNvbmRfZmFjdG9yX2lkZW50aWZpZXIiOiIwOGE5ZTA1Ny1kMzQwLTQ1YWMtOTk4OC05OTJkZTZjMjRiMGQifX0.Rib169nc_Ozj4z2xTv_8JguvV3-pj08bKAmBI5bO-cbHFetCBPGezrWzAWnwzEF-qM_wXe1n8cQpXNFsX78tVqqmwu92zv362-wKMWBv8pWo13aZ9LHKPGDpQTJ0kEoaorGfIuv3zgLueTdI3Wdjjm32RPPjLUcJchSO-ic4KESbBWrWWR-RR4nZEyFcQcNy6HuwWfy4dIq0YgUOhMF3WPiOyoJTLXNwJuWehAdqZkh6q8W0qXW5KBZMCd-UUFHR0KC0zHSbJCM3dCm1YIqq88Sey1VyBjKXD4-uzG-C0SWG3L_b_bQTE7UwZNe2Nudb2b2Mh5OV2qDhX7Rl6ea2Yg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Sweden\",\r\n    \"feeMultiplier\": 270\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/v1/settings/country/1",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"v1",
+								"settings",
+								"country",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Country",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0YjYxNmE0MWFhZmE5MmNlZTVjYzg3Yjc2MmRmNjRmYTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm94aW5hdG9yLWZjZDRjIiwiYXVkIjoiYm94aW5hdG9yLWZjZDRjIiwiYXV0aF90aW1lIjoxNjA5OTI5Mjc1LCJ1c2VyX2lkIjoiYUZXWHJwdm5yOVZwQUZMd1JIcUtKNVZ4VDFxMSIsInN1YiI6ImFGV1hycHZucjlWcEFGTHdSSHFLSjVWeFQxcTEiLCJpYXQiOjE2MDk5NTAyODUsImV4cCI6MTYwOTk1Mzg4NSwiZW1haWwiOiJtYXRoYm9iMDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWF0aGJvYjAwQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIiwic2lnbl9pbl9zZWNvbmRfZmFjdG9yIjoicGhvbmUiLCJzZWNvbmRfZmFjdG9yX2lkZW50aWZpZXIiOiIwOGE5ZTA1Ny1kMzQwLTQ1YWMtOTk4OC05OTJkZTZjMjRiMGQifX0.Rib169nc_Ozj4z2xTv_8JguvV3-pj08bKAmBI5bO-cbHFetCBPGezrWzAWnwzEF-qM_wXe1n8cQpXNFsX78tVqqmwu92zv362-wKMWBv8pWo13aZ9LHKPGDpQTJ0kEoaorGfIuv3zgLueTdI3Wdjjm32RPPjLUcJchSO-ic4KESbBWrWWR-RR4nZEyFcQcNy6HuwWfy4dIq0YgUOhMF3WPiOyoJTLXNwJuWehAdqZkh6q8W0qXW5KBZMCd-UUFHR0KC0zHSbJCM3dCm1YIqq88Sey1VyBjKXD4-uzG-C0SWG3L_b_bQTE7UwZNe2Nudb2b2Mh5OV2qDhX7Rl6ea2Yg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}api/v1/settings/country/remove/1",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"v1",
+								"settings",
+								"country",
+								"remove",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shipment",
+			"item": [
+				{
+					"name": "Create Shipment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0YjYxNmE0MWFhZmE5MmNlZTVjYzg3Yjc2MmRmNjRmYTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm94aW5hdG9yLWZjZDRjIiwiYXVkIjoiYm94aW5hdG9yLWZjZDRjIiwiYXV0aF90aW1lIjoxNjA5OTI5Mjc1LCJ1c2VyX2lkIjoiYUZXWHJwdm5yOVZwQUZMd1JIcUtKNVZ4VDFxMSIsInN1YiI6ImFGV1hycHZucjlWcEFGTHdSSHFLSjVWeFQxcTEiLCJpYXQiOjE2MDk5NDkyNjMsImV4cCI6MTYwOTk1Mjg2MywiZW1haWwiOiJtYXRoYm9iMDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWF0aGJvYjAwQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIiwic2lnbl9pbl9zZWNvbmRfZmFjdG9yIjoicGhvbmUiLCJzZWNvbmRfZmFjdG9yX2lkZW50aWZpZXIiOiIwOGE5ZTA1Ny1kMzQwLTQ1YWMtOTk4OC05OTJkZTZjMjRiMGQifX0.cXfhmy8oneolU8LfLL9EkUWf_EhrYsbQIpm-Wces3dgl9EAaqbypcMOys4t4cnt09OtV8h-wvKsLvqNJXeHPpv1-TTop-eHF-jXVkxD-d56eHK-oSzwGD-9C_RYeg2chP1kQ3nXEegNF1aMXSwnb6z6g8C5n8tVeHim9Epjc1NCsdAJ5NKHigFyNasbt6-_oRGkQcYQC5xyp7lVSgPrd8C5qiXX26avZ7FVRXHEkQkzNL1K83mzzD9nJvHS3HTAsed-OFJ2EXSX_JsIL0kmLhTWC7TSNfPi_yS6YOUFddEmkbaLu56aOGw5ZH4QO3o7XRNJIu-yyUASGWFj8rwwG9w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"weight\": 15,\r\n    \"boxColour\": \"brown\",\r\n    \"receiver\": \"lilla p test\",\r\n    \"sourceCountry\": \"Denmark\",\r\n    \"shipmentStatus\":\"IN_TRANSIT\",\r\n    \"destinationCountry\": \"Sweden\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/v1/shipment/create",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"v1",
+								"shipment",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Shipment By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0YjYxNmE0MWFhZmE5MmNlZTVjYzg3Yjc2MmRmNjRmYTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm94aW5hdG9yLWZjZDRjIiwiYXVkIjoiYm94aW5hdG9yLWZjZDRjIiwiYXV0aF90aW1lIjoxNjA5OTI5Mjc1LCJ1c2VyX2lkIjoiYUZXWHJwdm5yOVZwQUZMd1JIcUtKNVZ4VDFxMSIsInN1YiI6ImFGV1hycHZucjlWcEFGTHdSSHFLSjVWeFQxcTEiLCJpYXQiOjE2MDk5NTAyODUsImV4cCI6MTYwOTk1Mzg4NSwiZW1haWwiOiJtYXRoYm9iMDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWF0aGJvYjAwQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIiwic2lnbl9pbl9zZWNvbmRfZmFjdG9yIjoicGhvbmUiLCJzZWNvbmRfZmFjdG9yX2lkZW50aWZpZXIiOiIwOGE5ZTA1Ny1kMzQwLTQ1YWMtOTk4OC05OTJkZTZjMjRiMGQifX0.Rib169nc_Ozj4z2xTv_8JguvV3-pj08bKAmBI5bO-cbHFetCBPGezrWzAWnwzEF-qM_wXe1n8cQpXNFsX78tVqqmwu92zv362-wKMWBv8pWo13aZ9LHKPGDpQTJ0kEoaorGfIuv3zgLueTdI3Wdjjm32RPPjLUcJchSO-ic4KESbBWrWWR-RR4nZEyFcQcNy6HuwWfy4dIq0YgUOhMF3WPiOyoJTLXNwJuWehAdqZkh6q8W0qXW5KBZMCd-UUFHR0KC0zHSbJCM3dCm1YIqq88Sey1VyBjKXD4-uzG-C0SWG3L_b_bQTE7UwZNe2Nudb2b2Mh5OV2qDhX7Rl6ea2Yg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}api/v1/shipment/1",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"v1",
+								"shipment",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Shipment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0YjYxNmE0MWFhZmE5MmNlZTVjYzg3Yjc2MmRmNjRmYTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm94aW5hdG9yLWZjZDRjIiwiYXVkIjoiYm94aW5hdG9yLWZjZDRjIiwiYXV0aF90aW1lIjoxNjA5OTI5Mjc1LCJ1c2VyX2lkIjoiYUZXWHJwdm5yOVZwQUZMd1JIcUtKNVZ4VDFxMSIsInN1YiI6ImFGV1hycHZucjlWcEFGTHdSSHFLSjVWeFQxcTEiLCJpYXQiOjE2MDk5NTAyODUsImV4cCI6MTYwOTk1Mzg4NSwiZW1haWwiOiJtYXRoYm9iMDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWF0aGJvYjAwQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIiwic2lnbl9pbl9zZWNvbmRfZmFjdG9yIjoicGhvbmUiLCJzZWNvbmRfZmFjdG9yX2lkZW50aWZpZXIiOiIwOGE5ZTA1Ny1kMzQwLTQ1YWMtOTk4OC05OTJkZTZjMjRiMGQifX0.Rib169nc_Ozj4z2xTv_8JguvV3-pj08bKAmBI5bO-cbHFetCBPGezrWzAWnwzEF-qM_wXe1n8cQpXNFsX78tVqqmwu92zv362-wKMWBv8pWo13aZ9LHKPGDpQTJ0kEoaorGfIuv3zgLueTdI3Wdjjm32RPPjLUcJchSO-ic4KESbBWrWWR-RR4nZEyFcQcNy6HuwWfy4dIq0YgUOhMF3WPiOyoJTLXNwJuWehAdqZkh6q8W0qXW5KBZMCd-UUFHR0KC0zHSbJCM3dCm1YIqq88Sey1VyBjKXD4-uzG-C0SWG3L_b_bQTE7UwZNe2Nudb2b2Mh5OV2qDhX7Rl6ea2Yg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"shipmentStatus\":\"cancelled\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}api/v1/shipment/1",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"v1",
+								"shipment",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Shipment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0YjYxNmE0MWFhZmE5MmNlZTVjYzg3Yjc2MmRmNjRmYTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm94aW5hdG9yLWZjZDRjIiwiYXVkIjoiYm94aW5hdG9yLWZjZDRjIiwiYXV0aF90aW1lIjoxNjA5OTI5Mjc1LCJ1c2VyX2lkIjoiYUZXWHJwdm5yOVZwQUZMd1JIcUtKNVZ4VDFxMSIsInN1YiI6ImFGV1hycHZucjlWcEFGTHdSSHFLSjVWeFQxcTEiLCJpYXQiOjE2MDk5NTAyODUsImV4cCI6MTYwOTk1Mzg4NSwiZW1haWwiOiJtYXRoYm9iMDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWF0aGJvYjAwQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIiwic2lnbl9pbl9zZWNvbmRfZmFjdG9yIjoicGhvbmUiLCJzZWNvbmRfZmFjdG9yX2lkZW50aWZpZXIiOiIwOGE5ZTA1Ny1kMzQwLTQ1YWMtOTk4OC05OTJkZTZjMjRiMGQifX0.Rib169nc_Ozj4z2xTv_8JguvV3-pj08bKAmBI5bO-cbHFetCBPGezrWzAWnwzEF-qM_wXe1n8cQpXNFsX78tVqqmwu92zv362-wKMWBv8pWo13aZ9LHKPGDpQTJ0kEoaorGfIuv3zgLueTdI3Wdjjm32RPPjLUcJchSO-ic4KESbBWrWWR-RR4nZEyFcQcNy6HuwWfy4dIq0YgUOhMF3WPiOyoJTLXNwJuWehAdqZkh6q8W0qXW5KBZMCd-UUFHR0KC0zHSbJCM3dCm1YIqq88Sey1VyBjKXD4-uzG-C0SWG3L_b_bQTE7UwZNe2Nudb2b2Mh5OV2qDhX7Rl6ea2Yg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}api/v1/shipment/1",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"v1",
+								"shipment",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Shipments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0YjYxNmE0MWFhZmE5MmNlZTVjYzg3Yjc2MmRmNjRmYTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm94aW5hdG9yLWZjZDRjIiwiYXVkIjoiYm94aW5hdG9yLWZjZDRjIiwiYXV0aF90aW1lIjoxNjA5OTI5Mjc1LCJ1c2VyX2lkIjoiYUZXWHJwdm5yOVZwQUZMd1JIcUtKNVZ4VDFxMSIsInN1YiI6ImFGV1hycHZucjlWcEFGTHdSSHFLSjVWeFQxcTEiLCJpYXQiOjE2MDk5NTAyODUsImV4cCI6MTYwOTk1Mzg4NSwiZW1haWwiOiJtYXRoYm9iMDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWF0aGJvYjAwQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIiwic2lnbl9pbl9zZWNvbmRfZmFjdG9yIjoicGhvbmUiLCJzZWNvbmRfZmFjdG9yX2lkZW50aWZpZXIiOiIwOGE5ZTA1Ny1kMzQwLTQ1YWMtOTk4OC05OTJkZTZjMjRiMGQifX0.Rib169nc_Ozj4z2xTv_8JguvV3-pj08bKAmBI5bO-cbHFetCBPGezrWzAWnwzEF-qM_wXe1n8cQpXNFsX78tVqqmwu92zv362-wKMWBv8pWo13aZ9LHKPGDpQTJ0kEoaorGfIuv3zgLueTdI3Wdjjm32RPPjLUcJchSO-ic4KESbBWrWWR-RR4nZEyFcQcNy6HuwWfy4dIq0YgUOhMF3WPiOyoJTLXNwJuWehAdqZkh6q8W0qXW5KBZMCd-UUFHR0KC0zHSbJCM3dCm1YIqq88Sey1VyBjKXD4-uzG-C0SWG3L_b_bQTE7UwZNe2Nudb2b2Mh5OV2qDhX7Rl6ea2Yg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/shipment/all",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"shipment",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Shipments By ShipmentStatus",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0YjYxNmE0MWFhZmE5MmNlZTVjYzg3Yjc2MmRmNjRmYTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm94aW5hdG9yLWZjZDRjIiwiYXVkIjoiYm94aW5hdG9yLWZjZDRjIiwiYXV0aF90aW1lIjoxNjA5OTI5Mjc1LCJ1c2VyX2lkIjoiYUZXWHJwdm5yOVZwQUZMd1JIcUtKNVZ4VDFxMSIsInN1YiI6ImFGV1hycHZucjlWcEFGTHdSSHFLSjVWeFQxcTEiLCJpYXQiOjE2MDk5NTAyODUsImV4cCI6MTYwOTk1Mzg4NSwiZW1haWwiOiJtYXRoYm9iMDBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWF0aGJvYjAwQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIiwic2lnbl9pbl9zZWNvbmRfZmFjdG9yIjoicGhvbmUiLCJzZWNvbmRfZmFjdG9yX2lkZW50aWZpZXIiOiIwOGE5ZTA1Ny1kMzQwLTQ1YWMtOTk4OC05OTJkZTZjMjRiMGQifX0.Rib169nc_Ozj4z2xTv_8JguvV3-pj08bKAmBI5bO-cbHFetCBPGezrWzAWnwzEF-qM_wXe1n8cQpXNFsX78tVqqmwu92zv362-wKMWBv8pWo13aZ9LHKPGDpQTJ0kEoaorGfIuv3zgLueTdI3Wdjjm32RPPjLUcJchSO-ic4KESbBWrWWR-RR4nZEyFcQcNy6HuwWfy4dIq0YgUOhMF3WPiOyoJTLXNwJuWehAdqZkh6q8W0qXW5KBZMCd-UUFHR0KC0zHSbJCM3dCm1YIqq88Sey1VyBjKXD4-uzG-C0SWG3L_b_bQTE7UwZNe2Nudb2b2Mh5OV2qDhX7Rl6ea2Yg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}api/v1/shipment/status/4",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"v1",
+								"shipment",
+								"status",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Shipments By Account",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Register Account",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"test\",\r\n    \"lastName\": \"tester\",\r\n    \"email\": \"test@test.com\",\r\n    \"password\": \"123456\",\r\n    \"role\": \"USER\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://boxinator-application.herokuapp.com/api/v1/account/register",
+							"protocol": "https",
+							"host": [
+								"boxinator-application",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"account",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Accounts",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://boxinator-application.herokuapp.com/api/v1/account/all",
+							"protocol": "https",
+							"host": [
+								"boxinator-application",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"account",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account by Email",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://boxinator-application.herokuapp.com/api/v1/account/get/test@test.com",
+							"protocol": "https",
+							"host": [
+								"boxinator-application",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"account",
+								"get",
+								"test@test.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Account by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImI5ODI2ZDA5Mzc3N2NlMDA1ZTQzYTMyN2ZmMjAyNjUyMTQ1ZTk2MDQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm94aW5hdG9yLWZjZDRjIiwiYXVkIjoiYm94aW5hdG9yLWZjZDRjIiwiYXV0aF90aW1lIjoxNjA3MzUyNjA2LCJ1c2VyX2lkIjoiUG5pZzBjc3JzeGNaMG8wMDl0VVI1YTJPQ2R1MSIsInN1YiI6IlBuaWcwY3Nyc3hjWjBvMDA5dFVSNWEyT0NkdTEiLCJpYXQiOjE2MDczNTI2MDcsImV4cCI6MTYwNzM1NjIwNywiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInRlc3RAdGVzdC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.LAXqGV-SXG4cJWrx1Jd_1Hl78uNnWaDIwaSycAb9921quC8sF9ZLP1mPuhPZzL18e7X9nrbR8aK9urrC2X9jRLoAM9-8LY92wPZbSV0oXU3YYh7FT804bSRiIYhEVjjCt2qx41gxMckoHXPGGwUX9i7YCOp1WTmIVQh50wE2zEv_GRenI5R4_VROXMxoqWfAzPymfzRgp0dbSC0BgOmt5eLFW--57cOpfSep1G1kyhZUGjTZB8T-9p53WDZW-pDu9ZWwagxXtUYJLFbCRicvVwpiqrB3q3b3Jw2jSDOJ0lSEoZG3dXMlKUpeF0GD-6krv0fwHxrZVxt5t_7iN7gMag",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/account/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"account",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImI5ODI2ZDA5Mzc3N2NlMDA1ZTQzYTMyN2ZmMjAyNjUyMTQ1ZTk2MDQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm94aW5hdG9yLWZjZDRjIiwiYXVkIjoiYm94aW5hdG9yLWZjZDRjIiwiYXV0aF90aW1lIjoxNjA3NDE0ODU0LCJ1c2VyX2lkIjoieWwzUnJCWmhqalBMQ1AyaU12YWxRYXptakhuMSIsInN1YiI6InlsM1JyQlpoampQTENQMmlNdmFsUWF6bWpIbjEiLCJpYXQiOjE2MDc0MTQ4NTQsImV4cCI6MTYwNzQxODQ1NCwiZW1haWwiOiJ6aGVuZGlhY0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiemhlbmRpYWNAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.bW3_PsSK_Nw3vWXZcv_3QkwAg5IkvA0vLX2MAdB9sQ42UdyZ5tkzUv8fVdvQyGqTNG8fWIRnoA0v11WjZT3xgTZtq06lJSjkv3tqJ6SMrMBYSHRR1fHxu3sRw5QDiUdHgvVK9H4txLGQ7uo3fw7fumAP3kSNf2rpJRkUqAO0D1Wcc1KDBbm5voVtCG-C1FsE2hGswujRSUhy5UAxiyhzWfJVRUNu28_0g_otcJV9O8Hum71ZGhpQcSq9L3AX4zotSEwwjELkU8ldbG7hAqYw3-QJuHMZjozp9PHpM65XTtr_kXb_IlARGe4CDjUfCSu-4k-x0yVjuDE0A0Xkk9mxzg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/account/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"account",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account Role",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://boxinator-application.herokuapp.com/"
+		}
+	]
+}
