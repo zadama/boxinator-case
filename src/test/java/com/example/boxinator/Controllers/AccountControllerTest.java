@@ -6,15 +6,12 @@ import com.example.boxinator.Models.LoginRequest;
 import com.example.boxinator.Repositories.AccountRepository;
 import com.example.boxinator.Utils.CommonResponse;
 import com.google.firebase.auth.FirebaseAuthException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.Assert;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
@@ -113,26 +110,25 @@ private final String testToken= "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0
     }
 
     @Test
-    @DisplayName("Testing_Get_User_Role_With_Valid_Token")
-    void testingGetUserRoleWithValidToken() throws FirebaseAuthException {
+    @DisplayName("Testing_Get_User_Role_As_Admin_for_Admin")
+    void testingGetUserRoleAsAdminForAdmin() throws FirebaseAuthException {
+        //Given
+        String token = testToken;
+        //When
+        ResponseEntity<CommonResponse> res = accountController.getUserRole(token);
+        //Then
+        assertEquals(AccountRole.ADMIN, res.getBody().data);
+    }
+    @Test
+    @DisplayName("Testing_Get_User_Role_As_Admin_For_Wrong_Role(User)")
+    void testingGetUserRoleAsAdminForUser() throws FirebaseAuthException {
         //Given
         String token = testToken;
         //When
         ResponseEntity<CommonResponse> res = accountController.getUserRole(token);
 
         //Then
-        assertEquals(HttpStatus.OK, res.getBody().status);
-    }
-    @Test
-    @DisplayName("Testing_Get_User_Role_With_Invalid_Token")
-    void testingGetUserRoleWithInvalidToken() throws FirebaseAuthException {
-        //Given
-        String token = "123 123";
-        //When
-        ResponseEntity<CommonResponse> res = accountController.getUserRole(token);
-
-        //Then
-        assertNotEquals(HttpStatus.OK, res.getBody().status);
+        assertNotEquals(AccountRole.USER, res.getBody().data);
     }
 
 }
