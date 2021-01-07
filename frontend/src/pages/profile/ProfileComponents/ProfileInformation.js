@@ -58,7 +58,9 @@ const ProfileInformation = (props) => {
       setToastHeader("Error");
       setToastMsg("Unable to update account details.");
       setToast(true);
-    } 
+    } finally {
+        await renderProfileInformationWithToken();
+    }
   };
 
 
