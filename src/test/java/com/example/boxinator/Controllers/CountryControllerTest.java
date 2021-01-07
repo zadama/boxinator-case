@@ -53,8 +53,8 @@ private CountryController countryController;
     }
 
     @Test
-    @DisplayName("Testing_Get_All_Countries")
-    void getAllCountries() {
+    @DisplayName("Testing_Get_All_Countries_HttpStatus")
+    void testingGetAllCountriesHttpStatus() {
 
         //Given
         //When
@@ -64,17 +64,23 @@ private CountryController countryController;
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("Testing_Update_Country_By_Id_,Changing_Its'_")
     void updateCountryById() {
         //Given
+        Country country = new Country();
+        String token = testToken;
+        country.setFeeMultiplier(8);
+        long testId = 4;
 
         //When
+        ResponseEntity<CommonResponse> res = countryController.updateCountryById(token,country,testId);
 
         //Then
+        assertEquals(HttpStatus.OK, res.getStatusCode());
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("Testing_Delete_Country_By_ID")
     void deleteCountryById() {
         //Given
 
