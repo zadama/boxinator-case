@@ -202,15 +202,16 @@ public class ShipmentController {
         CommonResponse cr = new CommonResponse();
         ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
+
         if (authResponse.getStatusCode() == HttpStatus.OK) {
             if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
                 Optional<Shipment> shipmentRepo = shipmentRepository.findById(shipment_id);
                 Shipment shipment = shipmentRepo.orElse(null);
                 try {
-                    cr.data = shipment;
                     shipmentRepository.deleteById(shipment_id);
+                    cr.data = shipment;
                     cr.msg = "Shipment with id: " + shipment_id + " has been deleted";
-                    cr.status = HttpStatus.CREATED;
+                    cr.status = HttpStatus.OK;
                 } catch (Exception e) {
                     cr.data = e.getMessage();
                     cr.msg = "Unable to delete shipment with id: " + shipment_id;

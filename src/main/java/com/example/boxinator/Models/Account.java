@@ -51,7 +51,7 @@ public class Account {
     @Column(nullable = false)
     private AccountRole role;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Shipment> shipments = new HashSet<>();
 
     @JsonIgnore
@@ -72,6 +72,13 @@ public class Account {
         }
 
         return shipmentIds;
+    }
+
+    public Account() {
+    }
+
+    public Account(String firstName) {
+        this.firstName = firstName;
     }
 
     public Long getId() {
