@@ -43,7 +43,7 @@ function App() {
         <PrivateRoute
           exact={true}
           path="/handle-shipments"
-          requiredRoles={[USER, ADMIN]}
+          requiredRoles={[USER]}
           component={UserShipmentDetailsPage}
         />
         <PrivateRoute

@@ -54,7 +54,7 @@ public class Shipment {
 
     @JsonGetter("account")
     private String account() {
-        return account.getFirstName() + " " + account.getLastName();
+        return account == null ? "" : account.getFirstName() + " " + account.getLastName();
     }
 
     @ManyToOne
