@@ -14,7 +14,7 @@ import CountryList from "./CountryList";
 
 import "./styles.scss";
 
-const CountryPage = () => {
+const CountryPage = (props) => {
   const auth = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -151,7 +151,7 @@ const CountryPage = () => {
         />
       )}
       <div>
-        <Search setSearchValue={setSearchValue} />
+        <Search setSearchValue={setSearchValue} type={props.searchterms}/>
       </div>
 
       <div className="all-countries-container">

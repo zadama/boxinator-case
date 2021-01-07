@@ -9,7 +9,7 @@ import { getAllCountries } from "../../api/countries";
 import {deleteAccount, getAllAccounts, updateAccount} from "../../api/user";
 import AccountList from "./AccountPageModals/AccountList";
 
-const AccountPage = () => {
+const AccountPage = (props) => {
 
   //For Search component
   const firstUpdate = useRef(true);
@@ -141,7 +141,7 @@ const AccountPage = () => {
           />
       )}
       <div>
-        <Search setSearchValue={setSearchValue}/>
+        <Search setSearchValue={setSearchValue} type={props.searchterms}/>
       </div>
 
       <div className="all-accounts-container">

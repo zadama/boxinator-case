@@ -10,7 +10,7 @@ import Search from "../../../components/search/Search";
 import ShipmentList from "./ShipmentList";
 import "./styles.scss";
 
-const HandleShipmentsPage = () => {
+const HandleShipmentsPage = (props) => {
   const auth = useAuth();
   const firstUpdate = useRef(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -126,7 +126,7 @@ const HandleShipmentsPage = () => {
         />
       )}
       <div>
-        <Search setSearchValue={setSearchValue} />
+        <Search setSearchValue={setSearchValue} type={props.searchterms}/>
       </div>
 
       <div className="all-shipments-container">
