@@ -74,6 +74,13 @@ public class Account {
         return shipmentIds;
     }
 
+    public Account() {
+    }
+
+    public Account(String firstName) {
+        this.firstName = firstName;
+    }
+
     public Long getId() {
         return id;
     }
