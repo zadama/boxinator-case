@@ -88,21 +88,32 @@ public class AccountController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<CommonResponse> getAllAccounts() {
+    public ResponseEntity<CommonResponse> getAllAccounts(@RequestHeader(value = "Authorization") String token) {
         CommonResponse cr = new CommonResponse();
+        ResponseEntity<AuthResponse> authResponse = authService.checkToken(token);
 
-        System.out.println("HERE");
-        try {
-            cr.data = accountRepository.findAll();
-            cr.msg = "List of all existing accounts in the database.";
-            cr.status = HttpStatus.OK;
-        } catch (Exception e){
-            System.out.println("erroooor");
-
-            e.printStackTrace();
-            cr.msg = "Currently unable to get the list of all accounts in the database.";
-            cr.status = HttpStatus.INTERNAL_SERVER_ERROR;
+        if (authResponse.getStatusCode() == HttpStatus.OK) {
+            if (authResponse.getBody().account.getRole().equals(AccountRole.ADMIN)) {
+                try {
+                    cr.data = accountRepository.findAll();
+                    cr.msg = "List of all existing accounts in the database.";
+                    cr.status = HttpStatus.OK;
+                } catch (Exception e) {
+                    cr.data = e.getMessage();
+                    cr.msg = "Currently unable to get the list of all accounts in the database.";
+                    cr.status = HttpStatus.INTERNAL_SERVER_ERROR;
+                }
+            } else  {
+                cr.data = authResponse.getBody().msg;
+                cr.msg = "Unauthorized: Your role does not have permission to do this.";
+                cr.status = HttpStatus.UNAUTHORIZED;
+            }
+        } else {
+            cr.data = authResponse.getBody().msg;
+            cr.msg = "Unauthorized: Invalid token.";
+            cr.status = HttpStatus.UNAUTHORIZED;
         }
+
 
         return new ResponseEntity<>(cr, cr.status);
     }
@@ -150,7 +161,6 @@ public class AccountController {
             if(accountRepository.existsById(account_id)) {
                 Optional<Account> accountRepo = accountRepository.findById(account_id);
                 Account account = accountRepo.orElse(null);
-                cr.msg = "You do not have permission to change: ";
                 if (account != null) {
                     if (changedAccount.getFirstName() != null) { account.setFirstName(changedAccount.getFirstName()); }
 
@@ -185,7 +195,7 @@ public class AccountController {
                     try {
                         Account newAccount = accountRepository.save(account);
                         cr.data = newAccount;
-                        cr.msg += newAccount != null ? " Account changed!" : " This service is currently unavailable.";
+                        cr.msg = newAccount != null ? " Account changed!" : " This service is currently unavailable.";
                         cr.status = newAccount != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
                     } catch (Exception e) {
                         cr.status = HttpStatus.BAD_REQUEST;
