@@ -18,9 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class AccountControllerTest {
 
 @Autowired
-private AccountRepository accountRepository;
-
-@Autowired
 private AccountController accountController;
 
 // You will need a valid testToken for some of the tests
