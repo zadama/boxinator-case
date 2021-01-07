@@ -50,8 +50,8 @@ const DeleteCountryModal = (props) => {
                     </table>
                     <div className="text-center">
                         <button onClick={onDeleteClicked} className="btn btn-danger btn-sm">Delete</button>
-                        <button onClick={onClose} className="btn btn-light btn-sm ml-2">
-                            <strong> Oops! Cancel</strong>
+                        <button onClick={onClose} className="btn btn-secondary btn-sm ml-2">
+                            <strong>Cancel</strong>
                         </button>
                     </div>
                 </div>

@@ -214,10 +214,10 @@ const EditShipmentForm = (props) => {
       </div>
 
       <div className="btn-container-form">
-        <Button type="submit" className="btn btn-info" value="Save">
+        <Button type="submit" className="btn btn-primary" value="Save">
           Save
         </Button>
-        <Button onClick={props.onClose} className="btn btn-danger">
+        <Button onClick={props.onClose} className="btn btn-secondary">
           Cancel
         </Button>
       </div>
