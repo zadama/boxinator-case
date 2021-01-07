@@ -27,6 +27,7 @@ const AdminPage = ({ location }) => {
   const [showAccounts, setShowAccounts] = useState(false);
   const [showCountries, setShowCountries] = useState(false);
   const [showShipments, setShowShipments] = useState(false);
+  const [searchterms, setSearchterms] = useState(null);
 
   const [alert, setAlert] = useState(null);
 
@@ -58,16 +59,19 @@ const AdminPage = ({ location }) => {
   const handleMenuClick = (event, value) => {
     if (value === "accounts") {
       setTitle("Accounts");
+      setSearchterms(["id, ", "name, ", "email, ", "country, ", "role"]);
       setShowCountries(false);
       setShowShipments(false);
       setShowAccounts(!showAccounts);
     } else if (value === "countries") {
       setTitle("Shipping Countries");
+      setSearchterms(["id, ", "name, ", "country code"]);
       setShowShipments(false);
       setShowAccounts(false);
       setShowCountries(!showCountries);
     } else if (value === "shipments") {
       setTitle("Shipments");
+      setSearchterms(["id, ", "shipment status"]);
       setShowCountries(false);
       setShowAccounts(false);
       setShowShipments(!showShipments);
@@ -101,9 +105,9 @@ const AdminPage = ({ location }) => {
           />
         </section>
         <section style={{ borderTop: "1px solid #dee2e6" }}>
-          {!showAccounts ? "" : <AccountPage />}
-          {!showCountries ? "" : <CountryPage />}
-          {!showShipments ? "" : <HandleShipmentsPage />}
+          {!showAccounts ? "" : <AccountPage searchterms={searchterms}/>}
+          {!showCountries ? "" : <CountryPage searchterms={searchterms}/>}
+          {!showShipments ? "" : <HandleShipmentsPage searchterms={searchterms}/>}
         </section>
       </div>
     </PrivateLayout>

@@ -45,7 +45,6 @@ public class Shipment {
     @ManyToOne
     private Country destinationCountry;
 
-
     @Column
     private Date createdAt;
 

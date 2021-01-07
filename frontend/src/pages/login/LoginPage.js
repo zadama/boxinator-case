@@ -54,7 +54,7 @@ const LoginPage = ({ history }) => {
 
   const handleAnonLogin = async (data) => {
     try {
-      await loginAnonymously(data.email);
+      await loginAnonymously(data.email.toLowerCase());
     } catch (error) {
       if (error.response.status === 409) {
         // After 3 seconds, remove the error message
@@ -95,7 +95,7 @@ const LoginPage = ({ history }) => {
         />
       )}
 
-      <div style={{ padding: "0px" }} className="login">
+      <div style={{ marginTop: "20px" }} className="login">
         {errorMessage && (
           <Alert
             message={errorMessage}
