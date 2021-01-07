@@ -5,6 +5,7 @@ import com.example.boxinator.Models.Enums.AccountRole;
 import com.example.boxinator.Models.LoginRequest;
 import com.example.boxinator.Repositories.AccountRepository;
 import com.example.boxinator.Utils.CommonResponse;
+import com.google.firebase.auth.FirebaseAuthException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,9 +45,9 @@ private final String testToken= "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0
     void testing_Login_With_Valid_Test_Account() {
         //Given
         LoginRequest loginRequest = new LoginRequest("oscar.dahlquist@gmail.com", "abc123");
-        //when
+        //When
         ResponseEntity<CommonResponse> res =  accountController.login(loginRequest);
-        //then
+        //Then
         assertEquals(HttpStatus.OK,res.getBody().status);
     }
 
@@ -55,9 +56,9 @@ private final String testToken= "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0
     void testing_Login_With_Invalid_Test_Account() {
         //Given
         LoginRequest loginRequest = new LoginRequest("oscar.dahlquist@gmail.com", "123abc");
-        //when
+        //When
         ResponseEntity<CommonResponse> res =  accountController.login(loginRequest);
-        //then
+        //Then
         assertNotEquals(HttpStatus.OK,res.getBody().status);
     }
 
@@ -66,9 +67,9 @@ private final String testToken= "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0
     void testingGetAllAccountsWithValidTestToken() {
         //Given
         String token = testToken;
-        //when
+        //When
         ResponseEntity<CommonResponse> res = accountController.getAllAccounts(token);
-        //then
+        //Then
         assertEquals(HttpStatus.OK,res.getBody().status);
     }
 
@@ -77,9 +78,9 @@ private final String testToken= "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0
     void testingGetAllAccountsWithInvalidTestToken() {
         //Given
         String token = "123 123";
-        //when
+        //When
         ResponseEntity<CommonResponse> res = accountController.getAllAccounts(token);
-        //then
+        //Then
         assertNotEquals(HttpStatus.OK,res.getBody().status);
     }
 
@@ -89,9 +90,9 @@ private final String testToken= "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0
         //Given
         String token = testToken;
         String testMail ="oscar.dahlquist@gmail.com";
-        //when
+        //When
         ResponseEntity<CommonResponse> res = accountController.getAccount(token,testMail);
-        //then
+        //Then
         assertEquals(HttpStatus.OK, res.getBody().status);
     }
 
@@ -103,8 +104,26 @@ private final String testToken= "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImUwOGI0NzM0
     }
 
     @Test
-    @Disabled
-    @DisplayName("")
-    void getUserRole() {
+    @DisplayName("Testing_Get_User_Role_With_Valid_Token")
+    void testingGetUserRoleWithValidToken() throws FirebaseAuthException {
+        //Given
+        String token = testToken;
+        //When
+        ResponseEntity<CommonResponse> res = accountController.getUserRole(token);
+
+        //Then
+        assertEquals(HttpStatus.OK, res.getBody().status);
     }
+    @Test
+    @DisplayName("Testing_Get_User_Role_With_Invalid_Token")
+    void testingGetUserRoleWithInvalidToken() throws FirebaseAuthException {
+        //Given
+        String token = "123 123";
+        //When
+        ResponseEntity<CommonResponse> res = accountController.getUserRole(token);
+
+        //Then
+        assertNotEquals(HttpStatus.OK, res.getBody().status);
+    }
+
 }
