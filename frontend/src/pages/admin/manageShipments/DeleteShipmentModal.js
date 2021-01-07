@@ -33,7 +33,7 @@ const DeleteShipmentModal = (props) => {
                             Delete
                         </button>
 
-                        <button className="btn btn-light btn-sm ml-2" onClick={onClose}>
+                        <button className="btn btn-secondary btn-sm ml-2" onClick={onClose}>
                             <strong>Cancel</strong>
                         </button>
                     </div>

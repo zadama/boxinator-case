@@ -57,7 +57,7 @@ const DeleteAccountModal = (props) => {
                                 Delete user account
                             </button>
                             <button
-                                className="btn btn-light btn-sm ml-2"
+                                className="btn btn-secondary btn-sm ml-2"
                                 type="button"
                                 onClick={onClose}>
                                 <strong>Cancel</strong>

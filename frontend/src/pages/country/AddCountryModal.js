@@ -80,8 +80,8 @@ const AddCountryModal = (props) => {
                             </div>
 
                             <div className="text-center form-buttons">
-                                <button className="btn btn-info" type="submit">Add</button>
-                                <button onClick={onClose} className="btn btn-danger ml-2">Cancel</button>
+                                <button className="btn btn-primary" type="submit">Add</button>
+                                <button onClick={onClose} className="btn btn-secondary ml-2">Cancel</button>
                             </div>
 
 
