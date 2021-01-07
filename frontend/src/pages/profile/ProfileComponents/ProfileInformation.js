@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../register/style.scss";
 import { Button } from "react-bootstrap";
-import Toast from "react-bootstrap/Toast";
+import Toaster from "../../../components/toast/Toaster"
 
 import { useAuth } from "../../../context/auth";
 import { getAccount, updateAccount } from "../../../api/user";
@@ -13,8 +13,11 @@ const ProfileInformation = (props) => {
   const [data, setData] = useState(null);
   const [countries, setCountries] = useState([]);
 
-  const [toast, setToast] = useState(false);
+  //For Toaster component
+  const [toastHeader, setToastHeader] = useState("");
   const [toastMsg, setToastMsg] = useState("");
+  const [toast, setToast] = useState(false);
+
 
   const renderProfileInformationWithToken = async () => {
     try {
@@ -45,32 +48,31 @@ const ProfileInformation = (props) => {
     console.log(account);
     try {
       const token = await auth.getUserToken(); // Get sessiontoken
-
       await updateAccount(token, account.id, account); // Pass token, pathvariable and body with request
+      setToastHeader("Success");
+      setToastMsg("The account was updated successfully.");
+      setToast(true);
       await renderProfileInformationWithToken(); // Rerender page
     } catch (error) {
       console.log(error);
+      setToastHeader("Error");
+      setToastMsg("Unable to update account details.");
+      setToast(true);
     } 
   };
 
 
   return (
     <>
-      <Toast
-        show={toast}
-        onClose={() => {
-          setToast(false);
-          setToastMsg("");
-        }}
-        delay={2500}
-        autohide
-      >
-        <Toast.Header>
-          <strong className="mr-auto">Bootstrap</strong>
-          <small>just now</small>
-        </Toast.Header>
-        <Toast.Body>Account {toastMsg && toastMsg}.</Toast.Body>
-      </Toast>
+      {toast && (
+          <Toaster
+              toastHeaderMsg={toastHeader}
+              toastMsg={toastMsg}
+              onClose={() => {
+                setToast(false);
+              }}
+          />
+      )}
       {!data ? (
         <h3>loading...</h3>
       ) : (
