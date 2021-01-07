@@ -10,6 +10,7 @@ import { getAccount } from "../../api/user";
 import AccountPage from "./AccountPage";
 import CountryPage from "../country/CountryPage";
 import HandleShipmentsPage from "./manageShipments/HandleShipmentsPage";
+import Alert from "../../components/alert";
 
 /**
  * hämta alla shipments från backend, skicka med firebase token
@@ -19,13 +20,15 @@ import HandleShipmentsPage from "./manageShipments/HandleShipmentsPage";
  * som ska navigera dit..
  */
 
-const AdminPage = () => {
+const AdminPage = ({ location }) => {
   const auth = useAuth();
   const [data, setData] = useState(null);
   const [title, setTitle] = useState("");
   const [showAccounts, setShowAccounts] = useState(false);
   const [showCountries, setShowCountries] = useState(false);
   const [showShipments, setShowShipments] = useState(false);
+
+  const [alert, setAlert] = useState(null);
 
   const renderExampleDataWithToken = async () => {
     try {
@@ -39,7 +42,16 @@ const AdminPage = () => {
   };
 
   useEffect(() => {
-    console.log("CALLED...");
+    if (location && location.state && location.state.claimShipment) {
+      setAlert({
+        message:
+          "Shipment with id " +
+          location.state.claimShipment +
+          " was successfully added!",
+        variant: "success",
+      });
+    }
+
     renderExampleDataWithToken();
   }, []);
 
@@ -64,14 +76,23 @@ const AdminPage = () => {
 
   return (
     <PrivateLayout>
+      {alert && (
+        <Alert
+          message={alert.message}
+          onClose={() => {
+            setAlert(null);
+          }}
+          variant={alert.variant}
+          expire={3000}
+        />
+      )}
+
       <div className="admin-page">
         <section className="admin-title">
           {!data ? (
             <div>loading....</div>
           ) : (
-            <div>
-              {!title ? <h3>Welcome "{data}"</h3> : <h3>{title}</h3>}
-            </div>
+            <div>{!title ? <h3>Welcome "{data}"</h3> : <h3>{title}</h3>}</div>
           )}
         </section>
         <section className="admin-menu">
