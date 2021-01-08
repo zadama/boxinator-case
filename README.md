@@ -2,17 +2,27 @@
   * Case Boxinator by Experis Academy.
   * The application is called Sendit.
 
+### About
+  The case Boxinator is an web application for shipment delivery service to specific locations around the world. The application is a web application using a
+  RESTful API to communicate with a server. The application handles three different types of user: guest, registered user and admin. Users will be able to create accounts to  
+  track ongoing and previous shipments. An administrator has access to a portal to change the metadata of the shipping process, this being the countries that can be shipped to   
+  and the relative costs of shipping.
+
+## Technical details
+  * Backend: Java (Maven project), Hibernate, Spring Boot, Spring Security
+  * Frontend: React, SCSS, CSS Bootstrap and React Bootstrap
+  * External service: Firebase Auth and Sendgrid
 
 ## How to get the application going locally
-  * Fork the project to your local machine and run "npm install" while located in the frontend folder. 
-  * Next there are some configurations needed to be done.
-
+  
 ## Hosting At Heroku
   * This web application is deployed to Heroku at: https://boxinator-application.herokuapp.com/
 
 
 ## Installation 
- 
+  * Fork the project to your local machine and run "npm install" while located in the frontend folder. 
+  * Next there are some configurations needed to be done.
+
 
 ## Usage
 
