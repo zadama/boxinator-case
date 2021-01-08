@@ -17,19 +17,6 @@ class AccountRepositoryTest {
 @Autowired
 private AccountRepository accountRepository;
 
-// You will need a valid testToken for some of the tests
-
-/*Instructions for how to get a valid testToken:
-    1. login via the front-end.
-    2. Inspect browser.
-    3. Go to Network tab
-    4. Refresh page
-    5. Find the header "Name" and click on token?key=
-    6. Copy the entire id_token
-    7.Paste into the string testToken below after the "Bearer ...". in the class FirebaseToken.
-*/
-
-
     @Test
     @DisplayName("Testing_Find_By_Email")
     void findByEmail() {
