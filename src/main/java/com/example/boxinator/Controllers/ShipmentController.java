@@ -175,7 +175,7 @@ public class ShipmentController {
                     shipmentRepository.save(shipment);
                     cr.data = shipment;
                     cr.msg = "Shipment details have been updated.";
-                    cr.status = HttpStatus.CREATED;
+                    cr.status = HttpStatus.OK;
                 } catch (Exception e) {
                     cr.data = e.getMessage();;
                     cr.msg = "Shipment could not be updated.";
