@@ -4,9 +4,9 @@
 
 ### About
   The case Boxinator is an web application for shipment delivery service to specific locations around the world. The application is a web application using a
-  RESTful API to communicate with a server. The application handles three different types of user: guest, registered user and admin. Users will be able to create accounts to  
-  track ongoing and previous shipments. An administrator has access to a portal to change the metadata of the shipping process, this being the countries that can be shipped to   
-  and the relative costs of shipping.
+  RESTful API to communicate with a server. The application handles three different types of user: guest, registered user and admin. 
+  Users will be able to create accounts to track ongoing and previous shipments. An administrator has access to a portal to change the metadata of the shipping process, 
+  this being the countries that can be shipped to and the relative costs of shipping.
 
 ## Technical Details
   * Backend: Java (Maven project), Hibernate, Spring Boot, Spring Security
