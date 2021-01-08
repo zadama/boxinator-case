@@ -16,7 +16,7 @@
 
 ## Usage
 
- **1. Start page, continue as a guest or register as a user:**
+ **1. Start page, continue as a guest, register an user or login:**
  
   ![Startpage](https://cdn.discordapp.com/attachments/782896315465203782/797115194714882068/unknown.png)
   
