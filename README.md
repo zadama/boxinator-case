@@ -8,21 +8,17 @@
   track ongoing and previous shipments. An administrator has access to a portal to change the metadata of the shipping process, this being the countries that can be shipped to   
   and the relative costs of shipping.
 
-## Technical details
+## Technical Details
   * Backend: Java (Maven project), Hibernate, Spring Boot, Spring Security
   * Frontend: React, SCSS, CSS Bootstrap and React Bootstrap
   * External service: Firebase Auth and Sendgrid
-
-## How to get the application going locally
   
 ## Hosting At Heroku
   * This web application is deployed to Heroku at: https://boxinator-application.herokuapp.com/
 
-
 ## Installation 
   * Fork the project to your local machine and run "npm install" while located in the frontend folder. 
   * Next there are some configurations needed to be done.
-
 
 ## Usage
 
@@ -58,7 +54,6 @@
 
 ### License
 [MIT](https://www.oracle.com/downloads/licenses/mit-license.html)
-
 
 ### Authors
   [Aman Zadran](https://github.com/zadama), 
