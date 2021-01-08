@@ -52,6 +52,9 @@
   
   ---
 
+## User Manual 
+  [User manual for the application](https://github.com/zadama/boxinator-case/tree/master/Boxinator-case%20documents)
+
 ### License
 [MIT](https://www.oracle.com/downloads/licenses/mit-license.html)
 
