@@ -67,7 +67,6 @@ const HandleShipmentsPage = (props) => {
       setShipments(savedShipments);
       setShipmentList(savedShipments);
     } catch (error) {
-      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +83,6 @@ const HandleShipmentsPage = (props) => {
       setToast(true);
       renderShipmentData();
     } catch (error) {
-      console.log(error, "Unable to update shipment");
       setToastHeader("Error");
       setToastMsg("Unable to update shipment record details.");
       setToast(true);
@@ -104,7 +102,6 @@ const HandleShipmentsPage = (props) => {
       setToast(true);
       renderShipmentData();
     } catch (error) {
-      console.log(error, "Unable to delete shipment.");
       setToastHeader("Error");
       setToastMsg("Unable to delete shipment record details.");
       setToast(true);
@@ -126,7 +123,7 @@ const HandleShipmentsPage = (props) => {
         />
       )}
       <div>
-        <Search setSearchValue={setSearchValue} type={props.searchterms}/>
+        <Search setSearchValue={setSearchValue} type={props.searchterms} />
       </div>
 
       <div className="all-shipments-container">
@@ -134,12 +131,12 @@ const HandleShipmentsPage = (props) => {
           <h4>All Shipment History</h4>
         </div>
 
-          <ShipmentList
-              isLoading={isLoading}
-              shipmentList={shipmentList}
-              updateShipment={onUpdateShipment}
-              deleteShipment={onDeleteShipment}
-          />
+        <ShipmentList
+          isLoading={isLoading}
+          shipmentList={shipmentList}
+          updateShipment={onUpdateShipment}
+          deleteShipment={onDeleteShipment}
+        />
       </div>
     </>
   );

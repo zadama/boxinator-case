@@ -16,7 +16,6 @@ const ColorPicker = ({ onHandleColorPicker, defaultValue }) => {
 
   const handleColorComplete = (color) => {
     onHandleColorPicker(color);
-    console.log(color.hex);
     setColorPlaceholder(color.hex);
   };
 

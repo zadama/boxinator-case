@@ -57,10 +57,8 @@ const RegisterForm = ({
 
     formData.country = country.value;
     formData.dateOfBirth = dateOfBirth;
-    console.log(formData);
 
     formData.contactNumber = countryCode.value + formData.contactNumber;
-    console.log(formData);
     handleRegistration(formData);
   };
 

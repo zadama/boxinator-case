@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Redirect } from "react-router-dom";
 import queryString from "query-string";
 
 import "./style.scss";
@@ -53,9 +52,7 @@ const RegisterPage = ({ history, location }) => {
       formData.current.email = guestEmail;
     }
 
-    // Make email to lowerCase here, test in devbranch first... ( checkout)
     formData.current.email = formData.current.email?.toLowerCase();
-
 
     try {
       await register(formData.current.email, formData.current.password);
@@ -66,7 +63,6 @@ const RegisterPage = ({ history, location }) => {
 
       setShowModal(true);
     } catch (error) {
-      console.log(error);
       const errorHandler = AuthErrorHandling[error.code];
 
       if (errorHandler != null) {
@@ -92,8 +88,6 @@ const RegisterPage = ({ history, location }) => {
   };
 
   const onSuccess = async () => {
-    console.log(guestEmail, claimShipment.current);
-
     try {
       if (guestEmail && claimShipment.current) {
         const token = await getUserToken();
@@ -109,7 +103,6 @@ const RegisterPage = ({ history, location }) => {
       }
     } catch (error) {
       if (error.response.status === 404) {
-        console.log("User not found, proceed to create user instead.");
       }
     }
 
@@ -117,11 +110,7 @@ const RegisterPage = ({ history, location }) => {
       await createUser({ ...formData.current });
       await reloadUser();
     } catch (error) {
-      // deleteUser();
       if (error.response.status === 404) {
-        console.log(
-          "User already exits? handle! means the provided accountid is wrong..."
-        );
       }
     }
   };
@@ -144,19 +133,15 @@ const RegisterPage = ({ history, location }) => {
       const shipment = await createShipment(newShipment, token);
 
       const { data } = shipment.data;
-      console.log(data);
 
       history.push({
         pathname: "/handle-shipments",
         state: { claimShipment: data.id, date: new Date() },
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const handleRouting = async () => {
-    console.log(user);
     if (user === false) {
       fetchCountries();
       return;
@@ -173,10 +158,8 @@ const RegisterPage = ({ history, location }) => {
       }
     }
 
-    // claimShipment exists in query
     if (claimShipment.current) {
       setGuestEmail(claimShipment.current.email);
-      // return;
     }
 
     if (user && user.role === ADMIN) {

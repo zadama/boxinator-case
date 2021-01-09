@@ -1,6 +1,5 @@
 import React from "react";
 import "../style.scss";
-import { ChromePicker } from "react-color";
 import ColorPicker from "./ColorPicker";
 import Select from "react-select";
 import { useEffect, useState } from "react";

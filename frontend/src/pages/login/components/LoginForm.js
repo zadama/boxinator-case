@@ -3,9 +3,6 @@ import { useForm } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
-// fixa modal på samma sätt som i register här, och ta ut formen + kolla vf efter register vi
-// hamnar i login först och inte direkt /add-shipment
-
 const LoginForm = ({ handleLogin }) => {
   const { register, handleSubmit, errors } = useForm();
 

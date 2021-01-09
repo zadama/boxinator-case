@@ -31,9 +31,7 @@ const Login2Fa = ({ children, onClose, firebase, resolver }) => {
       "recaptcha-container",
       {
         size: "invisible",
-        callback: function (response) {
-          console.log("[CAPTCHA RESOLVED]");
-        },
+        callback: function (response) {},
       }
     );
 
@@ -85,9 +83,6 @@ const Login2Fa = ({ children, onClose, firebase, resolver }) => {
       }
     }
   };
-
-  // Ha en loader vid   user.isEmailVerified == null
-  // eller notifiera att användaren måste verifiera först innan 2factor
 
   return (
     <Modal onClose={onClose}>

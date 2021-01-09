@@ -15,11 +15,6 @@ import java.io.IOException;
 @SpringBootApplication
 public class BoxinatorApplication {
 
-    // påbörja med loadern + testa också så allt funkar i proden, skapa konto, lägg till länder osv
-    // och check databasen i firebase + terminalen
-
-    // ( testa också GUEST login i prod...
-    // lägg till loading(vanliga spinnern), när avändaren matat in nummer och "väntar"
 
     public static void main(String[] args) {
         SpringApplication.run(BoxinatorApplication.class, args);

@@ -7,22 +7,13 @@ import { USER, ADMIN, GUEST } from "../utils/roles";
 const authContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  // Consider using, useReducer instead.
   const auth = useProvideAuthImpl();
 
   return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 };
 
-// Remove if firebase is used..
-let initialUser = localStorage.getItem("user")
-  ? JSON.parse(localStorage.getItem("user"))
-  : null;
-
 const useProvideAuthImpl = () => {
   const [user, setUser] = useState(null);
-
-  // När man loggar in, hämta i "then" också användaren från backend med roll
-  // detsamma i useEffecten (men titta på om token kan sparas i localStorage ist)
 
   const login = (email, password) => {
     return firebase
@@ -31,12 +22,10 @@ const useProvideAuthImpl = () => {
       .then(async (response) => {
         return handleUser(response.user);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   };
 
   const loginAnonymously = async (email) => {
-    // save user in database backend.
-
     try {
       const response = await createAnonUser(email);
       const { data } = response.data;
@@ -64,30 +53,8 @@ const useProvideAuthImpl = () => {
 
       await userCreds.user.sendEmailVerification();
     } catch (error) {
-      //deleteUser();
-
       throw error;
     }
-
-    /*
-    return firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(async (response) => {
-        try {
-          await createUser(email, password, ...rest);
-
-          return handleUser(response.user);
-        } catch (error) {
-          // If we saved the user to firebase but not backend(backend call fails),
-          // then we delete the user altogether.
-          // A bit "laggy" atm as the onAuthStateChanged is called before we get here...needs improv.
-          deleteUser();
-
-          throw error;
-        }
-      });*/
-    //.catch((err) => handleUser(false));
   };
 
   const logout = () => {
@@ -104,37 +71,16 @@ const useProvideAuthImpl = () => {
       .then(function () {
         return handleUser(false);
       })
-      .catch(function (error) {
-        // An error happened.
-      });
+      .catch(function (error) {});
   };
 
   const getUserToken = () => {
     return firebase.auth().currentUser.getIdToken(true);
   };
 
-  /* Below will add token header for ALL authorized headers
-  const addApiToken = async () => {
-    Api.interceptors.request.use(
-      async (config) => {
-        const token = await getUserToken();
-
-        if (token) config.headers.Authorization = `Bearer ${token}`;
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
-      }
-    );
-  };*/
-
   const handleUser = async (rawUser) => {
-    console.log("authstatechanged called...");
-
     if (rawUser && rawUser.emailVerified) {
       const user = await formatUser(rawUser);
-
-      //await addApiToken();
 
       setUser(user);
       return user;

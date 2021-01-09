@@ -5,14 +5,12 @@ import { useAuth } from "../../context/auth";
 import PageLoader from "../../components/loader";
 import { UnAuthorizedPage } from "../../pages";
 
-// component:Component, requiredRoles,...rest
 const PrivateRoute = ({ component: Component, requiredRoles, ...rest }) => {
   const location = useLocation();
   const history = useHistory();
   const auth = useAuth();
 
   useEffect(() => {
-    // Redirect if not signed in
     if (auth.user === false) {
       history.replace("/login");
     }
@@ -21,9 +19,6 @@ const PrivateRoute = ({ component: Component, requiredRoles, ...rest }) => {
   if (!auth.user) {
     return <PageLoader />;
   }
-
-  // kolla om authenticated och kolla om role existerar.
-  // om role ej existerar, redirecta beroende på saknad role.
 
   return (
     <Route
@@ -41,9 +36,3 @@ const PrivateRoute = ({ component: Component, requiredRoles, ...rest }) => {
   );
 };
 export default PrivateRoute;
-
-/**
- * const finalComponent = auth.user ? Component : PageLoader;
-
-  return <Route {...rest} component={finalComponent} />
- */

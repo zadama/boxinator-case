@@ -13,17 +13,6 @@ import { CANCELLED } from "../../utils/shipmentStatusValues";
 
 import Confetti from "react-confetti";
 
-// active-row on tr based in active id.;
-// highlighta senaste shipment och lägg till confetti...
-
-// Hämta alla shipments för nuvarande användare vid useEffect
-
-// När användaren klickar skall det komma en modal som frågar om de vill avbryta sin order,
-// om de gör, kalla backend och ändra status på användarens shipment och uppdatera state med det nya..
-
-// fixa att man inte ska ha nolla i början på register nummer, kolla "validate",
-// se också till att inget landskod börjar på 0.
-
 const UserShipmentDetailsPage = ({ location, history }) => {
   const { getUserToken } = useAuth();
 
@@ -45,15 +34,9 @@ const UserShipmentDetailsPage = ({ location, history }) => {
       const token = await getUserToken();
       //const countries = await getAllCountries(token);
       const { data: result } = await getAllShipments(token);
-      const shipmentData = result.data;
-      console.log(shipmentData);
-
-      // Filters all objects that only have destinationCountry Id and not full object.
-      // Adds to it destinationCountry that already exists among received data from backend.
 
       setShipments(result.data);
     } catch (error) {
-      console.log(error);
       setAlert({
         message: "Could not fetch your shipments. Please try again later.",
         variant: "danger",
