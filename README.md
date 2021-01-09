@@ -17,8 +17,24 @@
   * This web application is deployed to Heroku at: https://boxinator-application.herokuapp.com/
 
 ## Installation 
-  * Fork the project to your local machine and run "npm install" while located in the frontend folder. 
-  * Next there are some configurations needed to be done.
+
+### - Dev enviroment (devbranch)
+   Prerequisites: Node.js, Java SDK 14+, PostgreSQL 13, and your preferred IDE, e.g. Intellij, and code editor, e.g. VS Code. 
+   
+   1. Fork the project to your local machine and run "npm install" while located in the frontend folder. This will install the necessary packages listed in package.json.
+   2. Visit Firebase and create a new web project. You will need two config files: one for the backend and the other one for frontend, both will be provided by Firebase.
+   * Create a .env file in your frontend folder with the following: 
+        * REACT_APP_FIREBASE_API_KEY= {API key here}
+          REACT_APP_FIREBASE_AUTH_DOMAIN={Auth domain here}
+          REACT_APP_FIREBASE_PROJECT_ID={Project ID here}
+ * Download the Firebase SDK for Java and place the "service-account-file.json" in the resources folder (src/main/resources)
+ * Signup at Sendgrid to be able to send emails from the application. This is required to implement the GUEST feature. Add the the Sendgrid API key to your enviromental variables as "SENDGRID_API_KEY". Lastly, change the argument in the "from" Email object in "SendgridService" file with the email you have chosen in Sendgrid.
+ 3. Start the database server.
+ 4. Start the backend server.
+ 5. Navigate to the frontend folder and run NPM start. 
+
+### - Prod enviroment (master)
+The production differs slightly from the dev enviroment, concerning the backend, in the sense that you need to pass the "service-account-file.json" values from your host, such as Heroku, including the Sendgrid API key and the path do your database. The required values can be found in the application.properties file.
 
 ## Usage
 
