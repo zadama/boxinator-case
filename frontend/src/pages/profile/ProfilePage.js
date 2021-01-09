@@ -21,9 +21,7 @@ const ProfilePage = () => {
       const { data: thisAccount } = await getAccount(token, auth.user.email);
 
       setData(thisAccount.data);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {

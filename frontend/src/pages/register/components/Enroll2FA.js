@@ -20,10 +20,6 @@ const Enroll2FA = ({ onClose, initialNumber, firebase, onSuccess }) => {
 
   const [showEnterVerificationCode, setEnterVerificationCode] = useState(null);
 
-  // Hämta användaren, ifall email är un-verified ha loader och i
-  // useEffect captchan ha emailNotVerified typ som dependencyn och endast
-  // när den verifieras så kör koden.
-
   const handleSendPhoneVerification = async () => {
     // In case we have alreay registered, clear the recaptchaVerifier
     // and also re-initialize the div element inside recaptchaWrapperRef.
@@ -37,24 +33,11 @@ const Enroll2FA = ({ onClose, initialNumber, firebase, onSuccess }) => {
       "recaptcha-container",
       {
         size: "invisible",
-        callback: function (response) {
-          console.log("[CAPTCHA RESOLVED]");
-        },
+        callback: function (response) {},
       }
     );
 
     try {
-      /*
-      let user = await firebase.auth().currentUser.reload();
-
-      user = await firebase.auth().currentUser;
-
-      if (!isFirstTime.current && !user.emailVerified) {
-        throw new Error("auth/unverified-email");
-      }
-
-      isFirstTime.current = false;*/
-
       const session = await firebase
         .auth()
         .currentUser.multiFactor.getSession();
@@ -73,8 +56,6 @@ const Enroll2FA = ({ onClose, initialNumber, firebase, onSuccess }) => {
 
       setEnterVerificationCode(true);
     } catch (error) {
-      console.log(error);
-
       const errorHandler = AuthErrorHandling[error.code];
 
       if (errorHandler != null) {
@@ -82,14 +63,6 @@ const Enroll2FA = ({ onClose, initialNumber, firebase, onSuccess }) => {
       }
 
       if (error.code === "auth/requires-recent-login") {
-        // Re-authenticate user.
-        /**
-         * var user = firebase.auth().currentUser;
-var credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
-
-// Prompt the user to re-provide their sign-in credentials
-return user.reauthenticateWithCredential(credential);
-         */
       }
     }
   };
@@ -111,13 +84,10 @@ return user.reauthenticateWithCredential(credential);
 
       hasEnrolled2Fa.current = true;
 
-      console.log("hasenrolled2fa to true", hasEnrolled2Fa);
-
       alert("enrolled in MFA");
 
       onSuccess();
     } catch (error) {
-      console.log(error);
       const errorHandler = AuthErrorHandling[error.code];
 
       if (errorHandler != null) {

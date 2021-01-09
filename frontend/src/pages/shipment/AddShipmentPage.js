@@ -16,7 +16,7 @@ const AddShipmentPage = ({ history }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
 
-  const { logout, getUserToken } = useAuth();
+  const { getUserToken } = useAuth();
   const [state, setState] = useState({
     sourceCountry: { value: "", label: "" },
     destinationCountry: { value: "", label: "", feeMultiplier: "" },
@@ -139,7 +139,6 @@ const AddShipmentPage = ({ history }) => {
 
     try {
       const token = await getUserToken();
-      // set shipmentstatus in backend instead? (IN_TRANSIT part)
       const result = await createShipment(
         {
           weight: state.boxWeight,
@@ -153,8 +152,6 @@ const AddShipmentPage = ({ history }) => {
       );
 
       if (result.status === 201) {
-        // Send shipment Id with and show success message in handle shipments instead
-        // with latest shipment highlughted by getting shipment id in location state
         const { data: newShipment } = result.data;
 
         if (user.role === USER) {
@@ -170,8 +167,6 @@ const AddShipmentPage = ({ history }) => {
         }
       }
     } catch (error) {
-      console.log(error);
-      // Set failure message alert
       setIsLoading(false);
       setAlertMessage({
         message: "Failed to process shipment",

@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import Search from "../../components/search/Search";
-import Toaster from "../../components/toast/Toaster"
+import Toaster from "../../components/toast/Toaster";
 
 import "./style.scss";
 
 import { useAuth } from "../../context/auth";
 import { getAllCountries } from "../../api/countries";
-import {deleteAccount, getAllAccounts, updateAccount} from "../../api/user";
+import { deleteAccount, getAllAccounts, updateAccount } from "../../api/user";
 import AccountList from "./AccountPageModals/AccountList";
 
 const AccountPage = (props) => {
-
   //For Search component
   const firstUpdate = useRef(true);
   const [searchValue, setSearchValue] = useState("");
@@ -28,23 +27,25 @@ const AccountPage = (props) => {
 
   useEffect(() => {
     if (firstUpdate.current) {
-    firstUpdate.current = false;
-    renderUserDataWithAdminToken();
-    return;
-  } else {
-    const filtered = accounts.filter((account) => {
-      return (
-        account.id + "" === searchValue ||
-        account.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-        account.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
-        account.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
-        account.role.toUpperCase().includes(searchValue.toUpperCase()) ||
-        account.country.toLowerCase().includes(searchValue.toLowerCase())
-      );
-    });
-    setAccountList(filtered);
-  }
-}, [searchValue]);
+      firstUpdate.current = false;
+      renderUserDataWithAdminToken();
+      return;
+    } else {
+      const filtered = accounts.filter((account) => {
+        return (
+          account.id + "" === searchValue ||
+          account.email?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          account.firstName
+            ?.toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          account.lastName?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          account.role?.toUpperCase().includes(searchValue.toUpperCase()) ||
+          account.country?.toLowerCase().includes(searchValue.toLowerCase())
+        );
+      });
+      setAccountList(filtered);
+    }
+  }, [searchValue]);
 
   const renderUserDataWithAdminToken = async () => {
     setIsLoading(true);
@@ -67,14 +68,14 @@ const AccountPage = (props) => {
           return {
             id: account.id,
             firstName: account.firstName,
-            lastName:  account.lastName,
+            lastName: account.lastName,
             email: account.email,
             dateOfBirth: account.dateOfBirth,
             zipCode: account.zipCode,
             country: account.country,
             contactNumber: account.contactNumber,
             role: account.role,
-            shipments: account.userShipments
+            shipments: account.userShipments,
           };
         });
 
@@ -82,7 +83,6 @@ const AccountPage = (props) => {
       setAccountList(savedAccounts);
       setCountries(savedCountries); //from prev. version
     } catch (error) {
-      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -94,12 +94,11 @@ const AccountPage = (props) => {
     try {
       const token = await auth.getUserToken(); // Get sessiontoken
       await updateAccount(token, account.id, account); // Pass token, pathvariable and body with request
-      renderUserDataWithAdminToken();//rerender page
+      renderUserDataWithAdminToken(); //rerender page
       setToastHeader("Success");
       setToastMsg("Account record was updated successfully.");
       setToast(true);
     } catch (error) {
-      console.log(error);
       setToastHeader("Error");
       setToastMsg("Unable to update account record details.");
       setToast(true);
@@ -119,7 +118,6 @@ const AccountPage = (props) => {
       setToast(true);
       renderUserDataWithAdminToken();
     } catch (error) {
-      console.log(error);
       setToastHeader("Error");
       setToastMsg("Unable to delete shipment record details.");
       setToast(true);
@@ -127,21 +125,21 @@ const AccountPage = (props) => {
       setIsLoading(false);
       await renderUserDataWithAdminToken();
     }
-  }
+  };
 
   return (
     <>
       {toast && (
-          <Toaster
-              toastHeaderMsg={toastHeader}
-              toastMsg={toastMsg}
-              onClose={() => {
-                setToast(false);
-              }}
-          />
+        <Toaster
+          toastHeaderMsg={toastHeader}
+          toastMsg={toastMsg}
+          onClose={() => {
+            setToast(false);
+          }}
+        />
       )}
       <div>
-        <Search setSearchValue={setSearchValue} type={props.searchterms}/>
+        <Search setSearchValue={setSearchValue} type={props.searchterms} />
       </div>
 
       <div className="all-accounts-container">
@@ -150,11 +148,12 @@ const AccountPage = (props) => {
         </div>
 
         <AccountList
-            isLoading={isLoading}
-            accountList={accountList}
-            countries={countries}
-            updateAccount={handleSaveEditedUser}
-            deleteAccount={deleteUser}/>
+          isLoading={isLoading}
+          accountList={accountList}
+          countries={countries}
+          updateAccount={handleSaveEditedUser}
+          deleteAccount={deleteUser}
+        />
       </div>
     </>
   );

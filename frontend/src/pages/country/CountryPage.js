@@ -36,7 +36,6 @@ const CountryPage = (props) => {
       setToastMsg("Country was added successfully.");
       setToast(true);
     } catch (error) {
-      console.log(error, "Unable to add new country");
       setToastHeader("Error");
       setToastMsg("Unable to add duplicate country record.");
       setToast(true);
@@ -52,10 +51,12 @@ const CountryPage = (props) => {
       const token = await auth.getUserToken();
 
       if (oldCountry.name === newCountry.name) delete newCountry.name;
-      if (oldCountry.countryCode === newCountry.countryCode) delete newCountry.countryCode;
-      if (oldCountry.feeMultiplier === newCountry.feeMultiplier) delete newCountry.feeMultiplier;
+      if (oldCountry.countryCode === newCountry.countryCode)
+        delete newCountry.countryCode;
+      if (oldCountry.feeMultiplier === newCountry.feeMultiplier)
+        delete newCountry.feeMultiplier;
 
-      if (Object.keys(newCountry).length > 1) {      
+      if (Object.keys(newCountry).length > 1) {
         await updateCountryById(newCountry, token);
         setToastHeader("Success");
         setToastMsg("Country record was updated successfully.");
@@ -66,7 +67,6 @@ const CountryPage = (props) => {
         setToast(true);
       }
     } catch (error) {
-      console.log(error, "Unable to update country details");
       setToastHeader("Error");
       setToastMsg("Unable to update country record details.");
       setToast(true);
@@ -114,7 +114,6 @@ const CountryPage = (props) => {
       setCountries(savedCountries);
       setCountryList(savedCountries);
     } catch (error) {
-      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -129,7 +128,6 @@ const CountryPage = (props) => {
       setToastMsg("Country record was deleted successfully.");
       setToast(true);
     } catch (error) {
-      console.log(error, "Unable to delete country with id: " + id);
       setToastHeader("Error");
       setToastMsg("Unable to delete country record.");
       setToast(true);
@@ -151,7 +149,7 @@ const CountryPage = (props) => {
         />
       )}
       <div>
-        <Search setSearchValue={setSearchValue} type={props.searchterms}/>
+        <Search setSearchValue={setSearchValue} type={props.searchterms} />
       </div>
 
       <div className="all-countries-container">

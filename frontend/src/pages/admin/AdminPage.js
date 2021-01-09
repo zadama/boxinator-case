@@ -12,14 +12,6 @@ import CountryPage from "../country/CountryPage";
 import HandleShipmentsPage from "./manageShipments/HandleShipmentsPage";
 import Alert from "../../components/alert";
 
-/**
- * hämta alla shipments från backend, skicka med firebase token
- * annars ska det ej funka, testa i postman också sen..
- *
- * Skapa switch route + komponenter /admin-dashboard/countries etc, med valen i sidebar
- * som ska navigera dit..
- */
-
 const AdminPage = ({ location }) => {
   const auth = useAuth();
   const [data, setData] = useState(null);
@@ -37,9 +29,7 @@ const AdminPage = ({ location }) => {
 
       const { data } = await getAccount(token, auth.user.email);
       setData(data.data.firstName + " " + data.data.lastName);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -105,9 +95,13 @@ const AdminPage = ({ location }) => {
           />
         </section>
         <section style={{ borderTop: "1px solid #dee2e6" }}>
-          {!showAccounts ? "" : <AccountPage searchterms={searchterms}/>}
-          {!showCountries ? "" : <CountryPage searchterms={searchterms}/>}
-          {!showShipments ? "" : <HandleShipmentsPage searchterms={searchterms}/>}
+          {!showAccounts ? "" : <AccountPage searchterms={searchterms} />}
+          {!showCountries ? "" : <CountryPage searchterms={searchterms} />}
+          {!showShipments ? (
+            ""
+          ) : (
+            <HandleShipmentsPage searchterms={searchterms} />
+          )}
         </section>
       </div>
     </PrivateLayout>

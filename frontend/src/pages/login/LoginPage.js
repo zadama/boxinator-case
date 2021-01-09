@@ -29,8 +29,6 @@ const LoginPage = ({ history }) => {
   };
 
   const handleLogin = async (data) => {
-    // setIsLoading(true);
-
     try {
       await firebase
         .auth()

@@ -66,8 +66,6 @@ public class SendgridService {
                    request.setEndpoint("mail/send");
                    request.setBody(mail.build());
                    Response response = this.sendGrid.api(request);
-                   System.out.println(("Status code: "+ response.getStatusCode() + " Body: "
-                           + response.getBody() + " Headers: " + response.getHeaders()));
 
                    cr.status=HttpStatus.OK;
                    cr.msg="Receipt email sent.";

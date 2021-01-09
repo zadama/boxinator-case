@@ -1,7 +1,6 @@
 import { USER, ADMIN, GUEST } from "../utils/roles";
 import Api from "./axios";
 
-// Only for testing purposes...
 const getAllAccounts = (token) => {
   return Api.get("/account/all", {
     headers: {
@@ -9,10 +8,7 @@ const getAllAccounts = (token) => {
     },
   });
 };
-/*
-const getAccount = (token, account_id) => {
-  return Api.get("/account/" + account_id, {
-*/
+
 const getAccount = (token, account_email) => {
   return Api.get("/account/get/" + account_email, {
     headers: {
@@ -41,7 +37,6 @@ const updateAccount = (token, account_id, newUser) => {
   );
 };
 
-// Only for testing purposes...
 const getUserRole = (token) => {
   return Api.get("/account/role", {
     headers: {
@@ -56,8 +51,6 @@ const createAnonUser = (email) => {
     role: GUEST,
   });
 };
-
-//{...body, role:USER} instead
 
 const updateUser = (body, id, token) => {
   return Api.patch(
